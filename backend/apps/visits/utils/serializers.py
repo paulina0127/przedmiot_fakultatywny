@@ -12,4 +12,4 @@ class VisitSerializer(serializers.ModelSerializer):
 class PrescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prescription
-        exclude = ["visit"]
+        fields = "__all__"

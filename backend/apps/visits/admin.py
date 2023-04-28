@@ -5,7 +5,7 @@ from .models import Prescription, Visit
 
 @admin.register(Visit)
 class VisitAdmin(admin.ModelAdmin):
-    list_display = ["id", "date", "doctor", "patient", "status"]
+    list_display = ["id", "doctor", "patient", "date", "status"]
 
 
 @admin.register(Prescription)

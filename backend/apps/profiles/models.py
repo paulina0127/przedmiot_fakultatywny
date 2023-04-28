@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+from .utils.choices import Gender
 
 User = get_user_model()
 
@@ -29,6 +30,7 @@ class Patient(models.Model):
         on_delete=models.CASCADE,
         related_name="patient",
     )
+    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("Pacjent")
@@ -39,16 +41,35 @@ class Patient(models.Model):
         return self.first_name + " " + self.last_name
 
 
+class Specialization(models.Model):
+    name = models.CharField(verbose_name=_("Nazwa"), max_length=100)
+    fem_name = models.CharField(verbose_name=_("Feminatyw"), max_length=100)
+
+    class Meta:
+        verbose_name = _("Specjalizacja")
+        verbose_name_plural = _("Specjalizacje")
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.name
+
+
 class Doctor(models.Model):
     first_name = models.CharField(verbose_name=_("Imię"), max_length=100)
     last_name = models.CharField(verbose_name=_("Nazwisko"), max_length=100)
-    specialization = models.CharField(verbose_name=_("Specjalizacja"), max_length=100)
+    gender = models.CharField(
+        verbose_name=_("Płeć"), choices=Gender.choices, max_length=50
+    )
+    specializations = models.ManyToManyField(
+        verbose_name=_("Specjalizacja"), to=Specialization
+    )
     user = models.OneToOneField(
         verbose_name=_("Użytkownik"),
         to=User,
         on_delete=models.CASCADE,
         related_name="doctor",
     )
+    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("Lekarz")
@@ -68,6 +89,7 @@ class Receptionist(models.Model):
         on_delete=models.CASCADE,
         related_name="receptionist",
     )
+    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, null=True)
 
     class Meta:
         verbose_name = _("Recepcjonista")

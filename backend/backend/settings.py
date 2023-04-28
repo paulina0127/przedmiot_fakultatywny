@@ -99,9 +99,9 @@ EMAIL_USE_TLS = True
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
+    # {
+    #     "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    # },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
@@ -165,7 +165,7 @@ SIMPLE_JWT = {
 }
 
 DOMAIN = "localhost:3000"
-SITE_NAME = "Przychodnia studencka"
+SITE_NAME = "Healthy Care"
 
 DJOSER = {
     "LOGIN_FIELD": "email",

@@ -8,7 +8,7 @@ from .utils.choices import VisitStatus
 
 class Visit(models.Model):
     status = models.CharField(
-        verbose_name=_("Status"), max_length=50, choices=VisitStatus.choices
+        verbose_name=_("Status"), max_length=50, choices=VisitStatus.choices, blank=True
     )
     date = models.DateTimeField(verbose_name=_("Data"))
     symptoms = models.TextField(verbose_name=_("Objawy"), blank=True, null=True)
@@ -36,6 +36,12 @@ class Visit(models.Model):
 
     def __str__(self):
         return f"{self.doctor} - {self.patient} - {self.date.strftime('%Y-%m-%d %H:%M:%S')}"
+
+    def save(self, *args, **kwargs):
+        # Set status as to be verified on create
+        if not self.status:
+            self.status = VisitStatus.TO_BE_VERIFIED
+        super(Visit, self).save(*args, **kwargs)
 
 
 class Prescription(models.Model):

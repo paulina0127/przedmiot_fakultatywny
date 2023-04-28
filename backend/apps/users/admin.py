@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import models as auth
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-
+from django.utils.translation import gettext_lazy as _
 from .models import Group, User
 
 # Unregister default Group model from auth page
@@ -10,12 +10,10 @@ admin.site.unregister(auth.Group)
 
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
-    model = User
     fieldsets = (
         (None, {"fields": ("email", "password", "type")}),
-        (("Personal info"), {"fields": ("first_name", "last_name")}),
         (
-            ("Permissions"),
+            (_("Uprawnienia")),
             {
                 "fields": (
                     "is_active",
@@ -26,7 +24,7 @@ class UserAdmin(DjangoUserAdmin):
                 )
             },
         ),
-        (("Important dates"), {"fields": ("last_login", "date_joined")}),
+        ((_("Ważne daty")), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
         (
@@ -47,8 +45,11 @@ class UserAdmin(DjangoUserAdmin):
     )
     ordering = ("type",)
 
-    def get_queryset(self, request):
-        return super().get_queryset(request)
+    def save_model(self, request, obj, form, change):
+        # Add the user to the appropriate group based on their type
+        super().save_model(request, obj, form, change)
+        group = Group.objects.get(name=obj.type)
+        obj.groups.add(group)
 
 
 @admin.register(Group)  # Register default Group model in users page

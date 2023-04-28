@@ -1,21 +1,23 @@
 from rest_framework import serializers
 
-from ..models import Doctor, Patient, Receptionist
+from ..models import Doctor, Patient, Specialization
+
+
+class SpecializationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Specialization
+        fields = "__all__"
 
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        exclude = ["user"]
+        fields = "__all__"
 
 
 class DoctorSerializer(serializers.ModelSerializer):
+    specializations = SpecializationSerializer(many=True, read_only=True)
+
     class Meta:
         model = Doctor
-        exclude = ["user"]
-
-
-class ReceptionistSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Receptionist
-        exclude = ["user"]
+        fields = "__all__"
