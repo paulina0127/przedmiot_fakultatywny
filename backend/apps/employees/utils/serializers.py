@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from ..models import Doctor, Patient, Specialization
+from ..models import Doctor, Receptionist, Schedule, Specialization
+
+
+class ReceptionistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Receptionist
+        fields = "__all__"
 
 
 class SpecializationSerializer(serializers.ModelSerializer):
@@ -9,9 +15,9 @@ class SpecializationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class PatientSerializer(serializers.ModelSerializer):
+class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Patient
+        model = Schedule
         fields = "__all__"
 
 

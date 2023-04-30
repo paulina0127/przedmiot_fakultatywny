@@ -29,8 +29,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Local apps
     "apps.users",
-    "apps.profiles",
-    "apps.visits",
+    "apps.employees",
+    "apps.patients",
+    "apps.appointments",
     # Third party apps
     "rest_framework",
     "phonenumber_field",

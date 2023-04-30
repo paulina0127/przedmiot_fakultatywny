@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import models as auth
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import gettext_lazy as _
+
 from .models import Group, User
 
 # Unregister default Group model from auth page
@@ -35,7 +36,7 @@ class UserAdmin(DjangoUserAdmin):
             },
         ),
     )
-    list_display = ("email", "type", "is_active", "is_staff", "is_superuser")
+    list_display = ("id", "email", "type", "is_active", "is_staff", "is_superuser")
     search_fields = ("email", "first_name", "last_name", "type")
     list_filter = (
         "type",

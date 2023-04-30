@@ -1,12 +1,17 @@
 from django.contrib import admin
-
-from .models import Doctor, Patient, Receptionist, Specialization
 from django.utils.translation import gettext_lazy as _
 
+from .models import Doctor, Receptionist, Schedule, Specialization
 
-@admin.register(Patient)
-class PatientAdmin(admin.ModelAdmin):
-    list_display = ["id", "first_name", "last_name", "pesel"]
+
+@admin.register(Specialization)
+class SpecializationAdmin(admin.ModelAdmin):
+    list_display = ["id", "name", "fem_name"]
+
+
+@admin.register(Schedule)
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ["id", "doctor", "start_date", "end_date"]
 
 
 @admin.register(Doctor)
@@ -25,8 +30,3 @@ class DoctorAdmin(admin.ModelAdmin):
 @admin.register(Receptionist)
 class ReceptionistAdmin(admin.ModelAdmin):
     list_display = ["id", "first_name", "last_name"]
-
-
-@admin.register(Specialization)
-class SpecializationAdmin(admin.ModelAdmin):
-    list_display = ["id", "name", "fem_name"]

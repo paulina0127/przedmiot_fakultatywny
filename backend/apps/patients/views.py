@@ -1,53 +1,58 @@
-from .models import Doctor, Patient
-from .utils.serializers import (
-    DoctorSerializer,
-    PatientSerializer,
-)
-
-from rest_framework import generics
-from rest_framework.permissions import (
-    DjangoModelPermissions,
-    DjangoModelPermissionsOrAnonReadOnly,
-)
 from django.utils import timezone
+from rest_framework import generics
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.response import Response
+
+from apps.users.utils.choices import UserType
+
+from .models import Patient
+from .utils.serializers import PatientSerializer
 
 
 # Display list of all patients
 class PatientList(generics.ListCreateAPIView):
-    queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     name = "patients"
     search_fields = ["first_name", "last_name", "pesel"]
     ordering_fields = ["id", "birthdate"]
     permission_classes = [DjangoModelPermissions]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            # Return patient's profile
+            if user.type == UserType.PATIENT:
+                return Patient.objects.filter(user=user)
+            # Return doctor's patients
+            elif user.type == UserType.DOCTOR:
+                return Patient.objects.filter(
+                    appointments__doctor=user.doctor
+                ).distinct()
+            # Return all patients if the user is admin or receptionist
+            else:
+                return Patient.objects.all()
+
 
 # Display single patient
 class PatientDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     name = "patient"
     permission_classes = [DjangoModelPermissions]
 
-
-# Display list of all doctors
-class DoctorList(generics.ListCreateAPIView):
-    queryset = Doctor.objects.all()
-    serializer_class = DoctorSerializer
-    name = "doctors"
-    filterset_fields = ["specializations"]
-    search_fields = ["first_name", "last_name"]
-    ordering_fields = ["id"]
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
-
-
-# Display single doctor
-class DoctorDetail(generics.RetrieveAPIView):
-    queryset = Doctor.objects.all()
-    serializer_class = DoctorSerializer
-    name = "doctor"
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_authenticated:
+            # Return patient's profile
+            if user.type == UserType.PATIENT:
+                return Patient.objects.filter(user=user)
+            # Return doctor's patients
+            elif user.type == UserType.DOCTOR:
+                return Patient.objects.filter(
+                    appointments__doctor=user.doctor
+                ).distinct()
+            # Return all patients if the user is admin or receptionist
+            else:
+                return Patient.objects.all()
 
 
 # Patient statistics
