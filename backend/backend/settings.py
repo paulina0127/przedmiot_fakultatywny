@@ -182,7 +182,8 @@ DJOSER = {
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {
         "user_create": "apps.users.utils.serializers.UserCreateSerializer",
-        "user": "apps.users.utils.serializers.UserCreateSerializer",
+        "user": "apps.users.utils.serializers.UserSerializer",
+        "current_user": "apps.users.utils.serializers.UserSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
 }
