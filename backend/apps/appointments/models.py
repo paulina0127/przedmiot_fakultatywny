@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_better_admin_arrayfield.models.fields import ArrayField
 
 from apps.employees.models import Doctor
 from apps.employees.utils.choices import Slot
@@ -19,8 +20,12 @@ class Appointment(models.Model):
     time = models.CharField(
         verbose_name=_("Godzina"), choices=Slot.choices, max_length=10
     )
-    symptoms = models.TextField(verbose_name=_("Objawy"), blank=True, null=True)
-    medicine = models.TextField(verbose_name=_("Stosowane leki"), blank=True, null=True)
+    symptoms = ArrayField(
+        models.TextField(), verbose_name=_("Objawy"), blank=True, null=True
+    )
+    medicine = ArrayField(
+        models.TextField(), verbose_name=_("Stosowane leki"), blank=True, null=True
+    )
     recommendations = models.TextField(
         verbose_name=_("Zalecenia"), blank=True, null=True
     )
@@ -46,16 +51,16 @@ class Appointment(models.Model):
         return f"{self.doctor}, {self.patient} - {self.date} {self.time}"
 
     def save(self, *args, **kwargs):
-        # Set status as to be verified on create
+        # Set status as to be confirmed on create
         if not self.pk:
-            self.status = AppointmentStatus.TO_BE_VERIFIED
+            self.status = AppointmentStatus.TO_BE_CONFIRMED
         super(Appointment, self).save(*args, **kwargs)
 
 
 class Prescription(models.Model):
     access_code = models.CharField(verbose_name=_("Kod dostępu"), max_length=4)
     created_at = models.DateTimeField(verbose_name=_("Wystawiono"), auto_now_add=True)
-    medicine = models.TextField(verbose_name=_("Leki"))
+    medicine = ArrayField(models.CharField(max_length=255), verbose_name=_("Leki"))
     appointment = models.ForeignKey(
         verbose_name=_("Wizyta"),
         to=Appointment,

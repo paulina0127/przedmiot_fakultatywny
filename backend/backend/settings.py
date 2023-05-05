@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     # Third party apps
     "rest_framework",
     "phonenumber_field",
+    "django_better_admin_arrayfield",
     "rest_framework_simplejwt",
     "djoser",
     "corsheaders",
@@ -133,6 +134,9 @@ STATIC_URL = "/static/"
 # Media Files
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 MEDIA_URL = "/media/"
+
+# Translation files
+LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

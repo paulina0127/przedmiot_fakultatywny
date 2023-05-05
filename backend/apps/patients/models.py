@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_better_admin_arrayfield.models.fields import ArrayField
 from phonenumber_field.modelfields import PhoneNumberField
 
 User = get_user_model()
@@ -18,11 +19,15 @@ class Patient(models.Model):
     street = models.CharField(verbose_name=_("Ulica"), max_length=100)
     postal_code = models.CharField(verbose_name=_("Kod pocztowy"), max_length=6)
     city = models.CharField(verbose_name=_("Miejscowość"), max_length=100)
-    medicine = models.TextField(
-        verbose_name=_("Przyjmowane leki"), blank=True, null=True
+    medicine = ArrayField(
+        models.TextField(), verbose_name=_("Przyjmowane leki"), blank=True, null=True
     )
-    alergies = models.TextField(verbose_name=_("Alergie"), blank=True, null=True)
-    diseases = models.TextField(verbose_name=_("Choroby"), blank=True, null=True)
+    alergies = ArrayField(
+        models.TextField(), verbose_name=_("Alergie"), blank=True, null=True
+    )
+    diseases = ArrayField(
+        models.TextField(), verbose_name=_("Choroby"), blank=True, null=True
+    )
     user = models.OneToOneField(
         verbose_name=_("Użytkownik"),
         to=User,
