@@ -37,7 +37,7 @@ class Doctor(models.Model):
         on_delete=models.CASCADE,
         related_name="doctor",
     )
-    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, null=True)
+    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True)
 
     class Meta:
         verbose_name = _("Lekarz")
@@ -57,7 +57,7 @@ class Receptionist(models.Model):
         on_delete=models.CASCADE,
         related_name="receptionist",
     )
-    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, null=True)
+    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True)
 
     class Meta:
         verbose_name = _("Recepcjonista")
