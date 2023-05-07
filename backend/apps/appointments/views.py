@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics
-from rest_framework.permissions import DjangoModelPermissions
+from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.response import Response
 
 from apps.employees.models import Schedule
@@ -18,13 +18,26 @@ from .utils.serializers import (AppointmentSerializer,
                                 PrescriptionSerializer)
 
 
+class AppointmentAccess(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        # True if user type is admin, receptionist or
+        # a doctor/patient associated with the Appointment.
+        user = request.user
+        if user.type == UserType.DOCTOR:
+            return obj.doctor.user == user
+        if user.type == UserType.PATIENT:
+            return obj.patient.user == user
+        return user.type == UserType.RECEPTIONIST or user.type == UserType.ADMIN
+
+
 # Display list of all appointments
 class AppointmentList(generics.ListCreateAPIView):
     name = "appointments"
     filterset_fields = ["status", "doctor", "patient"]
     search_fields = ["patient__first_name", "patient__last_name", "patient__pesel"]
     ordering_fields = ["id", "date"]
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [IsAuthenticated, AppointmentAccess]
 
     def get_serializer_class(self):
         user = self.request.user
@@ -35,16 +48,15 @@ class AppointmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated:
-            # Return patient's appointments
-            if user.type == UserType.PATIENT:
-                return Appointment.objects.filter(patient=user.patient)
-            # Return doctor's appointments
-            elif user.type == UserType.DOCTOR:
-                return Appointment.objects.filter(doctor=user.doctor)
-            # Return all appointments if the user is admin or receptionist
-            else:
-                return Appointment.objects.all()
+        # Return patient's appointments
+        if user.type == UserType.PATIENT:
+            return Appointment.objects.filter(patient=user.patient)
+        # Return doctor's appointments
+        elif user.type == UserType.DOCTOR:
+            return Appointment.objects.filter(doctor=user.doctor)
+        # Return all appointments if the user is admin or receptionist
+        else:
+            return Appointment.objects.all()
 
     # If the current user is a patient assign the appointment to them
     def perform_create(self, serializer):
@@ -56,7 +68,7 @@ class AppointmentList(generics.ListCreateAPIView):
 # Display single appointment
 class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
     name = "appointment"
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [IsAuthenticated, AppointmentAccess]
 
     def get_serializer_class(self):
         user = self.request.user
@@ -67,16 +79,28 @@ class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated:
-            # Return patient's appointments
-            if user.type == UserType.PATIENT:
-                return Appointment.objects.filter(patient=user.patient)
-            # Return doctor's appointments
-            elif user.type == UserType.DOCTOR:
-                return Appointment.objects.filter(doctor=user.doctor)
-            # Return all appointments if the user is admin or receptionist
-            else:
-                return Appointment.objects.all()
+        # Return patient's appointments
+        if user.type == UserType.PATIENT:
+            return Appointment.objects.filter(patient=user.patient)
+        # Return doctor's appointments
+        elif user.type == UserType.DOCTOR:
+            return Appointment.objects.filter(doctor=user.doctor)
+        # Return all appointments if the user is admin or receptionist
+        else:
+            return Appointment.objects.all()
+
+
+class PrescriptionAccess(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        # True if user type is admin, receptionist or
+        # a doctor/patient associated with the Prescription.
+        user = request.user
+        if user.type == UserType.DOCTOR:
+            return obj.appointment.doctor.user == user
+        if user.type == UserType.PATIENT:
+            return obj.appointment.patient.user == user
+        return user.type == UserType.RECEPTIONIST or user.type == UserType.ADMIN
 
 
 # Display list of all prescriptions
@@ -85,40 +109,38 @@ class PrescriptionList(generics.ListCreateAPIView):
     name = "prescriptions"
     filterset_fields = ["appointment"]
     ordering_fields = ["id", "created_at"]
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [IsAuthenticated, PrescriptionAccess]
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated:
-            # Return patient's prescriptions
-            if user.type == UserType.PATIENT:
-                return Prescription.objects.filter(appointment__patient=user.patient)
-            # Return doctor's prescriptions
-            elif user.type == UserType.DOCTOR:
-                return Prescription.objects.filter(appointment__doctor=user.doctor)
-            # Return all prescriptions if the user is admin or receptionist
-            else:
-                return Prescription.objects.all()
+        # Return patient's prescriptions
+        if user.type == UserType.PATIENT:
+            return Prescription.objects.filter(appointment__patient=user.patient)
+        # Return doctor's prescriptions
+        elif user.type == UserType.DOCTOR:
+            return Prescription.objects.filter(appointment__doctor=user.doctor)
+        # Return all prescriptions if the user is admin or receptionist
+        else:
+            return Prescription.objects.all()
 
 
 # Display single prescription
 class PrescriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PrescriptionSerializer
     name = "prescription"
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [IsAuthenticated, PrescriptionAccess]
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated:
-            # Return patient's prescriptions
-            if user.type == UserType.PATIENT:
-                return Prescription.objects.filter(appointment__patient=user.patient)
-            # Return doctor's prescriptions
-            elif user.type == UserType.DOCTOR:
-                return Prescription.objects.filter(appointment__doctor=user.doctor)
-            # Return all prescriptions if the user is admin or receptionist
-            else:
-                return Prescription.objects.all()
+        # Return patient's prescriptions
+        if user.type == UserType.PATIENT:
+            return Prescription.objects.filter(appointment__patient=user.patient)
+        # Return doctor's prescriptions
+        elif user.type == UserType.DOCTOR:
+            return Prescription.objects.filter(appointment__doctor=user.doctor)
+        # Return all prescriptions if the user is admin or receptionist
+        else:
+            return Prescription.objects.all()
 
 
 # Appointment statistics
