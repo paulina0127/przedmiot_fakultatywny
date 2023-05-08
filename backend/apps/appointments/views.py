@@ -1,11 +1,12 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.core.exceptions import BadRequest
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
 from rest_framework.response import Response
 
 from apps.employees.models import Schedule
@@ -59,14 +60,23 @@ class AppointmentList(generics.ListCreateAPIView):
             return Appointment.objects.all()
 
     # If the current user is a patient assign the appointment to them
+    # don't allow adding Appointment with date earlier than today
+    # handle status and patient fields
     def perform_create(self, serializer):
         user = self.request.user
-        if user.is_authenticated and user.type == UserType.PATIENT:
-            serializer.save(patient=user.patient)
+        if user.type == UserType.PATIENT:
+            appointment_date = serializer.validated_data['date']
+            if appointment_date < timezone.now().date():
+                raise PermissionDenied("Data nie może być przeszła.")
+            serializer.validated_data['status'] = AppointmentStatus.TO_BE_CONFIRMED
+            serializer.validated_data['patient'] = user.patient
+        elif user.type == UserType.RECEPTIONIST:
+            serializer.validated_data['status'] = AppointmentStatus.CONFIRMED
+        serializer.save()
 
 
 # Display single appointment
-class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
+class AppointmentDetail(generics.RetrieveUpdateAPIView):
     name = "appointment"
     permission_classes = [IsAuthenticated, AppointmentAccess]
 
@@ -79,28 +89,67 @@ class AppointmentDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        # Return patient's appointments
+        # Return patient's appointment
         if user.type == UserType.PATIENT:
-            return Appointment.objects.filter(patient=user.patient)
+            return Appointment.objects.filter(patient=user.patient).exclude(patient=None)
         # Return doctor's appointments
         elif user.type == UserType.DOCTOR:
-            return Appointment.objects.filter(doctor=user.doctor)
-        # Return all appointments if the user is admin or receptionist
+            return Appointment.objects.filter(doctor=user.doctor).exclude(doctor=None)
+        # Return appointments without medical data for receptionist and admin
         else:
-            return Appointment.objects.all()
+            return Appointment.objects.all().exclude(symptoms=None, medicine=None, recommendations=None)
+
+    def check_update_perms(self, request):
+        obj = self.get_object()
+        data = request.data
+        if request.user.type == UserType.PATIENT:
+            twelve_hours_ago = datetime.now() - timedelta(hours=12)
+            if twelve_hours_ago > obj.date:
+                raise PermissionDenied(detail="Wizytę można anulować 12 godzin "
+                                              "przed dniem jej rozpoczęcia.")
+            if len(data) != 1 and data.get('status') != AppointmentStatus.CANCELLED:
+                raise PermissionDenied(detail="Możesz tylko anulować wizytę.")
+        else:
+            if datetime.now() > obj.date:
+                raise PermissionDenied(detail="Edycja możliwa tego samego dnia, "
+                                              "co wizyta (lub wcześniej).")
+
+            if request.user.type == UserType.DOCTOR:
+                allowed_keys = ['symptoms', 'medicine', 'recommendations']
+                if any(key not in allowed_keys for key in data):
+                    raise PermissionDenied(detail="Brak uprawnień do zmiany "
+                                                  "danych niemedycznych.")
+
+            if request.user.type == UserType.RECEPTIONIST:
+                allowed_keys = ['status', 'date', 'time', 'doctor', 'patient']
+                if any(key not in allowed_keys for key in data):
+                    raise PermissionDenied(detail="Brak uprawnień do zmiany "
+                                                  "danych medycznych.")
+
+    def partial_update(self, request, *args, **kwargs):
+        self.check_update_perms(request)
+        if self.request.user.type == UserType.DOCTOR:
+            request.data['status'] = AppointmentStatus.COMPLETED
+        return super().partial_update(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if self.request.user.type != UserType.ADMIN:
+            raise PermissionDenied(detail="Brak uprawnień.")
+        return super().update(request, *args, **kwargs)
 
 
 class PrescriptionAccess(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        # True if user type is admin, receptionist or
-        # a doctor/patient associated with the Prescription.
+        # True if user type is admin or
+        # a doctor/patient associated with the Prescription,
+        # patient is readonly, receptionist doesn't have any access.
         user = request.user
         if user.type == UserType.DOCTOR:
             return obj.appointment.doctor.user == user
         if user.type == UserType.PATIENT:
-            return obj.appointment.patient.user == user
-        return user.type == UserType.RECEPTIONIST or user.type == UserType.ADMIN
+            return request.method in SAFE_METHODS and obj.appointment.patient.user == user
+        return user.type == UserType.ADMIN
 
 
 # Display list of all prescriptions
@@ -119,7 +168,7 @@ class PrescriptionList(generics.ListCreateAPIView):
         # Return doctor's prescriptions
         elif user.type == UserType.DOCTOR:
             return Prescription.objects.filter(appointment__doctor=user.doctor)
-        # Return all prescriptions if the user is admin or receptionist
+        # Return all prescriptions if the user is admin
         else:
             return Prescription.objects.all()
 
@@ -138,9 +187,33 @@ class PrescriptionDetail(generics.RetrieveUpdateDestroyAPIView):
         # Return doctor's prescriptions
         elif user.type == UserType.DOCTOR:
             return Prescription.objects.filter(appointment__doctor=user.doctor)
-        # Return all prescriptions if the user is admin or receptionist
+        # Return all prescriptions if the user is admin
         else:
             return Prescription.objects.all()
+
+    def check_update_destroy_perms(self, request):
+        # Only allow doctor associated with the prescription to edit and delete
+        # it needs to be on the same day or earlier.
+        obj = self.get_object()
+        user = request.user
+        if user.type == UserType.DOCTOR and obj.appointment.doctor.user == user:
+            if datetime.now() > obj.appointment.date:
+                raise PermissionDenied(detail="Edycja możliwa tego samego dnia, "
+                                              "co wizyta (lub wcześniej).")
+        else:
+            raise PermissionDenied(detail="Brak uprawnień do edycji.")
+
+    def partial_update(self, request, *args, **kwargs):
+        self.check_update_destroy_perms(request)
+        return super().partial_update(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        self.check_update_destroy_perms(request)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        self.check_update_destroy_perms(request)
+        return super().destroy(request, *args, **kwargs)
 
 
 # Appointment statistics

@@ -26,9 +26,7 @@ class Appointment(models.Model):
     medicine = ArrayField(
         models.TextField(), verbose_name=_("Stosowane leki"), blank=True, null=True
     )
-    recommendations = models.TextField(
-        verbose_name=_("Zalecenia"), blank=True, null=True
-    )
+    recommendations = models.TextField(verbose_name=_("Zalecenia"), blank=True)
     doctor = models.ForeignKey(
         verbose_name=_("Lekarz"),
         to=Doctor,
