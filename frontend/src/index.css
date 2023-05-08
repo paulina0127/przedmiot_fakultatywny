@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+/* GLOBAL STYLES */
+:root {
+  --letter-spacing: 0.25rem;
+  --background-color: rgb(240, 238, 230);
+  --dark-blue: #324985;
+  --light-blue: #51abf3;
+  --font: 'Inter';
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  line-height: 1;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+*,
+::after,
+::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

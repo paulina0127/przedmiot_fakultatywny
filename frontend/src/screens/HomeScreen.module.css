@@ -1,0 +1,60 @@
+.description-container {
+  background-image: linear-gradient(to bottom right, #ffffff, #d1ebff);
+  padding-top: 5px;
+  padding-bottom: 45px;
+  position: relative;
+}
+
+.description-title {
+  font-weight: 700;
+  color: var(--dark-blue);
+  font-size: 2.5rem;
+  margin-top: 5%;
+  padding-left: 5%;
+}
+
+.description-text {
+  font-weight: 400;
+  margin-top: 5%;
+  padding-left: 5%;
+  inline-size: 60%;
+  font-size: 1.5rem;
+  margin-bottom: 5%;
+}
+
+.description-image {
+  position: absolute;
+  right: 10%;
+  top: 15%;
+}
+
+.description-h2 {
+  font-weight: 700;
+  color: var(--dark-blue);
+  font-size: 2.5rem;
+  margin-top: 5%;
+}
+
+.description-h3 {
+  font-weight: 700;
+  color: var(--dark-blue);
+  font-size: 1.5rem;
+  margin-top: 5%;
+}
+
+.internist-container {
+  background-color: #cde7fc;
+  padding-top: 5px;
+  padding-bottom: 45px;
+  position: relative;
+}
+
+.internist-title {
+  font-weight: 700;
+  letter-spacing: 5px;
+  color: var(--dark-blue);
+  font-size: 2.5rem;
+  margin-top: 5%;
+  padding-left: 5%;
+  text-align: center;
+}
