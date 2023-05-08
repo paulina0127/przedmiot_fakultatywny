@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .choices import AppointmentStatus
+
 from ..models import Appointment, Prescription
+from .choices import AppointmentStatus
 
 
 class PatientAppointmentSerializer(serializers.ModelSerializer):

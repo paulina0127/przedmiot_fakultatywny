@@ -1,9 +1,8 @@
+from apps.employees.models import Doctor, Receptionist
+from apps.patients.models import Patient
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
-
-from apps.employees.models import Doctor, Receptionist
-from apps.patients.models import Patient
 
 from .choices import UserType
 

@@ -1,16 +1,16 @@
 from datetime import datetime, timedelta
 
+from apps.employees.models import Schedule
+from apps.users.utils.choices import UserType
 from django.core.exceptions import BadRequest
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated, BasePermission, SAFE_METHODS
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAuthenticated)
 from rest_framework.response import Response
-
-from apps.employees.models import Schedule
-from apps.users.utils.choices import UserType
 
 from .models import Appointment, Prescription
 from .utils.choices import AppointmentStatus
@@ -290,10 +290,15 @@ class AvailableSlotsList(generics.ListAPIView):
                 .values_list("time", flat=True)
             )
 
-            # Doctor's availability for the date
-            doctor_availability = Schedule.objects.filter(
-                Q(start_date__lte=date) & Q(end_date__gte=date), doctor=doctor
-            ).values_list(weekday, flat=True)
+            # Doctor's availability for the date 
+            temp = Schedule.objects.filter(
+                Q(start_date__isnull=False) & Q(start_date__lte=date, end_date__gte=date), doctor=doctor)
+            # First check if there are schedules with start-end dates that include the date
+            if temp:
+                doctor_availability = temp.values_list(weekday, flat=True)
+            # Else return doctor's fixed schedule
+            else:
+                doctor_availability = Schedule.objects.filter(doctor=doctor).values_list(weekday, flat=True)
 
             # Delete extra dimension in the list
             if len(doctor_availability) > 0:

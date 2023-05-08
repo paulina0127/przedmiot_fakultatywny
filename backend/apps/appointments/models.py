@@ -1,10 +1,9 @@
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-from django_better_admin_arrayfield.models.fields import ArrayField
-
 from apps.employees.models import Doctor
 from apps.employees.utils.choices import Slot
 from apps.patients.models import Patient
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django_better_admin_arrayfield.models.fields import ArrayField
 
 from .utils.choices import AppointmentStatus
 
@@ -21,10 +20,10 @@ class Appointment(models.Model):
         verbose_name=_("Godzina"), choices=Slot.choices, max_length=10
     )
     symptoms = ArrayField(
-        models.TextField(), verbose_name=_("Objawy"), blank=True, null=True
+        models.TextField(), verbose_name=_("Objawy"), blank=True
     )
     medicine = ArrayField(
-        models.TextField(), verbose_name=_("Stosowane leki"), blank=True, null=True
+        models.TextField(), verbose_name=_("Stosowane leki"), blank=True
     )
     recommendations = models.TextField(verbose_name=_("Zalecenia"), blank=True)
     doctor = models.ForeignKey(

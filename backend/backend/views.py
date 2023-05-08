@@ -1,12 +1,11 @@
-from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
-
 from apps.appointments.views import (AppointmentList,
                                      AppointmentStatisticsList,
                                      AvailableSlotsList, PrescriptionList)
 from apps.employees.views import DoctorList, ScheduleList, SpecializationList
 from apps.patients.views import PatientList, PatientStatisticsList
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
 
 
 class ApiRoot(generics.GenericAPIView):

@@ -1,9 +1,8 @@
+from apps.users.utils.choices import UserType
 from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.response import Response
-
-from apps.users.utils.choices import UserType
 
 from .models import Patient
 from .utils.serializers import PatientSerializer

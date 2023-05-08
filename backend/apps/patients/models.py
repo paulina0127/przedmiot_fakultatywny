@@ -18,13 +18,13 @@ class Patient(models.Model):
     postal_code = models.CharField(verbose_name=_("Kod pocztowy"), max_length=6)
     city = models.CharField(verbose_name=_("Miejscowość"), max_length=100)
     medicine = ArrayField(
-        models.TextField(), verbose_name=_("Przyjmowane leki"), blank=True, null=True
+        models.TextField(), verbose_name=_("Przyjmowane leki"), blank=True
     )
     allergies = ArrayField(
-        models.TextField(), verbose_name=_("Alergie"), blank=True, null=True
+        models.TextField(), verbose_name=_("Alergie"), blank=True
     )
     diseases = ArrayField(
-        models.TextField(), verbose_name=_("Choroby"), blank=True, null=True
+        models.TextField(), verbose_name=_("Choroby"), blank=True
     )
     user = models.OneToOneField(
         verbose_name=_("Użytkownik"),
@@ -34,7 +34,7 @@ class Patient(models.Model):
         blank=True,
         null=True
     )
-    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True)
+    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, upload_to='patients/')
 
     class Meta:
         verbose_name = _("Pacjent")
