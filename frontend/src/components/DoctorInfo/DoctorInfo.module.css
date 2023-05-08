@@ -1,0 +1,20 @@
+.container {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+}
+
+.img {
+  width: 125px;
+  height: 125px;
+  border: 2px solid var(--clr-dark-blue);
+  object-fit: cover;
+}
+
+.h3 {
+  color: var(--clr-dark-blue);
+}
+
+.h4 {
+  color: var(--clr-blue);
+}

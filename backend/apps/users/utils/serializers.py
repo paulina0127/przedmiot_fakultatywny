@@ -18,19 +18,19 @@ class UserCreateSerializer(UserCreateSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ["id", "first_name", "last_name"]
+        fields = ["id", "first_name", "last_name", "image"]
 
 
 class ReceptionistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receptionist
-        fields = ["id", "first_name", "last_name"]
+        fields = ["id", "first_name", "last_name", "image"]
 
 
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ["id", "first_name", "last_name"]
+        fields = ["id", "first_name", "last_name", "image"]
 
 
 class DoctorUserSerializer(serializers.ModelSerializer):

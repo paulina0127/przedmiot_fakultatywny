@@ -1,15 +1,37 @@
-import Header from './components/Header'
-import Footer from './components/Footer'
-import HomeScreen from './screens/HomeScreen'
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Layout from './hocs/Layout';
+import {
+  ActivateAccountScreen,
+  HomeScreen,
+  LoginScreen,
+  ResetPassword,
+  ResetPasswordConfirm,
+  SignUpScreen,
+} from './screens';
 
 const App = () => {
   return (
-    <div>
-      <Header />
-      <HomeScreen />
-      <Footer />
-    </div>
-  )
-}
+    <>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path='/' element={<HomeScreen />} exact />
+            <Route path='/logowanie' element={<LoginScreen />} />
+            <Route path='/rejestracja' element={<SignUpScreen />} />
+            <Route path='/przypominanie-hasła' element={<ResetPassword />} />
+            <Route
+              path='/resetowanie-hasła/:uid/:token'
+              element={<ResetPasswordConfirm />}
+            />
+            <Route
+              path='/aktywacja-konta/:uid/:token'
+              element={<ActivateAccountScreen />}
+            />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </>
+  );
+};
 
 export default App
