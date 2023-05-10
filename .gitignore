@@ -8,7 +8,6 @@ local_settings.py
 *.DS_Store
 **/__pycache__
 **/.DS_Store
-.flake8
 
 ### react ###
 .DS_*
@@ -40,3 +39,6 @@ venv.bak/
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Custom
+/backend/.idea/*
