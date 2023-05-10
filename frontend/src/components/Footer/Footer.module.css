@@ -1,0 +1,23 @@
+.footer {
+  padding: 32px 0;
+  background: var(--clr-footer-blue);
+  color: var(--clr-white);
+}
+
+.h4 {
+  margin-bottom: 16px;
+}
+
+.p,
+.link {
+  margin-bottom: 5px;
+}
+.link {
+  display: block;
+  color: var(--clr-white);
+  transition: var(--transition);
+}
+
+.link:hover {
+  color: var(--clr-dark-blue);
+}
