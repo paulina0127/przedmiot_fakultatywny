@@ -5,8 +5,6 @@
 }
 
 .img {
-  width: 125px;
-  height: 125px;
   border: 2px solid var(--clr-dark-blue);
   object-fit: cover;
 }

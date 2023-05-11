@@ -2,8 +2,9 @@ import classNames from 'classnames';
 import { BsPerson } from 'react-icons/bs';
 import { CiMedicalCross } from 'react-icons/ci';
 import { IoSchoolOutline } from 'react-icons/io5';
-import { DoctorInfo } from '../../components';
+import { DoctorInfo, Loader, Message } from '../../components';
 import styles from './HomeScreen.module.css';
+import { doctors } from './doctors';
 
 const HomeScreen = () => {
   return (
@@ -56,11 +57,7 @@ const HomeScreen = () => {
           </div>
           <div className='row gy-5 '>
             <div className='col-lg-6 col-12'>
-              <DoctorInfo
-                img={require('../../images/fgrot.png')}
-                spec='Internista'
-                name='Franciszek Grot'
-              />
+              <DoctorInfo doctor={doctors[0]} />
               <p className={styles.doctorP}>
                 Internista specjalizujący się w chorobach układu
                 sercowo-naczyniowego. Jest znany z profesjonalnego podejścia do
@@ -69,11 +66,7 @@ const HomeScreen = () => {
               </p>
             </div>
             <div className='col-lg-6 col-12'>
-              <DoctorInfo
-                img={require('../../images/mnowak.png')}
-                spec='Internistka'
-                name='Maria Nowak'
-              />
+              <DoctorInfo doctor={doctors[1]} />
               <p className={styles.doctorP}>
                 Internistka z wieloletnim doświadczeniem w opiece nad pacjentami
                 z cukrzycą i chorobami metabolicznymi. Jest znana ze swojego
@@ -89,13 +82,9 @@ const HomeScreen = () => {
           <div className='row'>
             <h1 className={styles.sectionH1}>Lekarze specjaliści</h1>
           </div>
-          <div className='row gy-5 '>
+          <div className='row gy-5'>
             <div className='col-lg-4 col-12'>
-              <DoctorInfo
-                img={require('../../images/tnowicki.png')}
-                spec='Gastrolog'
-                name='Tomasz Nowicki'
-              />
+              <DoctorInfo doctor={doctors[2]} />
               <p className={styles.doctorP}>
                 Gastrolog, który specjalizuje się w leczeniu chorób układu
                 pokarmowego, takich jak choroba refluksowa i choroba wrzodowa.
@@ -104,11 +93,7 @@ const HomeScreen = () => {
               </p>
             </div>
             <div className='col-lg-4 col-12'>
-              <DoctorInfo
-                img={require('../../images/akostka.png')}
-                spec='Okulistka'
-                name='Anna Kostka'
-              />
+              <DoctorInfo doctor={doctors[3]} />
               <p className={styles.doctorP}>
                 Okulistka, która specjalizuje się w leczeniu chorób oczu, takich
                 jak zaćma i jaskra. Jest znana z precyzji w wykonywaniu badań
@@ -116,11 +101,7 @@ const HomeScreen = () => {
               </p>
             </div>
             <div className='col-lg-4 col-12'>
-              <DoctorInfo
-                img={require('../../images/kgwiazda.png')}
-                spec='Pulmonolog'
-                name='Kamil Gwiazda'
-              />
+              <DoctorInfo doctor={doctors[4]} />
               <p className={styles.doctorP}>
                 Pulmonolog, który specjalizuje się w leczeniu chorób układu
                 oddechowego, takich jak astma i choroba płuc. Jest znany z

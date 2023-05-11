@@ -1,0 +1,44 @@
+.form {
+  display: grid;
+  place-items: center;
+}
+
+.formGroup {
+  padding: 8px;
+}
+
+/* ----------- MEDIA QUERIES ----------- */
+@media screen and (min-width: 992px) {
+  .form {
+    grid-template-areas:
+      'img personal personal address'
+      'img medical medical medical';
+    align-items: start;
+    justify-items: start;
+    gap: 16px;
+  }
+
+  .imgArea {
+    grid-area: img;
+    align-self: start;
+  }
+
+  .personalArea {
+    grid-area: personal;
+  }
+
+  .addressArea {
+    grid-area: address;
+  }
+
+  .medicalArea {
+    grid-area: medical;
+  }
+
+  .imgArea,
+  .personalArea,
+  .addressArea,
+  .medicalArea {
+    width: -webkit-fill-available;
+  }
+}

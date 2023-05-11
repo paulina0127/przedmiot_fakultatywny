@@ -4,9 +4,12 @@ import {
   ActivateAccountScreen,
   HomeScreen,
   LoginScreen,
+  PanelMainScreen,
+  // PatientFormScreen,
   ResetPassword,
   ResetPasswordConfirm,
   SignUpScreen,
+  PatientProfileScreen,
 } from './screens';
 
 const App = () => {
@@ -18,6 +21,10 @@ const App = () => {
             <Route path='/' element={<HomeScreen />} exact />
             <Route path='/logowanie' element={<LoginScreen />} />
             <Route path='/rejestracja' element={<SignUpScreen />} />
+            {/* <Route
+              path='/rejestracja-pacjenta'
+              element={<PatientFormScreen />}
+            /> */}
             <Route path='/przypominanie-hasła' element={<ResetPassword />} />
             <Route
               path='/resetowanie-hasła/:uid/:token'
@@ -27,6 +34,8 @@ const App = () => {
               path='/aktywacja-konta/:uid/:token'
               element={<ActivateAccountScreen />}
             />
+            <Route path='/panel' element={<PanelMainScreen />} />
+            <Route path='/panel/profil' element={<PatientProfileScreen />} />
           </Routes>
         </Layout>
       </BrowserRouter>

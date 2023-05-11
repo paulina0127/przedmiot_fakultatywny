@@ -1,11 +1,11 @@
 import { Navbar, Nav, NavDropdown, Container, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { logout } from '../../actions/authActions';
+import { logout } from '../../../actions/authActions';
 
 import { IoIosArrowDropdown } from 'react-icons/io';
-import avatar from '../../images/avatar.png';
-import logo from '../../images/logo.png';
+import avatar from '../../../images/avatar.png';
+import logo from '../../../images/logo.png';
 import styles from './NavigationBar.module.css';
 
 const NavigationBar = ({ logout, user }) => {
@@ -47,7 +47,7 @@ const NavigationBar = ({ logout, user }) => {
         }
         id='basic-nav-dropdown'
       >
-        <NavDropdown.Item as={Link} to='/user-panel'>
+        <NavDropdown.Item as={Link} to='/panel/profil'>
           Profil
         </NavDropdown.Item>
         <NavDropdown.Divider />
@@ -60,7 +60,7 @@ const NavigationBar = ({ logout, user }) => {
     <Navbar collapseOnSelect sticky='top' expand='lg' className={styles.nav}>
       <Container>
         <Navbar.Brand as={Link} to='/'>
-          <img alt='Logo' src={logo} height='64px' />
+          <img alt='Logo' src={logo} height='64px' className='logo' />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls='responsive-navbar-nav' />
         <Navbar.Collapse

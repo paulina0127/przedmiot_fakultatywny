@@ -1,4 +1,5 @@
 .footer {
+  height: 175px;
   padding: 32px 0;
   background: var(--clr-footer-blue);
   color: var(--clr-white);

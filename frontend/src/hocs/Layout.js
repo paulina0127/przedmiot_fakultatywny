@@ -17,7 +17,8 @@ const Layout = ({ checkAuthenticated, load_user, children }) => {
       <NavigationBar />
       {children}
       {(location.pathname === '/' ||
-        location.pathname.startsWith('/user-panel')) && <Footer />}
+        location.pathname === '/rejestracja-pacjenta' ||
+        location.pathname.startsWith('/panel')) && <Footer />}
     </>
   );
 };

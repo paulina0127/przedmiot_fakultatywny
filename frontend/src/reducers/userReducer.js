@@ -3,63 +3,59 @@ import {
   USER_DETAILS_PROFILE_SUCCESS,
   USER_DETAILS_PROFILE_FAIL,
   USER_DETAILS_PROFILE_RESET,
-
   USER_CREATE_PROFILE_REQUEST,
   USER_CREATE_PROFILE_SUCCESS,
   USER_CREATE_PROFILE_FAIL,
   USER_CREATE_PROFILE_RESET,
-
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_RESET,
-
   USER_DELETE_PROFILE_REQUEST,
   USER_DELETE_PROFILE_SUCCESS,
   USER_DELETE_PROFILE_FAIL,
-} from '../constants/userConst'
+} from '../constants/userConst';
 
-export const userProfileDetailsReducer = (state = { user: {} }, action) => {
-  switch(action.type) {
+export const userProfileDetailsReducer = (state = {}, action) => {
+  switch (action.type) {
     case USER_DETAILS_PROFILE_REQUEST:
-      return {loading:true, ...state}
+      return { ...state, loading: true };
     case USER_DETAILS_PROFILE_SUCCESS:
-      return {loading:false, user: action.payload}
+      return { ...state, loading: false, user: action.payload };
     case USER_DETAILS_PROFILE_FAIL:
-      return {loading:false, error: action.payload} 
     case USER_DETAILS_PROFILE_RESET:
-      return { user: {} }
+      return { ...state, user: {} };
     default:
-      return state     
+      return state;
   }
-}
+};
 
 export const userCreateProfileReducer = (state = {}, action) => {
-  switch (action.type) { 
+  switch (action.type) {
     case USER_CREATE_PROFILE_REQUEST:
-      return { loadingCreate: true }
+      return { loadingCreate: true };
     case USER_CREATE_PROFILE_SUCCESS:
-      return { loadingCreate: false, successCreate: true }
+      return { loadingCreate: false, successCreate: true };
     case USER_CREATE_PROFILE_FAIL:
-      return { loadingCreate: false, errorCreate: action.payload }
+      return { loadingCreate: false, errorCreate: action.payload };
     case USER_CREATE_PROFILE_RESET:
-      return {}
+      return {};
     default:
-      return state
+      return state;
   }
-}
+};
 
 export const userUpdateProfileReducer = (state = {}, action) => {
-  switch (action.type) { 
+  switch (action.type) {
     case USER_UPDATE_PROFILE_REQUEST:
-      return { loading: true }
+      return { loading: true };
     case USER_UPDATE_PROFILE_SUCCESS:
-      return { loading: false, success: true }
+      return { loading: false, success: true };
     case USER_UPDATE_PROFILE_FAIL:
-      return { loading: false, error: action.payload }
+      return { loading: false, error: action.payload };
     case USER_UPDATE_PROFILE_RESET:
-      return {}
+      return {};
     default:
-      return state
+      return state;
   }
-}
+};

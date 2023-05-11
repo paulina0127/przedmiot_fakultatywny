@@ -1,0 +1,24 @@
+import { useSelector } from 'react-redux';
+import {
+  PatientProfileCreate,
+  PatientProfileUpdate,
+} from '../../components/patient/PatientProfile';
+
+const PatientProfileScreen = () => {
+  const auth = useSelector((state) => state.auth);
+  const { user } = auth;
+  return (
+    <section className='section-bg'>
+      {user?.profile === null ? (
+        <PatientProfileCreate userId={user.id} />
+      ) : (
+        <>
+          <PatientProfileUpdate userProfile={user?.profile.id} />
+          {/* <PatientProfileDelete /> */}
+        </>
+      )}
+    </section>
+  );
+};
+
+export default PatientProfileScreen;

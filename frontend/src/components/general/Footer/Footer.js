@@ -1,7 +1,7 @@
 import React from 'react';
 import { BsTelephone } from 'react-icons/bs';
 import { Link, useLocation } from 'react-router-dom';
-import scrollTo from '../../functions/scrollTo';
+import scrollTo from '../../../functions/scrollTo';
 import styles from './Footer.module.css';
 
 const Footer = () => {

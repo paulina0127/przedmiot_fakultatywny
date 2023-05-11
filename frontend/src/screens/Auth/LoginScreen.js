@@ -1,32 +1,24 @@
-import { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import { login } from '../../actions/authActions';
-
+import { object, string } from 'yup';
+import { Form, Formik } from 'formik';
 import classNames from 'classnames';
-import { Loader, Message } from '../../components';
+import { Loader, Message, TextField } from '../../components';
 import LayoutAuth from '../../hocs/LayoutAuth';
 import Background from '../../images/login.jpg';
 import styles from './Auth.module.css';
 
 const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+  const validate = object({
+    email: string()
+      .email('To nie jest prawidłowy adres email')
+      .required('Pole adres email jest obowiązkowe'),
+    password: string().required('Hasło jest obowiązkowe'),
   });
 
-  const { email, password } = formData;
   const auth = useSelector((state) => state.auth);
-  const { error, loading } = auth;
-
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    login(email, password);
-  };
+  let { error, loading } = auth;
 
   // Is the user authenticated?
   // Redirect them to the home page
@@ -40,53 +32,40 @@ const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
         <h1 className={styles.h1}>Logowanie</h1>
         {error && <Message variant='danger'>{error}</Message>}
         {!disabled && loading && <Loader />}
-        <form onSubmit={(e) => onSubmit(e)} className={styles.form}>
-          <div className='form-group mb-3'>
-            <label htmlFor='email' className='mx-2 my-2 text-muted'>
-              Email
-            </label>
-            <input
-              id='inputEmail'
-              type='email'
-              name='email'
-              value={email}
-              autoComplete='email'
-              onChange={(e) => onChange(e)}
-              required
-              className='form-control rounded-pill border-2 shadow-sm px-4'
-            />
-          </div>
-          <div className='form-group mb-3'>
-            <label htmlFor='email' className='mx-2 my-2 text-muted'>
-              Hasło
-            </label>
-            <input
-              className='form-control rounded-pill border-2 shadow-sm px-4'
-              id='inputPassword'
-              type='password'
-              name='password'
-              value={password}
-              autoComplete='current-password'
-              onChange={(e) => onChange(e)}
-              minLength={8}
-              required
-            />
-          </div>
-          <div className={styles.btnGroup}>
-            <Link className={styles.link} to='/przypominanie-hasła'>
-              Przypomnij hasło
-            </Link>
-            <button
-              type='submit'
-              className={classNames(
-                'btnSquare btnPrimaryLight',
-                styles.btnPrimaryLight
-              )}
-            >
-              Zaloguj
-            </button>
-          </div>
-        </form>
+        <Formik
+          initialValues={{
+            email: '',
+            password: '',
+          }}
+          validationSchema={validate}
+          onSubmit={(values) => {
+            const { email, password } = values;
+            login(email, password);
+          }}
+        >
+          {({ values }) => (
+            <>
+              <Form className={styles.form}>
+                <TextField label='Email' name='email' type='email' />
+                <TextField label='Hasło' name='password' type='password' />
+                <div className={styles.btnGroup}>
+                  <Link className={styles.link} to='/przypominanie-hasła'>
+                    Przypomnij hasło
+                  </Link>
+                  <button
+                    type='submit'
+                    className={classNames(
+                      'btnSquare btnPrimaryLight',
+                      styles.btnPrimaryLight
+                    )}
+                  >
+                    Zaloguj
+                  </button>
+                </div>
+              </Form>
+            </>
+          )}
+        </Formik>
       </div>
       <p className={styles.p}>
         Nie masz konta?{' '}

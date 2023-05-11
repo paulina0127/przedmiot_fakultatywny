@@ -8,7 +8,7 @@
   --ff-secondary: Imprima, sans-serif;
 
   /* Colors */
-  --clr-white: #f2f2f2;
+  --clr-white: #fff;
   --clr-white-hover: #dadada;
   --clr-black: #303030;
   --clr-blue: #51abf3;
@@ -22,7 +22,8 @@
   /* Others */
   --transition: all 0.3s linear;
   --letter-spacing: 0.25rem;
-  --radius: 10px;
+  --radius-primary: 20px;
+  --radius-secondary: 10px;
 }
 
 * {
@@ -51,7 +52,8 @@ body {
   line-height: 1.5;
 }
 
-img {
+img:not(.logo) {
+  height: 100%;
   width: 100%;
 }
 
@@ -78,6 +80,7 @@ h1 {
 
 h2 {
   font-size: 1.5rem;
+  text-align: center;
 }
 
 h3 {
@@ -92,10 +95,12 @@ body {
   font-size: 1.125rem;
 }
 
+/* Home page */
 .section {
   padding: 64px 0;
 }
 
+/* Auth pages */
 .no-footer-section {
   padding: 64px 0;
   height: calc(100vh - 90px);
@@ -104,6 +109,65 @@ body {
 .highlight {
   color: var(--clr-dark-blue);
   font-weight: bold;
+}
+
+/* Gradient bg for user panel */
+.section-bg {
+  padding: 48px;
+  background: var(--clr-light-blue)
+    linear-gradient(
+      42deg,
+      rgba(254, 205, 255, 0.9864320728291317) 0%,
+      rgba(205, 231, 252, 1) 48%,
+      rgba(205, 231, 252, 1) 100%
+    );
+  min-height: calc(100vh - 90px - 175px);
+}
+
+/* White bg for user panel */
+.container-bg {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: var(--radius-primary);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* White bg for main user panel */
+.main-container-bg {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--clr-dark-blue);
+}
+
+/* ----------- LAYOUT ----------- */
+.twoColumnGrid {
+  display: grid;
+}
+
+.threeColumnGrid {
+  display: grid;
+}
+
+.gridCenter {
+  display: grid;
+  place-items: center;
+}
+
+/* ----------- BACKGROUND ----------- */
+.bg-white {
+  background: var(--clr-white);
+}
+
+.bg-light-blue {
+  background: var(--clr-light-blue);
+}
+
+.bg-blue {
+  background: var(--clr-blue);
 }
 
 /* ----------- BUTTONS ----------- */
@@ -116,9 +180,21 @@ body {
 .btnSquare {
   padding: 10px 16px;
   min-width: 100px;
+  width: fit-content;
   font: bold 1rem var(--ff-primary);
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-secondary);
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  transition: var(--transition);
+}
+
+.btnCircle {
+  padding: 10px 16px;
+  min-width: 100px;
+  width: fit-content;
+  font: bold 1rem var(--ff-primary);
+  border: 0;
+  border-radius: 50rem;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   transition: var(--transition);
 }
@@ -150,27 +226,37 @@ body {
   background: var(--clr-white-hover);
 }
 
-/* ----------- BACKGROUND ----------- */
-.bg-white {
-  background: var(--clr-white);
-}
-
-.bg-light-blue {
-  background: var(--clr-light-blue);
-}
-
-.bg-blue {
-  background: var(--clr-blue);
+.arrayBtn {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
 }
 
 /* ----------- FORMS ----------- */
 .form-control,
 .form-select {
   font-size: 18px;
+  background: none;
+  border: 1px solid var(--clr-dark-blue);
 }
 
+.form-control:focus,
+.form-select:focus {
+  background: none;
+}
 /* ----------- MEDIA QUERIES ----------- */
+@media screen and (min-width: 992px) {
+  .twoColumnGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
+  .threeColumnGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 @media screen and (min-width: 768px) {
   h1 {
     font-size: 2.5rem;
