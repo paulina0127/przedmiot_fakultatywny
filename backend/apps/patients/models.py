@@ -18,13 +18,13 @@ class Patient(models.Model):
     postal_code = models.CharField(verbose_name=_("Kod pocztowy"), max_length=6)
     city = models.CharField(verbose_name=_("Miejscowość"), max_length=100)
     medicine = ArrayField(
-        models.TextField(blank=True), verbose_name=_("Przyjmowane leki"), default=list
+        models.TextField(blank=True), verbose_name=_("Przyjmowane leki"), blank=True, default=list
     )
     allergies = ArrayField(
-        models.TextField(blank=True), verbose_name=_("Alergie"), default=list
+        models.TextField(blank=True), verbose_name=_("Alergie"), blank=True, default=list
     )
     diseases = ArrayField(
-        models.TextField(blank=True), verbose_name=_("Choroby"), default=list
+        models.TextField(blank=True), verbose_name=_("Choroby"), blank=True, default=list
     )
     user = models.OneToOneField(
         verbose_name=_("Użytkownik"),
