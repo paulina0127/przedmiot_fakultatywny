@@ -15,10 +15,10 @@ class PatientSerializer(serializers.ModelSerializer):
         model = Patient
         fields = "__all__"
 
-    def validate(self, data):
-        if not correct_pesel_birthdate(data['pesel'], data['birthdate']):
-            raise serializers.ValidationError("PESEL nie zgadza się z datą urodzenia.")
-        return data
+    # def validate(self, data):
+    #     if not correct_pesel_birthdate(data['pesel'], data['birthdate']):
+    #         raise serializers.ValidationError("PESEL nie zgadza się z datą urodzenia.")
+    #     return data
 
     def validate_first_name(self, value):
         if any(char.isdigit() for char in value):
