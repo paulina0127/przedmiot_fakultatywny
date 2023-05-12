@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { BsPerson } from 'react-icons/bs';
 import { CiMedicalCross } from 'react-icons/ci';
 import { IoSchoolOutline } from 'react-icons/io5';
-import { DoctorInfo, Loader, Message } from '../../components';
+import { DoctorInfo } from '../../components';
 import styles from './HomeScreen.module.css';
 import { doctors } from './doctors';
 
@@ -10,7 +10,7 @@ const HomeScreen = () => {
   return (
     <>
       <section
-        className={classNames('section', styles.sectionGradient)}
+        className={classNames('hs-section', styles.sectionGradient)}
         id='about'
       >
         <div className='container'>
@@ -45,12 +45,16 @@ const HomeScreen = () => {
               </div>
             </article>
             <article className={classNames('col', styles.bgImg)}>
-              <img src={require('../../images/hs-img.png')} alt='' />
+              <img
+                src={require('../../images/hs-img.png')}
+                className={styles.hsImg}
+                alt=''
+              />
             </article>
           </div>
         </div>
       </section>
-      <section className='section bg-light-blue' id='internists'>
+      <section className='hs-section bg-light-blue' id='internists'>
         <div className='container'>
           <div className='row'>
             <h1 className={styles.sectionH1}>Lekarze interniści</h1>
@@ -77,7 +81,7 @@ const HomeScreen = () => {
           </div>
         </div>
       </section>
-      <section className='section bg-white' id='specialists'>
+      <section className='hs-section bg-white' id='specialists'>
         <div className='container gy-lg-5'>
           <div className='row'>
             <h1 className={styles.sectionH1}>Lekarze specjaliści</h1>

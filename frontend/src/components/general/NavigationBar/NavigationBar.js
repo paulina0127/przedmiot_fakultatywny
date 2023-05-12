@@ -47,6 +47,10 @@ const NavigationBar = ({ logout, user }) => {
         }
         id='basic-nav-dropdown'
       >
+        <NavDropdown.Item as={Link} to='/panel'>
+          Panel
+        </NavDropdown.Item>
+        <NavDropdown.Divider />
         <NavDropdown.Item as={Link} to='/panel/profil'>
           Profil
         </NavDropdown.Item>

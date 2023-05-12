@@ -1,9 +1,15 @@
 .container {
   display: grid;
+  grid-template-columns: repeat(3, auto);
   place-items: center;
   gap: 8px;
+  text-align: center;
 }
 
+.imgContainer {
+  height: 100px;
+  width: 100px;
+}
 .img {
   border: 2px solid var(--clr-dark-blue);
   object-fit: cover;
@@ -15,4 +21,18 @@
 
 .h4 {
   color: var(--clr-blue);
+}
+
+/* ----------- MEDIA QUERIES ----------- */
+@media screen and (min-width: 768px) {
+  .container {
+    grid-template-columns: auto;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .imgContainer {
+    height: 125px;
+    width: 125px;
+  }
 }

@@ -20,7 +20,7 @@ const ChooseDoctor = () => {
 
   return (
     <div className='main-container-bg'>
-      <h2 className={panel.h2}>Wybierz lekarza</h2>
+      <h2 className={panel.h2}>Umów się na wizytę</h2>
       {loading ? (
         <Loader />
       ) : error ? (
@@ -32,16 +32,18 @@ const ChooseDoctor = () => {
           <div className='twoColumnGrid'>
             {doctors.slice(0, 2).map((doctor) => (
               <div className='gridCenter gap-2'>
-                <DoctorInfo key={doctor.id} doctor={doctor} />
-                <button className='btnCircle btnPrimary'>Umów się</button>
+                <DoctorInfo key={doctor.id} doctor={doctor}>
+                  <button className='btnRound btnPrimary'>Wybierz</button>
+                </DoctorInfo>
               </div>
             ))}
           </div>
           <div className='threeColumnGrid'>
             {doctors.slice(2, 5).map((doctor) => (
               <div className='gridCenter gap-2'>
-                <DoctorInfo key={doctor.id} doctor={doctor} />
-                <button className='btnCircle btnPrimary'>Umów się</button>
+                <DoctorInfo key={doctor.id} doctor={doctor}>
+                  <button className='btnRound btnPrimary'>Wybierz</button>
+                </DoctorInfo>
               </div>
             ))}
           </div>

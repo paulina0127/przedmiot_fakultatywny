@@ -1,13 +1,51 @@
 .form {
   display: grid;
   place-items: center;
+  gap: 16px;
 }
 
 .formGroup {
   padding: 8px;
 }
 
+.avatarIcon {
+  font-size: 16px;
+}
+
+.medicalGrid {
+  display: grid;
+}
+
 /* ----------- MEDIA QUERIES ----------- */
+@media screen and (min-width: 768px) {
+  .form {
+    grid-template-areas:
+      'img img'
+      'personal personal'
+      'address medical';
+    align-items: center;
+    justify-items: center;
+    gap: 16px;
+  }
+
+  .imgArea {
+    grid-area: img;
+    align-self: start;
+  }
+
+  .personalArea {
+    grid-area: personal;
+  }
+
+  .addressArea {
+    grid-area: address;
+  }
+
+  .medicalArea {
+    grid-area: medical;
+  }
+}
+
 @media screen and (min-width: 992px) {
   .form {
     grid-template-areas:
@@ -40,5 +78,13 @@
   .addressArea,
   .medicalArea {
     width: -webkit-fill-available;
+  }
+
+  .avatarIcon {
+    font-size: 40px;
+  }
+
+  .medicalGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

@@ -96,24 +96,19 @@ body {
 }
 
 /* Home page */
-.section {
+.hs-section {
   padding: 64px 0;
 }
 
 /* Auth pages */
-.no-footer-section {
+.auth-section {
   padding: 64px 0;
   height: calc(100vh - 90px);
 }
 
-.highlight {
-  color: var(--clr-dark-blue);
-  font-weight: bold;
-}
-
 /* Gradient bg for user panel */
-.section-bg {
-  padding: 48px;
+.up-section {
+  padding: 8px;
   background: var(--clr-light-blue)
     linear-gradient(
       42deg,
@@ -126,7 +121,7 @@ body {
 
 /* White bg for user panel */
 .container-bg {
-  padding: 48px;
+  padding: 16px 8px;
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.85);
@@ -143,6 +138,11 @@ body {
   border: 1px solid var(--clr-dark-blue);
 }
 
+.highlight {
+  color: var(--clr-dark-blue);
+  font-weight: bold;
+}
+
 /* ----------- LAYOUT ----------- */
 .twoColumnGrid {
   display: grid;
@@ -154,7 +154,6 @@ body {
 
 .gridCenter {
   display: grid;
-  place-items: center;
 }
 
 /* ----------- BACKGROUND ----------- */
@@ -179,20 +178,18 @@ body {
 
 .btnSquare {
   padding: 10px 16px;
-  min-width: 100px;
   width: fit-content;
-  font: bold 1rem var(--ff-primary);
+  font: bold 14px var(--ff-primary);
   border: 0;
   border-radius: var(--radius-secondary);
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   transition: var(--transition);
 }
 
-.btnCircle {
+.btnRound {
   padding: 10px 16px;
-  min-width: 100px;
   width: fit-content;
-  font: bold 1rem var(--ff-primary);
+  font: bold 14px var(--ff-primary);
   border: 0;
   border-radius: 50rem;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
@@ -226,7 +223,7 @@ body {
   background: var(--clr-white-hover);
 }
 
-.arrayBtn {
+.btnCircle {
   display: grid;
   justify-content: center;
   align-items: center;
@@ -247,17 +244,32 @@ body {
 .form-select:focus {
   background: none;
 }
+
 /* ----------- MEDIA QUERIES ----------- */
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 768px) {
   .twoColumnGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0;
   }
 
   .threeColumnGrid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .gridCenter {
+    place-items: center;
+  }
+
+  .up-section {
+    padding: 48px;
+  }
+
+  .container-bg {
+    padding: 48px;
   }
 }
-@media screen and (min-width: 768px) {
+
+@media screen and (min-width: 992px) {
   h1 {
     font-size: 2.5rem;
   }
@@ -283,5 +295,11 @@ body {
   h3,
   h4 {
     line-height: 1;
+  }
+
+  .btnSquare,
+  .btnRound {
+    min-width: 100px;
+    font-size: 16px;
   }
 }

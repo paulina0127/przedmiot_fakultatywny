@@ -5,7 +5,6 @@ import {
   HomeScreen,
   LoginScreen,
   PanelMainScreen,
-  // PatientFormScreen,
   ResetPassword,
   ResetPasswordConfirm,
   SignUpScreen,
@@ -21,10 +20,6 @@ const App = () => {
             <Route path='/' element={<HomeScreen />} exact />
             <Route path='/logowanie' element={<LoginScreen />} />
             <Route path='/rejestracja' element={<SignUpScreen />} />
-            {/* <Route
-              path='/rejestracja-pacjenta'
-              element={<PatientFormScreen />}
-            /> */}
             <Route path='/przypominanie-hasła' element={<ResetPassword />} />
             <Route
               path='/resetowanie-hasła/:uid/:token'

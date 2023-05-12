@@ -27,7 +27,7 @@ export const PatientProfileCreate = () => {
     <PatientForm
       initialValues={initialValues}
       validate={validatePatientProfile}
-      label='Zarejestruj'
+      label='Zapisz'
     />
   );
 };

@@ -12,16 +12,19 @@
   place-items: end;
 }
 
+.hsImg {
+  height: fit-content !important;
+  object-fit: contain;
+}
+
 .sectionH1 {
   text-align: center;
 }
 
 .stats {
-  margin: 32px auto 0 auto;
-  width: 85%;
+  margin-top: 32px;
   display: grid;
   place-items: center;
-  grid-template-columns: repeat(3, auto);
 }
 
 .stat {
@@ -50,6 +53,13 @@
 }
 
 /* ----------- MEDIA QUERIES ----------- */
+@media screen and (min-width: 768px) {
+  .stats {
+    margin: 32px auto 0 auto;
+    grid-template-columns: repeat(3, auto);
+  }
+}
+
 @media screen and (min-width: 992px) {
   .sectionGradient {
     padding-bottom: 0;
@@ -64,5 +74,6 @@
 
   .stats {
     margin: 64px auto;
+    width: 85%;
   }
 }

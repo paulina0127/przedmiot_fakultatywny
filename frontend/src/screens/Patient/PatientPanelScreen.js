@@ -2,7 +2,7 @@ import { ChooseDoctor } from '../../components';
 
 const PatientFormScreen = () => {
   return (
-    <section className='section-bg'>
+    <section className='up-section'>
       <ChooseDoctor />
     </section>
   );

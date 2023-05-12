@@ -8,7 +8,7 @@ const PatientProfileScreen = () => {
   const auth = useSelector((state) => state.auth);
   const { user } = auth;
   return (
-    <section className='section-bg'>
+    <section className='up-section'>
       {user?.profile === null ? (
         <PatientProfileCreate userId={user.id} />
       ) : (

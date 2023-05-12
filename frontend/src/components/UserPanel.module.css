@@ -15,8 +15,8 @@
 /* ----------- AVATAR ----------- */
 .avatarContainer {
   position: relative;
-  height: 300px;
-  width: 300px;
+  height: 100px;
+  width: 100px;
   border-radius: 50%;
 }
 
@@ -29,4 +29,19 @@
   border: 0;
   border-radius: 25%;
   cursor: pointer;
+}
+
+/* ----------- MEDIA QUERIES ----------- */
+@media screen and (min-width: 768px) {
+  .avatarContainer {
+    height: 200px;
+    width: 200px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .avatarContainer {
+    height: 300px;
+    width: 300px;
+  }
 }

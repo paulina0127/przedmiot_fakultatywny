@@ -4,7 +4,7 @@
 *.pyc
 __pycache__/
 local_settings.py
-**/migrations
+# **/migrations
 *.DS_Store
 **/__pycache__
 **/.DS_Store

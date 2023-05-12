@@ -80,7 +80,7 @@ const PatientForm = ({
                         background: 'transparent',
                       }}
                     /> */}
-                    <FaPlus size='2.5em' color='#fff' />
+                    <FaPlus color='#fff' className={styles.avatarIcon} />
                   </div>
                 </div>
               </div>
@@ -140,7 +140,7 @@ const PatientForm = ({
 
               <div className={styles.medicalArea}>
                 <h3 className={panel.h3}>Informacje medyczne</h3>
-                <div className='threeColumnGrid'>
+                <div className={styles.medicalGrid}>
                   <div className={styles.formGroup}>
                     <FieldArray name='medicine'>
                       {({ push, remove, form }) => {
@@ -152,7 +152,7 @@ const PatientForm = ({
                               <h4 className={panel.h4}>Przyjmowane leki</h4>
                               <button
                                 type='button'
-                                className='btn btn-success arrayBtn'
+                                className='btn btn-success btnCircle'
                                 onClick={() => push('')}
                               >
                                 <MdOutlineAdd />
@@ -170,7 +170,7 @@ const PatientForm = ({
                                 />
                                 <button
                                   type='button'
-                                  className='btn btn-danger arrayBtn'
+                                  className='btn btn-danger btnCircle'
                                   onClick={() => remove(index)}
                                 >
                                   <HiOutlineTrash />
@@ -194,7 +194,7 @@ const PatientForm = ({
                               <h4 className={panel.h4}>Alergie</h4>
                               <button
                                 type='button'
-                                className='btn btn-success arrayBtn'
+                                className='btn btn-success btnCircle'
                                 onClick={() => push('')}
                               >
                                 <MdOutlineAdd />
@@ -212,7 +212,7 @@ const PatientForm = ({
                                 />
                                 <button
                                   type='button'
-                                  className='btn btn-danger arrayBtn'
+                                  className='btn btn-danger btnCircle'
                                   onClick={() => remove(index)}
                                 >
                                   <HiOutlineTrash />
@@ -236,7 +236,7 @@ const PatientForm = ({
                               <h4 className={panel.h4}>Choroby</h4>
                               <button
                                 type='button'
-                                className='btn btn-success arrayBtn'
+                                className='btn btn-success btnCircle'
                                 onClick={() => push('')}
                               >
                                 <MdOutlineAdd />
@@ -254,7 +254,7 @@ const PatientForm = ({
                                 />
                                 <button
                                   type='button'
-                                  className='btn btn-danger arrayBtn'
+                                  className='btn btn-danger btnCircle'
                                   onClick={() => remove(index)}
                                 >
                                   <HiOutlineTrash />
