@@ -8,14 +8,14 @@ from .utils.managers import UserManager
 
 class User(AbstractUser):
     username = None
-    email = models.EmailField(unique=True)
+    email = models.EmailField(verbose_name=_("E-mail (login)"), unique=True)
     type = models.CharField(
-        verbose_name=_("Rodzaj"), max_length=50, choices=UserType.choices
+        verbose_name=_("Rodzaj"), max_length=50, choices=UserType.choices, default=UserType.PATIENT
     )
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["type"]
+    REQUIRED_FIELDS = []
 
     class Meta:
         db_table = "auth_user"

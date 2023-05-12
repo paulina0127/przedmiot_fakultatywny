@@ -57,10 +57,8 @@ class PrescriptionBaseAccess(BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'POST':
-            user = request.user
-            if user.type in [UserType.ADMIN, UserType.DOCTOR]:
-                return True
-            return False
+            if request.user not in [UserType.ADMIN, UserType.DOCTOR]:
+                return False
         return True
 
     def has_object_permission(self, request, view, obj):
@@ -91,6 +89,6 @@ class PrescriptionUpdateDestroy(BasePermission):
         return False
 
 
-class IsReceptionist(BasePermission):
+class IsReceptionistOrAdmin(BasePermission):
     def has_permission(self, request, view):
-        return request.user.type == UserType.RECEPTIONIST
+        return request.user.type in [UserType.RECEPTIONIST, UserType.ADMIN]

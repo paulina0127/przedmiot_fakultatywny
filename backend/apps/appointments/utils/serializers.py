@@ -17,8 +17,12 @@ class AppointmentSerializer(serializers.ModelSerializer):
     def is_slot_available(self):
         # Get the request object from the context
         request = self.context.get('request')
-        doctor = request.data.get('doctor', self.instance.doctor)
-        date = request.data.get('date', self.instance.date)
+        if self.instance:
+            doctor = request.data.get('doctor', self.instance.doctor)
+            date = request.data.get('date', self.instance.date)
+        else:
+            doctor = request.data.get('doctor')
+            date = request.data.get('date')
         # Get weekday name
         date = datetime.strptime(date, "%Y-%m-%d").date()
         weekday = date.strftime("%A").lower()
@@ -53,7 +57,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         if request.method == 'POST' and request.data.get('time', '') in available_slots:
             return True
         if request.method in ['PUT', 'PATCH']:
-            if request.data.get('time', self.instance.time) == self.instance.time \
+            if self.instance and request.data.get('time', self.instance.time) == self.instance.time \
                     or request.data.get('time', '') in available_slots:
                 return True
         return False

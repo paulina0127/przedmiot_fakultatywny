@@ -185,9 +185,8 @@ DJOSER = {
     "ACTIVATION_URL": "aktywacja-konta/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {
-        "user_create": "apps.users.utils.serializers.UserCreateSerializer",
+        "user_create": "djoser.serializers.UserCreatePasswordRetypeSerializer",
         "user": "apps.users.utils.serializers.UserSerializer",
         "current_user": "apps.users.utils.serializers.UserSerializer",
-        "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
 }

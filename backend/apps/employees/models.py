@@ -82,27 +82,27 @@ class Schedule(models.Model):
     monday = ChoiceArrayField(
         verbose_name=_("Poniedziałek"),
         base_field=models.CharField(choices=Slot.choices, max_length=5),
-        blank=True
+        default=list
     )
     tuesday = ChoiceArrayField(
         verbose_name=_("Wtorek"),
         base_field=models.CharField(choices=Slot.choices, max_length=5),
-        blank=True
+        default=list
     )
     wednesday = ChoiceArrayField(
         verbose_name=_("Środa"),
         base_field=models.CharField(choices=Slot.choices, max_length=5),
-        blank=True
+        default=list
     )
     thursday = ChoiceArrayField(
         verbose_name=_("Czwartek"),
         base_field=models.CharField(choices=Slot.choices, max_length=5),
-        blank=True
+        default=list
     )
     friday = ChoiceArrayField(
         verbose_name=_("Piątek"),
         base_field=models.CharField(choices=Slot.choices, max_length=5),
-        blank=True
+        default=list
     )
 
     class Meta:

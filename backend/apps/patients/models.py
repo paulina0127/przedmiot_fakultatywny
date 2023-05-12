@@ -12,19 +12,19 @@ class Patient(models.Model):
     last_name = models.CharField(verbose_name=_("Nazwisko"), max_length=100)
     pesel = models.CharField(verbose_name=_("PESEL"), max_length=11, unique=True)
     birthdate = models.DateField(verbose_name=_("Data urodzenia"))
-    email = models.EmailField(verbose_name=_("Adres e-mail"), blank=True)
+    email = models.EmailField(verbose_name=_("Kontaktowy e-mail"), blank=True)
     phone_number = PhoneNumberField(verbose_name=_("Numer telefonu"), blank=True)
     street = models.CharField(verbose_name=_("Ulica"), max_length=100)
     postal_code = models.CharField(verbose_name=_("Kod pocztowy"), max_length=6)
     city = models.CharField(verbose_name=_("Miejscowość"), max_length=100)
     medicine = ArrayField(
-        models.TextField(), verbose_name=_("Przyjmowane leki"), blank=True
+        models.TextField(blank=True), verbose_name=_("Przyjmowane leki"), default=list
     )
     allergies = ArrayField(
-        models.TextField(), verbose_name=_("Alergie"), blank=True
+        models.TextField(blank=True), verbose_name=_("Alergie"), default=list
     )
     diseases = ArrayField(
-        models.TextField(), verbose_name=_("Choroby"), blank=True
+        models.TextField(blank=True), verbose_name=_("Choroby"), default=list
     )
     user = models.OneToOneField(
         verbose_name=_("Użytkownik"),
@@ -34,6 +34,7 @@ class Patient(models.Model):
         blank=True,
         null=True
     )
+    link_key = models.CharField(verbose_name=_("Klucz łączenia profilu"), max_length=100, blank=True)
     image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, upload_to='patients/')
 
     class Meta:

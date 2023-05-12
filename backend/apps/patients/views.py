@@ -1,57 +1,79 @@
+import secrets
+
 from apps.users.utils.choices import UserType
 from django.utils import timezone
-from rest_framework import generics
-from rest_framework.permissions import DjangoModelPermissions
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Patient
-from .utils.serializers import PatientSerializer
+from .models import Patient, User
+from .utils.permissions import PatientBaseAccess, PatientReadUpdate, IsPatient
+from .utils.serializers import PatientSerializer, PatientUserCreateSerializer, CreateUserLinkPatientSerializer
 
 
-# Display list of all patients
+# Patient registration (for patients)
+class CreateUserPatient(generics.CreateAPIView):
+    serializer_class = PatientUserCreateSerializer
+    name = "new-patient-user"
+    permission_classes = [~IsAuthenticated]
+
+
+# User creation and patient link (for patients)
+class CreateUserLinkPatient(generics.CreateAPIView):
+    serializer_class = CreateUserLinkPatientSerializer
+    name = "new-user-link-patient"
+    permission_classes = [~IsAuthenticated]
+
+
+# Display all, create patients (for staff)
 class PatientList(generics.ListCreateAPIView):
     serializer_class = PatientSerializer
     name = "patients"
     search_fields = ["first_name", "last_name", "pesel"]
     ordering_fields = ["id", "birthdate"]
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [IsAuthenticated, ~IsPatient, PatientBaseAccess]
+
+    def perform_create(self, serializer):
+        # Set link key
+        key = secrets.token_urlsafe(10)
+        while Patient.objects.filter(link_key=key).exists():
+            key = secrets.token_urlsafe(10)
+        serializer.save(link_key=key)
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated:
-            # Return patient's profile
-            if user.type == UserType.PATIENT:
-                return Patient.objects.filter(user=user)
-            # Return doctor's patients
-            elif user.type == UserType.DOCTOR:
-                return Patient.objects.filter(
-                    appointments__doctor=user.doctor
-                ).distinct()
-            # Return all patients if the user is admin or receptionist
-            else:
-                return Patient.objects.all()
+        # Return patient's profile
+        if user.type == UserType.PATIENT:
+            return Patient.objects.filter(user=user)
+        # Return doctor's patients
+        elif user.type == UserType.DOCTOR:
+            return Patient.objects.filter(
+                appointments__doctor=user.doctor
+            ).distinct()
+        # Return all patients if the user is admin or receptionist
+        else:
+            return Patient.objects.all()
 
 
 # Display single patient
 class PatientDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PatientSerializer
     name = "patient"
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [IsAuthenticated, PatientBaseAccess, PatientReadUpdate]
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_authenticated:
-            # Return patient's profile
-            if user.type == UserType.PATIENT:
-                return Patient.objects.filter(user=user)
-            # Return doctor's patients
-            elif user.type == UserType.DOCTOR:
-                return Patient.objects.filter(
-                    appointments__doctor=user.doctor
-                ).distinct()
-            # Return all patients if the user is admin or receptionist
-            else:
-                return Patient.objects.all()
+        # Return patient's profile
+        if user.type == UserType.PATIENT:
+            return Patient.objects.filter(user=user)
+        # Return doctor's patients
+        elif user.type == UserType.DOCTOR:
+            return Patient.objects.filter(
+                appointments__doctor=user.doctor
+            ).distinct()
+        # Return all patients if the user is admin or receptionist
+        else:
+            return Patient.objects.all()
 
 
 # Patient statistics
@@ -59,6 +81,7 @@ class PatientStatisticsList(generics.ListAPIView):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
     name = "patient-stats"
+    permission_classes = [IsAuthenticated, ~IsPatient]
 
     def get_queryset(self):
         today = timezone.now().date()

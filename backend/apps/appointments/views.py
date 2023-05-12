@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from apps.employees.models import Schedule
@@ -15,13 +15,14 @@ from .models import Appointment, Prescription
 from .utils.choices import AppointmentStatus
 from .utils.permissions import (AppointmentBaseAccess, AppointmentUpdate,
                                 PrescriptionBaseAccess, PrescriptionUpdateDestroy,
-                                IsReceptionist)
+                                IsReceptionistOrAdmin)
 from .utils.serializers import (AppointmentSerializer,
                                 PrescriptionSerializer)
 
 
 # Display list, create appointments
 class AppointmentList(generics.ListCreateAPIView):
+    serializer_class = AppointmentSerializer
     name = "appointments"
     filterset_fields = ["status", "doctor", "patient"]
     search_fields = ["patient__first_name", "patient__last_name", "patient__pesel"]
@@ -126,7 +127,7 @@ class AppointmentStatisticsList(generics.ListAPIView):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
     name = "appointment-stats"
-    permission_classes = [IsAuthenticated, IsReceptionist]
+    permission_classes = [IsAuthenticated, IsReceptionistOrAdmin]
 
     def get_queryset(self):
         today = timezone.now().date()
@@ -174,6 +175,7 @@ class AvailableSlotsList(generics.ListAPIView):
     queryset = Appointment.objects.all()
     serializer_class = AppointmentSerializer
     name = "available-slots"
+    permission_classes = [AllowAny]
 
     def list(self, request, *args, **kwargs):
         # Query params

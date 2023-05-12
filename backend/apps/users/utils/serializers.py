@@ -1,18 +1,12 @@
 from apps.employees.models import Doctor, Receptionist
 from apps.patients.models import Patient
 from django.contrib.auth import get_user_model
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
 from .choices import UserType
 
 User = get_user_model()
-
-
-class UserCreateSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        model = User
-        fields = ["id", "email", "type", "password"]
 
 
 class DoctorSerializer(serializers.ModelSerializer):

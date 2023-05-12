@@ -20,10 +20,10 @@ class Appointment(models.Model):
         verbose_name=_("Godzina"), choices=Slot.choices, max_length=10
     )
     symptoms = ArrayField(
-        models.TextField(), verbose_name=_("Objawy"), blank=True
+        models.TextField(blank=True), verbose_name=_("Objawy"), default=list
     )
     medicine = ArrayField(
-        models.TextField(), verbose_name=_("Stosowane leki"), blank=True
+        models.TextField(blank=True), verbose_name=_("Stosowane leki"), default=list
     )
     recommendations = models.TextField(verbose_name=_("Zalecenia"), blank=True)
     doctor = models.ForeignKey(
@@ -55,7 +55,7 @@ class Appointment(models.Model):
 
 
 class Prescription(models.Model):
-    access_code = models.CharField(verbose_name=_("Kod dostępu"), max_length=4)
+    access_code = models.CharField(verbose_name=_("Kod dostępu"), max_length=8)
     created_at = models.DateTimeField(verbose_name=_("Wystawiono"), auto_now_add=True)
     medicine = ArrayField(models.CharField(max_length=255), verbose_name=_("Leki"))
     appointment = models.ForeignKey(
