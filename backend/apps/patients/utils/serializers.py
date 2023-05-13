@@ -1,10 +1,7 @@
-from djoser.serializers import UserCreatePasswordRetypeSerializer, PasswordRetypeSerializer
 from rest_framework import serializers
 
 from ..models import Patient
 from ..utils.validators import correct_pesel_birthdate, correct_pesel
-from ...users.models import User
-from ...users.utils.choices import UserType
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -15,10 +12,16 @@ class PatientSerializer(serializers.ModelSerializer):
         model = Patient
         fields = "__all__"
 
-    # def validate(self, data):
-    #     if not correct_pesel_birthdate(data['pesel'], data['birthdate']):
-    #         raise serializers.ValidationError("PESEL nie zgadza się z datą urodzenia.")
-    #     return data
+    def validate(self, data):
+        if self.instance:
+            pesel = data.get('pesel', self.instance.pesel)
+            birthdate = data.get('birthdate', self.instance.birthdate)
+        else:
+            pesel = data.get('pesel')
+            birthdate = data.get('birthdate')
+        if not correct_pesel_birthdate(pesel, birthdate):
+            raise serializers.ValidationError("PESEL nie zgadza się z datą urodzenia.")
+        return data
 
     def validate_first_name(self, value):
         if any(char.isdigit() for char in value):
@@ -48,56 +51,12 @@ class PatientSerializer(serializers.ModelSerializer):
         return value
 
 
-class PatientUserCreateSerializer(serializers.ModelSerializer):
-    # Serializer for creating new user and patient profile
-    user = UserCreatePasswordRetypeSerializer(required=True)
-
-    class Meta:
-        model = Patient
-        exclude = ('link_key',)
-
-    def create(self, validated_data):
-        # Extract user data from validated data
-        user_data = validated_data.pop('user')
-        user_data['type'] = UserType.PATIENT
-
-        # Create patient
-        patient = Patient.objects.create(**validated_data)
-        # Create user
-        user = User.objects.create_user(**user_data)
-        # Assign new user to patient and save
-        patient.user = user
-        patient.save()
-        return patient
-
-
-class CreateUserLinkPatientSerializer(UserCreatePasswordRetypeSerializer, PatientSerializer):
+class UserLinkPatientSerializer(serializers.Serializer):
     pesel = serializers.CharField(max_length=11, write_only=True)
     link_key = serializers.CharField(max_length=100, write_only=True)
+    user_id = serializers.IntegerField(write_only=True)
 
-    class Meta:
-        model = User
-        fields = ('id', 'pesel', 'link_key', 'email', 'password')
-
-    def validate(self, data):
-        # Remove fields from request data and use for filtering
-        try:
-            patient = Patient.objects.get(user=None, pesel=data.pop('pesel'), link_key=data.pop('link_key'))
-        except Patient.DoesNotExist:
-            raise serializers.ValidationError("Podano błędne dane lub użytkownik "
-                                              "jest już przypisany do pacjenta.")
-        super().validate(data)
-        data['patient'] = patient  # add [temporary] patient field in request data
-        return data
-
-    def create(self, validated_data):
-        patient = validated_data.pop('patient')  # remove patient field from request data
-        validated_data['type'] = UserType.PATIENT
-        user = super().create(validated_data)
-
-        # Update patient
-        patient.user = user
-        patient.link_key = ''  # reset one-time code
-        patient.save()
-
-        return user
+    def validate_pesel(self, value):
+        if not correct_pesel(value):
+            raise serializers.ValidationError("Niepoprawny PESEL.")
+        return value

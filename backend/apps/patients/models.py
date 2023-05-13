@@ -29,7 +29,7 @@ class Patient(models.Model):
     user = models.OneToOneField(
         verbose_name=_("Użytkownik"),
         to=User,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="patient",
         blank=True,
         null=True

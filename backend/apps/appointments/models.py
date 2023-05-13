@@ -55,7 +55,7 @@ class Appointment(models.Model):
 
 
 class Prescription(models.Model):
-    access_code = models.CharField(verbose_name=_("Kod dostępu"), max_length=8)
+    access_code = models.CharField(verbose_name=_("Kod dostępu"), max_length=4)
     created_at = models.DateTimeField(verbose_name=_("Wystawiono"), auto_now_add=True)
     medicine = ArrayField(models.CharField(max_length=255), verbose_name=_("Leki"))
     appointment = models.ForeignKey(

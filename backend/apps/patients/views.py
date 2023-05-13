@@ -1,28 +1,53 @@
 import secrets
 
-from apps.users.utils.choices import UserType
+from django.db import transaction
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
-from .models import Patient, User
+from .models import Patient
 from .utils.permissions import PatientBaseAccess, PatientReadUpdate, IsPatient
-from .utils.serializers import PatientSerializer, PatientUserCreateSerializer, CreateUserLinkPatientSerializer
+from .utils.serializers import PatientSerializer, UserLinkPatientSerializer
+from apps.users.utils.choices import UserType
 
-
-# Patient registration (for patients)
-class CreateUserPatient(generics.CreateAPIView):
-    serializer_class = PatientUserCreateSerializer
-    name = "new-patient-user"
-    permission_classes = [~IsAuthenticated]
+User = get_user_model()
 
 
 # User creation and patient link (for patients)
-class CreateUserLinkPatient(generics.CreateAPIView):
-    serializer_class = CreateUserLinkPatientSerializer
-    name = "new-user-link-patient"
+class UserLinkPatient(generics.UpdateAPIView):
+    serializer_class = UserLinkPatientSerializer
+    name = "user-link-patient"
     permission_classes = [~IsAuthenticated]
+
+    def get_queryset(self):
+        return Patient.objects.filter(user=None, link_key__isnull=False)
+
+    def perform_update(self, serializer):
+        pesel = serializer.validated_data['pesel']
+        link_key = serializer.validated_data['link_key']
+        user_id = serializer.validated_data['user_id']
+        try:
+            # user = User.objects.get(id=user_id, type=UserType.NEW)
+            user = User.objects.get(id=user_id, patient__isnull=True)
+            patient = Patient.objects.get(user=None, pesel=pesel, link_key=link_key)
+        except (User.DoesNotExist, Patient.DoesNotExist):
+            raise ValidationError("Podano błędne dane.")
+        # Set user type and assign user to patient in one transaction
+        with transaction.atomic():
+            user.type = UserType.PATIENT
+            user.save()
+            patient.user = user
+            patient.link_key = ''  # reset link key
+            patient.save()
+
+    def put(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response({'detail': 'Połączono pacjenta do konta.'}, status=status.HTTP_200_OK)
 
 
 # Display all, create patients (for staff)
@@ -31,32 +56,37 @@ class PatientList(generics.ListCreateAPIView):
     name = "patients"
     search_fields = ["first_name", "last_name", "pesel"]
     ordering_fields = ["id", "birthdate"]
-    permission_classes = [IsAuthenticated, ~IsPatient, PatientBaseAccess]
+    permission_classes = [~IsPatient, PatientBaseAccess]
 
     def perform_create(self, serializer):
-        # Set link key
-        key = secrets.token_urlsafe(10)
-        while Patient.objects.filter(link_key=key).exists():
+        # Set link key if patient is added by receptionist
+        if self.request.user.is_authenticated and \
+                self.request.user.type in [UserType.RECEPTIONIST, UserType.ADMIN]:
             key = secrets.token_urlsafe(10)
-        serializer.save(link_key=key)
+            while Patient.objects.filter(link_key=key).exists():
+                key = secrets.token_urlsafe(10)
+            serializer.save(link_key=key)
+        else:
+            serializer.save()
 
     def get_queryset(self):
         user = self.request.user
-        # Return patient's profile
-        if user.type == UserType.PATIENT:
-            return Patient.objects.filter(user=user)
-        # Return doctor's patients
-        elif user.type == UserType.DOCTOR:
-            return Patient.objects.filter(
-                appointments__doctor=user.doctor
-            ).distinct()
-        # Return all patients if the user is admin or receptionist
-        else:
-            return Patient.objects.all()
+        # Return patient's profiles
+        if user.is_authenticated:
+            if user.type == UserType.PATIENT:
+                return Patient.objects.filter(user=user)
+            # Return doctor's patients
+            elif user.type == UserType.DOCTOR:
+                return Patient.objects.filter(
+                    appointments__doctor=user.doctor
+                ).distinct()
+            # Return all patients if the user is admin or receptionist
+            elif user.type in [UserType.ADMIN, UserType.RECEPTIONIST]:
+                return Patient.objects.all()
 
 
 # Display single patient
-class PatientDetail(generics.RetrieveUpdateDestroyAPIView):
+class PatientDetail(generics.RetrieveUpdateAPIView):
     serializer_class = PatientSerializer
     name = "patient"
     permission_classes = [IsAuthenticated, PatientBaseAccess, PatientReadUpdate]
