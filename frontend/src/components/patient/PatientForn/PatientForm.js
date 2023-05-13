@@ -4,13 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   createUserProfile,
   updateUserProfile,
+  clearUserProfileFeedback,
 } from '../../../actions/userActions';
-import { TextField, Loader, Message } from '../../../components';
+import { TextField, FileField, Loader, Message } from '../../../components';
 import avatar from '../../../images/avatar.png';
 import panel from '../../UserPanel.module.css';
 import styles from './PatientForm.module.css';
 import { HiOutlineTrash } from 'react-icons/hi';
 import { MdOutlineAdd } from 'react-icons/md';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import classNames from 'classnames';
 
 const PatientForm = ({
   initialValues,
@@ -18,14 +22,21 @@ const PatientForm = ({
   label,
   profileExist,
   userProfile,
+  userId,
+  goBack,
 }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  const createProfile = useSelector((state) => state.userCreateProfile);
+  const { errorCreate, successCreate, loadingCreate } = createProfile;
 
   const updateProfile = useSelector((state) => state.userUpdateProfile);
   const { error, success, loading } = updateProfile;
 
-  const createProfile = useSelector((state) => state.userCreateProfile);
-  const { errorCreate, successCreate, loadingCreate } = createProfile;
+  const handleClick = () => {
+    goBack();
+  };
 
   return (
     <div className='container container-bg'>
@@ -39,12 +50,30 @@ const PatientForm = ({
       )}
       {error && <Message variant='danger'>{error}</Message>}
       {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
-      <h2 className={panel.h2}>Karta pacjenta</h2>
+      {location.pathname === '/rejestracja' ? (
+        <div className='d-grid' style={{ gridTemplateColumns: '1fr 1fr' }}>
+          <button
+            className='btnSquare btnPrimary align-self-start'
+            onClick={handleClick}
+          >
+            Wstecz
+          </button>
+          <h2
+            className={classNames(
+              panel.h2,
+              'text-align-center align-self-start'
+            )}
+          >
+            Karta pacjenta
+          </h2>
+        </div>
+      ) : (
+        <h2 className={panel.h2}>Karta pacjenta</h2>
+      )}
       <Formik
         initialValues={initialValues}
         validationSchema={validate}
-        onSubmit={(e, values) => {
-          e.preventDefault();
+        onSubmit={(values) => {
           if (profileExist) {
             const updatedValues = {};
             for (const key in values) {
@@ -52,36 +81,38 @@ const PatientForm = ({
                 updatedValues[key] = values[key];
               }
             }
-            dispatch(updateUserProfile(userProfile, updatedValues));
+            console.log('Initial', initialValues);
+            console.log('Update', updatedValues);
+            console.log('Values', values);
+            dispatch(updateUserProfile(userProfile, updatedValues, values));
           } else {
-            dispatch(createUserProfile(values));
+            dispatch(createUserProfile(values, userId));
           }
         }}
       >
         {({ values }) => (
-          <Form id='form'>
+          <Form id='form' encType='multipart/form-data'>
             <div className={styles.form}>
               <div className={styles.imgArea}>
                 <div className={panel.avatarContainer}>
                   <img
-                    src={initialValues?.image ? initialValues?.image : avatar}
-                    alt='Zdjęcie'
+                    id='avatar'
+                    src={
+                      values?.image !== initialValues?.image &&
+                      values?.image instanceof File
+                        ? URL.createObjectURL(values?.image)
+                        : values?.image
+                        ? values?.image
+                        : avatar
+                    }
                     style={{ objectFit: 'cover', borderRadius: '50%' }}
                   />
-                  <div className={panel.avatarBtn}>
-                    {/* <TextField
-                      name='image'
-                      type='image'
-                      alt=''
-                      className={panel.avatarBtn}
-                      style={{
-                        height: '65px',
-                        width: '65px',
-                        background: 'transparent',
-                      }}
-                    /> */}
-                    <FaPlus color='#fff' className={styles.avatarIcon} />
-                  </div>
+                  <label htmlFor='image'>
+                    <div className={panel.avatarBtn}>
+                      <FaPlus color='#fff' className={styles.avatarIcon} />
+                    </div>
+                  </label>
+                  <FileField name='image' type='file' />
                 </div>
               </div>
 
@@ -100,12 +131,20 @@ const PatientForm = ({
 
                   <div className={styles.formGroup}>
                     <h4 className={panel.h4}>PESEL</h4>
-                    <TextField name='pesel' type='text' />
+                    <TextField
+                      name='pesel'
+                      type='text'
+                      disabled={profileExist}
+                    />
                   </div>
 
                   <div className={styles.formGroup}>
                     <h4 className={panel.h4}>Data urodzenia</h4>
-                    <TextField name='birthdate' type='date' />
+                    <TextField
+                      name='birthdate'
+                      type='date'
+                      disabled={profileExist}
+                    />
                   </div>
 
                   <div className={styles.formGroup}>
@@ -145,7 +184,7 @@ const PatientForm = ({
                     <FieldArray name='medicine'>
                       {({ push, remove, form }) => {
                         const { values } = form;
-                        const { medicine } = values;
+                        const { medicine } = values ? values : {};
                         return (
                           <>
                             <div className='d-flex align-items-baseline gap-2'>
@@ -187,7 +226,7 @@ const PatientForm = ({
                     <FieldArray name='allergies'>
                       {({ push, remove, form }) => {
                         const { values } = form;
-                        const { allergies } = values;
+                        const { allergies } = values ? values : {};
                         return (
                           <>
                             <div className='d-flex align-items-baseline gap-2'>
@@ -229,7 +268,7 @@ const PatientForm = ({
                     <FieldArray name='diseases'>
                       {({ push, remove, form }) => {
                         const { values } = form;
-                        const { diseases } = values;
+                        const { diseases } = values ? values : {};
                         return (
                           <>
                             <div className='d-flex align-items-baseline gap-2'>
@@ -272,13 +311,28 @@ const PatientForm = ({
           </Form>
         )}
       </Formik>
-      <button
-        type='submit'
-        className='btnSquare btnPrimaryLight align-self-end mx-4 mt-3'
-        form='form'
-      >
-        {label}
-      </button>
+      {location.pathname === '/rejestracja' ? (
+        <div className='btnGroup align-self-end '>
+          <button className='btnSimple mx-4 mt-3' onClick={handleClick}>
+            Mam już kartę pacjenta
+          </button>
+          <button
+            type='submit'
+            className='btnSquare btnPrimaryLight align-self-end mx-4 mt-3'
+            form='form'
+          >
+            {label}
+          </button>
+        </div>
+      ) : (
+        <button
+          type='submit'
+          className='btnSquare btnPrimary align-self-end mx-4 mt-3'
+          form='form'
+        >
+          {label}
+        </button>
+      )}
     </div>
   );
 };

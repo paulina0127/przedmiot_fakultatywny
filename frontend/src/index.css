@@ -196,6 +196,17 @@ body {
   transition: var(--transition);
 }
 
+.btnSimple {
+  padding: 10px 16px;
+  width: fit-content;
+  font: bold 14px var(--ff-primary);
+  color: var(--clr-dark-blue);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-secondary);
+  transition: var(--transition);
+}
+
 .btnPrimary {
   background: var(--clr-dark-blue);
   color: var(--clr-white);
@@ -298,7 +309,8 @@ body {
   }
 
   .btnSquare,
-  .btnRound {
+  .btnRound,
+  .btnSimple {
     min-width: 100px;
     font-size: 16px;
   }

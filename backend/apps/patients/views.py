@@ -12,6 +12,7 @@ from .models import Patient
 from .utils.permissions import PatientBaseAccess, PatientReadUpdate, IsPatient
 from .utils.serializers import PatientSerializer, UserLinkPatientSerializer
 from apps.users.utils.choices import UserType
+from rest_framework.parsers import MultiPartParser
 
 User = get_user_model()
 
@@ -26,9 +27,9 @@ class UserLinkPatient(generics.UpdateAPIView):
         return Patient.objects.filter(user=None, link_key__isnull=False)
 
     def perform_update(self, serializer):
-        pesel = serializer.validated_data['pesel']
-        link_key = serializer.validated_data['link_key']
-        user_id = serializer.validated_data['user_id']
+        pesel = serializer.validated_data["pesel"]
+        link_key = serializer.validated_data["link_key"]
+        user_id = serializer.validated_data["user_id"]
         try:
             # user = User.objects.get(id=user_id, type=UserType.NEW)
             user = User.objects.get(id=user_id, patient__isnull=True)
@@ -40,14 +41,16 @@ class UserLinkPatient(generics.UpdateAPIView):
             user.type = UserType.PATIENT
             user.save()
             patient.user = user
-            patient.link_key = ''  # reset link key
+            patient.link_key = ""  # reset link key
             patient.save()
 
     def put(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-        return Response({'detail': 'Połączono pacjenta do konta.'}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Połączono pacjenta do konta."}, status=status.HTTP_200_OK
+        )
 
 
 # Display all, create patients (for staff)
@@ -60,8 +63,10 @@ class PatientList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         # Set link key if patient is added by receptionist
-        if self.request.user.is_authenticated and \
-                self.request.user.type in [UserType.RECEPTIONIST, UserType.ADMIN]:
+        if self.request.user.is_authenticated and self.request.user.type in [
+            UserType.RECEPTIONIST,
+            UserType.ADMIN,
+        ]:
             key = secrets.token_urlsafe(10)
             while Patient.objects.filter(link_key=key).exists():
                 key = secrets.token_urlsafe(10)
@@ -84,12 +89,46 @@ class PatientList(generics.ListCreateAPIView):
             elif user.type in [UserType.ADMIN, UserType.RECEPTIONIST]:
                 return Patient.objects.all()
 
+    def post(self, request, *args, **kwargs):
+        medicine_values = []
+        allergies_values = []
+        diseases_values = []
+
+        for key, value in request.data.items():
+            if key.startswith("medicine[") and key.endswith("]"):
+                index = int(key.split("[")[1].split("]")[0])
+                while len(medicine_values) <= index:
+                    medicine_values.append(None)
+                medicine_values[index] = value
+            elif key.startswith("allergies[") and key.endswith("]"):
+                index = int(key.split("[")[1].split("]")[0])
+                while len(allergies_values) <= index:
+                    allergies_values.append(None)
+                allergies_values[index] = value
+            elif key.startswith("diseases[") and key.endswith("]"):
+                index = int(key.split("[")[1].split("]")[0])
+                while len(diseases_values) <= index:
+                    diseases_values.append(None)
+                diseases_values[index] = value
+
+        data = request.data.copy()
+        data["medicine"] = medicine_values
+        data["allergies"] = allergies_values
+        data["diseases"] = diseases_values
+
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 # Display single patient
 class PatientDetail(generics.RetrieveUpdateAPIView):
     serializer_class = PatientSerializer
     name = "patient"
     permission_classes = [IsAuthenticated, PatientBaseAccess, PatientReadUpdate]
+    parser_classes = [MultiPartParser]
 
     def get_queryset(self):
         user = self.request.user
@@ -98,12 +137,44 @@ class PatientDetail(generics.RetrieveUpdateAPIView):
             return Patient.objects.filter(user=user)
         # Return doctor's patients
         elif user.type == UserType.DOCTOR:
-            return Patient.objects.filter(
-                appointments__doctor=user.doctor
-            ).distinct()
+            return Patient.objects.filter(appointments__doctor=user.doctor).distinct()
         # Return all patients if the user is admin or receptionist
         else:
             return Patient.objects.all()
+
+    def patch(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        medicine_values = []
+        allergies_values = []
+        diseases_values = []
+
+        for key, value in request.data.items():
+            if key.startswith("medicine[") and key.endswith("]"):
+                index = int(key.split("[")[1].split("]")[0])
+                while len(medicine_values) <= index:
+                    medicine_values.append(None)
+                medicine_values[index] = value
+            elif key.startswith("allergies[") and key.endswith("]"):
+                index = int(key.split("[")[1].split("]")[0])
+                while len(allergies_values) <= index:
+                    allergies_values.append(None)
+                allergies_values[index] = value
+            elif key.startswith("diseases[") and key.endswith("]"):
+                index = int(key.split("[")[1].split("]")[0])
+                while len(diseases_values) <= index:
+                    diseases_values.append(None)
+                diseases_values[index] = value
+
+        instance.medicine = medicine_values
+        instance.allergies = allergies_values
+        instance.diseases = diseases_values
+
+        print(medicine_values, allergies_values, diseases_values)
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 # Patient statistics

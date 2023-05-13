@@ -16,6 +16,10 @@
   display: grid;
 }
 
+#avatar:nth-of-type(2) {
+  display: none;
+}
+
 /* ----------- MEDIA QUERIES ----------- */
 @media screen and (min-width: 768px) {
   .form {

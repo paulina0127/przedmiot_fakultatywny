@@ -13,7 +13,7 @@ import LayoutAuth from '../../hocs/LayoutAuth';
 import Background from '../../images/register.jpg';
 import styles from './Auth.module.css';
 
-const SignUpScreen = ({ signup, isAuthenticated }) => {
+const SignUpScreen = ({ onSubmit, initialValues, isAuthenticated }) => {
   const [modal, setModal] = useState(false);
 
   const validate = object({
@@ -33,12 +33,12 @@ const SignUpScreen = ({ signup, isAuthenticated }) => {
   const auth = useSelector((state) => state.auth);
   let { error, loading, success } = auth;
 
-  if (error === 'Request failed with status code 400') {
-    error = 'Istnieje już konto z podanym adresem e-mail';
-  }
+  const handleSubmit = (values) => {
+    onSubmit(values);
+  };
 
   if (isAuthenticated) {
-    return <Navigate replace to='/' />;
+    return <Navigate replace to='/panel' />;
   }
 
   return (
@@ -48,18 +48,9 @@ const SignUpScreen = ({ signup, isAuthenticated }) => {
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader />}
         <Formik
-          initialValues={{
-            email: '',
-            password: '',
-            re_password: '',
-            type: 'Pacjent',
-          }}
+          initialValues={initialValues}
           validationSchema={validate}
-          onSubmit={(values) => {
-            const { type, email, password, re_password } = values;
-            signup(type, email, password, re_password);
-            setModal((prev) => !prev);
-          }}
+          onSubmit={handleSubmit}
         >
           {({ values }) => (
             <>
@@ -89,7 +80,7 @@ const SignUpScreen = ({ signup, isAuthenticated }) => {
                   </Link>
                 </Modal.Footer>
               </Modal>
-              <Form className={styles.form}>
+              <Form className={styles.form} encType='multipart/form-data'>
                 <TextField label='Email' name='email' type='email' />
                 <TextField label='Hasło' name='password' type='password' />
                 <TextField
@@ -125,4 +116,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps, { signup })(SignUpScreen);
+export default connect(mapStateToProps)(SignUpScreen);

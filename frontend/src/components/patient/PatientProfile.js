@@ -1,12 +1,12 @@
-import { validatePatientProfile } from '../../validators/validatePatientProfile';
+import { validatePatientProfile } from '../../validators';
 import PatientForm from './PatientForn/PatientForm';
-import { Message, Loader } from '../../components';
+import { Message, Loader } from '..';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getUserDetails } from '../../actions/userActions';
 import { USER_DETAILS_PROFILE_RESET } from '../../constants/userConst';
 
-export const PatientProfileCreate = () => {
+export const PatientProfileCreate = ({ userId }) => {
   const initialValues = {
     first_name: '',
     last_name: '',
@@ -28,6 +28,7 @@ export const PatientProfileCreate = () => {
       initialValues={initialValues}
       validate={validatePatientProfile}
       label='Zapisz'
+      userId={userId}
     />
   );
 };

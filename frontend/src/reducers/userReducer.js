@@ -11,9 +11,10 @@ import {
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_RESET,
-  USER_DELETE_PROFILE_REQUEST,
-  USER_DELETE_PROFILE_SUCCESS,
-  USER_DELETE_PROFILE_FAIL,
+  USER_PROFILE_CLEAR_FEEDBACK,
+  // USER_DELETE_PROFILE_REQUEST,
+  // USER_DELETE_PROFILE_SUCCESS,
+  // USER_DELETE_PROFILE_FAIL,
 } from '../constants/userConst';
 
 export const userProfileDetailsReducer = (state = {}, action) => {
@@ -25,6 +26,8 @@ export const userProfileDetailsReducer = (state = {}, action) => {
     case USER_DETAILS_PROFILE_FAIL:
     case USER_DETAILS_PROFILE_RESET:
       return { ...state, user: {} };
+    case USER_PROFILE_CLEAR_FEEDBACK:
+      return {};
     default:
       return state;
   }
@@ -40,6 +43,8 @@ export const userCreateProfileReducer = (state = {}, action) => {
       return { loadingCreate: false, errorCreate: action.payload };
     case USER_CREATE_PROFILE_RESET:
       return {};
+    case USER_PROFILE_CLEAR_FEEDBACK:
+      return {};
     default:
       return state;
   }
@@ -54,6 +59,8 @@ export const userUpdateProfileReducer = (state = {}, action) => {
     case USER_UPDATE_PROFILE_FAIL:
       return { loading: false, error: action.payload };
     case USER_UPDATE_PROFILE_RESET:
+      return {};
+    case USER_PROFILE_CLEAR_FEEDBACK:
       return {};
     default:
       return state;

@@ -7,14 +7,14 @@ import {
 const PatientProfileScreen = () => {
   const auth = useSelector((state) => state.auth);
   const { user } = auth;
+
   return (
     <section className='up-section'>
       {user?.profile === null ? (
-        <PatientProfileCreate userId={user.id} />
+        <PatientProfileCreate userId={user?.id} />
       ) : (
         <>
-          <PatientProfileUpdate userProfile={user?.profile.id} />
-          {/* <PatientProfileDelete /> */}
+          <PatientProfileUpdate userProfile={user?.profile?.id} />
         </>
       )}
     </section>

@@ -5,8 +5,14 @@ import { IoSchoolOutline } from 'react-icons/io5';
 import { DoctorInfo } from '../../components';
 import styles from './HomeScreen.module.css';
 import { doctors } from './doctors';
+import { Navigate } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const HomeScreen = () => {
+const HomeScreen = ({ isAuthenticated }) => {
+  if (isAuthenticated) {
+    return <Navigate replace to='/panel' />;
+  }
+
   return (
     <>
       <section
@@ -120,4 +126,8 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+});
+
+export default connect(mapStateToProps)(HomeScreen);

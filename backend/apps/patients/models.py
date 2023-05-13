@@ -35,7 +35,7 @@ class Patient(models.Model):
         null=True
     )
     link_key = models.CharField(verbose_name=_("Klucz łączenia profilu"), max_length=100, blank=True)
-    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, upload_to='patients/')
+    image = models.ImageField(verbose_name=_("Zdjęcie"), blank=True, null=True, upload_to='patients/')
 
     class Meta:
         verbose_name = _("Pacjent")

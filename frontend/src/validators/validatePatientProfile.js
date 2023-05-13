@@ -1,6 +1,6 @@
 import { string, object, array, date } from 'yup';
 
-export const validatePatientProfile = object({
+const validatePatientProfile = object({
   first_name: string()
     .required('Pole imię jest obowiązkowe')
     .max(255, 'Imię może mieć maksymalnie 255 znaków.'),
@@ -16,16 +16,15 @@ export const validatePatientProfile = object({
       'Data urodzenia nie może być późniejsza niż teraźniejsza data'
     )
     .required('Data urodzenia jest wymagana'),
-  email: string()
-    .email('To nie jest prawidłowy adres email')
-    .required('Pole adres email jest obowiązkowe'),
-  phone_number: string()
-    .required('Pole numer telefonu jest obowiązkowe')
-    .matches(/^\+\d{11}$/, 'Numer telefonu musi być w formacie +XX XXXXXXXXX'),
+  email: string().email('To nie jest prawidłowy adres email'),
+  phone_number: string().matches(
+    /^\+\d{11}$/,
+    'Numer telefonu musi być w formacie +XX XXXXXXXXX'
+  ),
   street: string()
     .required('Pole ulica jest wymagane.')
     .matches(
-      /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ0-9\s\-\/]+$/,
+      /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ0-9\s\-/]+$/,
       'Pole ulica może składać się tylko z liter, cyfr, spacji, myślnika i ukośnika.'
     )
     .max(255, 'Pole ulica może mieć maksymalnie 255 znaków.'),
@@ -39,8 +38,10 @@ export const validatePatientProfile = object({
       'Miejscowość powinna składać się tylko z liter.'
     )
     .required('Miejscowość jest wymagana')
-    .max(255, 'Pole miejcowość może mieć maksymalnie 255 znaków.'),
+    .max(255, 'Pole miejscowość może mieć maksymalnie 255 znaków.'),
   medicine: array(),
   allergies: array(),
   diseases: array(),
 });
+
+export default validatePatientProfile;

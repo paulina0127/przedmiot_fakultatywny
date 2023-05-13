@@ -1,6 +1,6 @@
 import { ErrorMessage, useField } from 'formik';
 
-export const TextField = ({ label, ...props }) => {
+const TextField = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <div className='form-group mb-3'>
@@ -22,3 +22,5 @@ export const TextField = ({ label, ...props }) => {
     </div>
   );
 };
+
+export default TextField;

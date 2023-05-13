@@ -2,7 +2,7 @@ import { Navbar, Nav, NavDropdown, Container, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../../../actions/authActions';
-
+import { FaPowerOff } from 'react-icons/fa';
 import { IoIosArrowDropdown } from 'react-icons/io';
 import avatar from '../../../images/avatar.png';
 import logo from '../../../images/logo.png';
@@ -47,15 +47,21 @@ const NavigationBar = ({ logout, user }) => {
         }
         id='basic-nav-dropdown'
       >
+        {user?.type === 'Pacjent' && (
+          <>
+            <NavDropdown.Item as={Link} to='/panel/profil'>
+              Profil
+            </NavDropdown.Item>
+            <NavDropdown.Divider />
+          </>
+        )}
         <NavDropdown.Item as={Link} to='/panel'>
-          Panel
+          Panel użytkownika
         </NavDropdown.Item>
         <NavDropdown.Divider />
-        <NavDropdown.Item as={Link} to='/panel/profil'>
-          Profil
+        <NavDropdown.Item onClick={logout}>
+          Wyloguj się <FaPowerOff />
         </NavDropdown.Item>
-        <NavDropdown.Divider />
-        <NavDropdown.Item onClick={logout}>Wyloguj się</NavDropdown.Item>
       </NavDropdown>
     );
   };
