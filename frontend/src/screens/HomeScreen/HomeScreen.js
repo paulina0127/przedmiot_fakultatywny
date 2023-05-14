@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 const HomeScreen = ({ isAuthenticated }) => {
   if (isAuthenticated) {
-    return <Navigate replace to='/panel' />;
+    return <Navigate replace to='/' />;
   }
 
   return (

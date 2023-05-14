@@ -4,7 +4,7 @@ import ResetPassword from './Auth/ResetPassword';
 import ResetPasswordConfirm from './Auth/ResetPasswordConfirm';
 import SignUpScreen from './Auth/SignUpScreen';
 import HomeScreen from './HomeScreen/HomeScreen';
-import PanelMainScreen from './PanelMainScreen';
+import MainScreen from './MainScreen';
 import PatientPanelScreen from './Patient/PatientPanelScreen';
 import DoctorPanelScreen from './Doctor/DoctorPanelScreen';
 import ReceptionistPanelScreen from './Receptionist/ReceptionistPanelScreen';
@@ -12,16 +12,16 @@ import PatientProfileScreen from './Patient/PatientProfileScreen';
 import NewUserPanelScreen from './NewUserPanelScreen';
 
 export {
-  HomeScreen,
   ActivateAccountScreen,
   LoginScreen,
   ResetPassword,
   ResetPasswordConfirm,
   SignUpScreen,
-  PanelMainScreen,
+  MainScreen,
   PatientPanelScreen,
   DoctorPanelScreen,
   ReceptionistPanelScreen,
   PatientProfileScreen,
   NewUserPanelScreen,
+  HomeScreen,
 };

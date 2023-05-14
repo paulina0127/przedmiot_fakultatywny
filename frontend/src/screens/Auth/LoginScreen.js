@@ -21,13 +21,9 @@ const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
   let { error, loading, success } = auth;
 
   // Is the user authenticated?
-  // Redirect them to the user panel page
+  // Redirect them to the user main page
   if (isAuthenticated) {
-    return <Navigate replace to='/panel' />;
-  }
-
-  {
-    success && <Navigate replace to='/panel' />;
+    return <Navigate replace to='/' />;
   }
 
   return (
@@ -72,7 +68,7 @@ const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
         </Formik>
       </div>
       <p className={styles.p}>
-        Nie masz konta?
+        Nie masz konta?{' '}
         <Link className={styles.link} to='/rejestracja'>
           Zarejestruj się
         </Link>

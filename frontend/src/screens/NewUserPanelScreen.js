@@ -20,7 +20,7 @@ const NewUserPanelScreen = () => {
           <p>Utwórz swoją kartę pacjenta by móc korzystać z naszych usług</p>
         </Modal.Body>
         <Modal.Footer className='justify-content-center'>
-          <Link className='w-40' to='/panel/profil'>
+          <Link className='w-40' to='/profil'>
             <button className='btnSquare btnPrimary'>
               Przejdź do karty zdrowia
             </button>

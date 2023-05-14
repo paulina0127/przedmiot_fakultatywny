@@ -49,16 +49,12 @@ const NavigationBar = ({ logout, user }) => {
       >
         {(user?.type === 'Pacjent' || user?.type === 'Nowy użytkownik') && (
           <>
-            <NavDropdown.Item as={Link} to='/panel/profil'>
+            <NavDropdown.Item as={Link} to='/profil'>
               Profil
             </NavDropdown.Item>
             <NavDropdown.Divider />
           </>
         )}
-        <NavDropdown.Item as={Link} to='/panel'>
-          Panel użytkownika
-        </NavDropdown.Item>
-        <NavDropdown.Divider />
         <NavDropdown.Item onClick={logout}>
           Wyloguj się <FaPowerOff />
         </NavDropdown.Item>

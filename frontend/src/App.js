@@ -2,9 +2,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './hocs/Layout';
 import {
   ActivateAccountScreen,
-  HomeScreen,
   LoginScreen,
-  PanelMainScreen,
+  MainScreen,
   ResetPassword,
   ResetPasswordConfirm,
   SignUpScreen,
@@ -17,7 +16,7 @@ const App = () => {
       <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path='/' element={<HomeScreen />} exact />
+            <Route path='/' element={<MainScreen />} exact />
             <Route path='/logowanie' element={<LoginScreen />} />
             <Route path='/rejestracja' element={<SignUpScreen />} />
             <Route path='/przypominanie-hasła' element={<ResetPassword />} />
@@ -29,8 +28,7 @@ const App = () => {
               path='/aktywacja-konta/:uid/:token'
               element={<ActivateAccountScreen />}
             />
-            <Route path='/panel' element={<PanelMainScreen />} />
-            <Route path='/panel/profil' element={<PatientProfileScreen />} />
+            <Route path='/profil' element={<PatientProfileScreen />} />
           </Routes>
         </Layout>
       </BrowserRouter>

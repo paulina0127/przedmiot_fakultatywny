@@ -32,7 +32,7 @@ const SignUpScreen = ({ signup, isAuthenticated, onClick }) => {
   let { error, loading, success } = auth;
 
   if (isAuthenticated) {
-    return <Navigate replace to='/panel' />;
+    return <Navigate replace to='/' />;
   }
 
   return (

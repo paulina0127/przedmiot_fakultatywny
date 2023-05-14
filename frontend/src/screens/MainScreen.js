@@ -4,13 +4,13 @@ import {
   PatientPanelScreen,
   ReceptionistPanelScreen,
   NewUserPanelScreen,
+  HomeScreen,
 } from '.';
-import { Navigate } from 'react-router-dom';
 
-const PanelMainScreen = ({ user }) => {
+const MainScreen = ({ user }) => {
   return (
     <>
-      {user == null && <Navigate replace to='/' />}
+      {user == null && <HomeScreen />}
       {user?.type === 'Nowy użytkownik' && <NewUserPanelScreen />}
       {user?.type === 'Pacjent' && <PatientPanelScreen />}
       {user?.type === 'Lekarz' && <DoctorPanelScreen />}
@@ -23,4 +23,4 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps)(PanelMainScreen);
+export default connect(mapStateToProps)(MainScreen);
