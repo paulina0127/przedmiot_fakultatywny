@@ -11,17 +11,14 @@ from apps.users.utils.choices import UserType
 class PatientBaseAccess(BasePermission):
     # Read and create permissions.
     def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            # Don't allow patients to create patients
-            if request.method == 'POST' and request.user.type == UserType.PATIENT:
-                return False
-            # New unassigned users don't have read access to any patient
-            if request.method in SAFE_METHODS and request.user.type == UserType.NEW:
-                return False
-            return True
-        else:
-            # Allow creating new patient profile
-            return request.method == 'POST'
+        if request.method == 'POST':
+            if request.user.type in [UserType.NEW, UserType.RECEPTIONIST, UserType.ADMIN]:
+                return True
+            return False
+        # New unassigned users don't have read access to any patient
+        if request.user.type == UserType.NEW and request.method == 'GET':
+            return False
+        return True
 
     def has_object_permission(self, request, view, obj):
         # True if user type is admin, receptionist or

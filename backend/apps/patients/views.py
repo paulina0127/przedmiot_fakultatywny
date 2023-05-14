@@ -63,32 +63,43 @@ class PatientList(generics.ListCreateAPIView):
     parser_classes = [JSONParser, MultiPartParser]
 
     def perform_create(self, serializer):
-        # Set link key if patient is added by receptionist
-        if self.request.user.is_authenticated and self.request.user.type in [
-            UserType.RECEPTIONIST,
-            UserType.ADMIN,
-        ]:
+        user = self.request.user
+        # Set link key if patient is added by receptionist/admin
+        if user.type in [UserType.RECEPTIONIST, UserType.ADMIN]:
             key = secrets.token_urlsafe(10)
             while Patient.objects.filter(link_key=key).exists():
                 key = secrets.token_urlsafe(10)
             serializer.fields["link_key"].read_only = False
             serializer.validated_data["link_key"] = key
-        serializer.save()
+            serializer.save()
+
+        # Assign current user (type new) to new patient profile
+        elif user.type == UserType.NEW:
+            if hasattr(user, 'patient'):
+                raise ValidationError("Błąd: pacjent jest już przypisany. "
+                                      "Skontaktuj się z administracją.")
+            serializer.fields['user'].read_only = False
+            serializer.validated_data['user'] = user
+            with transaction.atomic():
+                user.type = UserType.PATIENT
+                user.save()
+                serializer.save()
+        else:
+            raise ValidationError("Nie masz uprawnień do tworzenia.")
 
     def get_queryset(self):
         user = self.request.user
         # Return patient's profiles
-        if user.is_authenticated:
-            if user.type == UserType.PATIENT:
-                return Patient.objects.filter(user=user)
-            # Return doctor's patients
-            elif user.type == UserType.DOCTOR:
-                return Patient.objects.filter(
-                    appointments__doctor=user.doctor
-                ).distinct()
-            # Return all patients if the user is admin or receptionist
-            elif user.type in [UserType.ADMIN, UserType.RECEPTIONIST]:
-                return Patient.objects.all()
+        if user.type in [UserType.PATIENT, UserType.NEW]:
+            return Patient.objects.filter(user=user)
+        # Return doctor's patients
+        elif user.type == UserType.DOCTOR:
+            return Patient.objects.filter(
+                appointments__doctor=user.doctor
+            ).distinct()
+        # Return all patients if the user is admin or receptionist
+        elif user.type in [UserType.ADMIN, UserType.RECEPTIONIST]:
+            return Patient.objects.all()
 
     def post(self, request, *args, **kwargs):
         medicine_values = []

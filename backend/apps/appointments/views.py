@@ -27,7 +27,7 @@ class AppointmentList(generics.ListCreateAPIView):
     filterset_fields = ["status", "doctor", "patient"]
     search_fields = ["patient__first_name", "patient__last_name", "patient__pesel"]
     ordering_fields = ["id", "date"]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AppointmentBaseAccess]
 
     def get_queryset(self):
         user = self.request.user
