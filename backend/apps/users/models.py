@@ -12,7 +12,6 @@ class User(AbstractUser):
     type = models.CharField(
         verbose_name=_("Rodzaj"),
         blank=True,
-        null=True,
         max_length=50,
         choices=UserType.choices,
         default=UserType.NEW,

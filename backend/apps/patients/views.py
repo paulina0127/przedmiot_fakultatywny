@@ -70,9 +70,9 @@ class PatientList(generics.ListCreateAPIView):
             key = secrets.token_urlsafe(10)
             while Patient.objects.filter(link_key=key).exists():
                 key = secrets.token_urlsafe(10)
-            serializer.save(link_key=key)
-        else:
-            serializer.save()
+            serializer.fields['link_key'].read_only = False
+            serializer.validated_data['link_key'] = key
+        serializer.save()
 
     def get_queryset(self):
         user = self.request.user
@@ -118,7 +118,7 @@ class PatientList(generics.ListCreateAPIView):
 
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        self.perform_create(serializer)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
