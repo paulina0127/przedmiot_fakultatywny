@@ -31,6 +31,7 @@ export const getUserDetails = (id) => async (dispatch) => {
         Authorization: `JWT ${token}`,
       },
     };
+
     try {
       dispatch({ type: USER_DETAILS_PROFILE_REQUEST });
 
@@ -42,6 +43,7 @@ export const getUserDetails = (id) => async (dispatch) => {
       });
     } catch (error) {
       const errorKey = Object.keys(error?.response?.data || {})[0];
+
       dispatch({
         type: USER_DETAILS_PROFILE_FAIL,
         payload: errorKey ? error.response.data[errorKey] : error.message,
@@ -55,68 +57,6 @@ export const getUserDetails = (id) => async (dispatch) => {
 };
 
 export const createUserProfile = (values) => async (dispatch) => {
-  const config = {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  };
-
-  console.log(values);
-  const body = {
-    first_name: values.first_name,
-    last_name: values.last_name,
-    pesel: values.pesel,
-    birthdate: values.birthdate,
-    email: values.email,
-    phone_number: values.phone_number,
-    street: values.street,
-    postal_code: values.postal_code,
-    city: values.city,
-    image: values.image,
-  };
-
-  values?.medicine
-    ?.filter((med) => med !== '')
-    .forEach((med, index) => {
-      body[`medicine[${index}]`] = med;
-    });
-
-  values?.allergies
-    ?.filter((allergy) => allergy !== '')
-    .forEach((allergy, index) => {
-      body[`allergies[${index}]`] = allergy;
-    });
-
-  values?.diseases
-    ?.filter((disease) => disease !== '')
-    .forEach((disease, index) => {
-      body[`diseases[${index}]`] = disease;
-    });
-
-  console.log(body);
-  try {
-    dispatch({
-      type: USER_CREATE_PROFILE_REQUEST,
-    });
-    console.log(body);
-    const { data } = await axios.post(`/patients`, body, config);
-    console.log(body);
-    dispatch({
-      type: USER_CREATE_PROFILE_SUCCESS,
-      payload: data,
-    });
-    console.log(body);
-  } catch (error) {
-    const errorKey = Object.keys(error?.response?.data || {})[0];
-    console.log(error.response.data);
-    dispatch({
-      type: USER_CREATE_PROFILE_FAIL,
-      payload: errorKey ? error.response.data[errorKey] : error.message,
-    });
-  }
-};
-
-export const linkUserProfile = (values) => async (dispatch) => {
   if (localStorage.getItem('userTokens')) {
     const userTokens = JSON.parse(localStorage.getItem('userTokens'));
     const token = userTokens.access;
@@ -127,33 +67,91 @@ export const linkUserProfile = (values) => async (dispatch) => {
       },
     };
 
-    const body = JSON.stringify({
+    const body = {
+      first_name: values.first_name,
+      last_name: values.last_name,
       pesel: values.pesel,
-      link_key: values.link_key,
-    });
+      birthdate: values.birthdate,
+      email: values.email,
+      phone_number: values.phone_number,
+      street: values.street,
+      postal_code: values.postal_code,
+      city: values.city,
+      image: values.image,
+    };
+
+    console.log(body);
+    values?.medicine
+      ?.filter((med) => med !== '')
+      .forEach((med, index) => {
+        body[`medicine[${index}]`] = med;
+      });
+
+    values?.allergies
+      ?.filter((allergy) => allergy !== '')
+      .forEach((allergy, index) => {
+        body[`allergies[${index}]`] = allergy;
+      });
+
+    values?.diseases
+      ?.filter((disease) => disease !== '')
+      .forEach((disease, index) => {
+        body[`diseases[${index}]`] = disease;
+      });
 
     try {
       dispatch({
-        type: USER_LINK_PROFILE_REQUEST,
+        type: USER_CREATE_PROFILE_REQUEST,
       });
 
-      const { data } = await axios.post(`/patients/link`, body, config);
-
       dispatch({
-        type: USER_LINK_PROFILE_SUCCESS,
+        type: USER_CREATE_PROFILE_SUCCESS,
         payload: data,
       });
     } catch (error) {
       const errorKey = Object.keys(error?.response?.data || {})[0];
-      console.log(error.response.data);
+
       dispatch({
-        type: USER_LINK_PROFILE_FAIL,
+        type: USER_CREATE_PROFILE_FAIL,
         payload: errorKey ? error.response.data[errorKey] : error.message,
       });
     }
   } else {
     dispatch({
+      type: USER_CREATE_PROFILE_FAIL,
+    });
+  }
+};
+
+export const linkUserProfile = (id, values) => async (dispatch) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const body = JSON.stringify({
+    user_id: id,
+    pesel: values.pesel,
+    link_key: values.link_key,
+  });
+
+  try {
+    dispatch({
+      type: USER_LINK_PROFILE_REQUEST,
+    });
+
+    const { data } = await axios.put(`/patients/link`, body, config);
+
+    dispatch({
+      type: USER_LINK_PROFILE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const errorKey = Object.keys(error?.response?.data || {})[0];
+    dispatch({
       type: USER_LINK_PROFILE_FAIL,
+      payload: errorKey ? error.response.data[errorKey] : error.message,
     });
   }
 };
@@ -198,22 +196,20 @@ export const updateUserProfile = (id, values) => async (dispatch) => {
         body[`diseases[${index}]`] = disease;
       });
 
-    console.log(body);
     try {
       dispatch({
         type: USER_UPDATE_PROFILE_REQUEST,
       });
-      console.log(body);
+
       const { data } = await axios.patch(`/patients/${id}`, body, config);
-      console.log(body);
+
       dispatch({
         type: USER_UPDATE_PROFILE_SUCCESS,
         payload: data,
       });
-      console.log(body);
     } catch (error) {
       const errorKey = Object.keys(error?.response?.data || {})[0];
-      console.log(error.response.data);
+
       dispatch({
         type: USER_UPDATE_PROFILE_FAIL,
         payload: errorKey ? error.response.data[errorKey] : error.message,

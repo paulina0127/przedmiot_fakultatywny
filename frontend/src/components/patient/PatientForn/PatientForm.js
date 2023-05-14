@@ -72,7 +72,7 @@ const PatientForm = ({
             }
             dispatch(updateUserProfile(userProfile, updatedValues, values));
           } else {
-            dispatch(createUserProfile(values));
+            dispatch(createUserProfile(user?.id, values));
           }
         }}
       >
@@ -171,17 +171,23 @@ const PatientForm = ({
                   <h3 className={panel.h3}>Dane osobowe</h3>
                   <div className='twoColumnGrid'>
                     <div className={styles.formGroup}>
-                      <h4 className={panel.h4}>Imię</h4>
+                      <h4 className={panel.h4}>
+                        Imię <span className='form-required'>*</span>
+                      </h4>
                       <TextField name='first_name' type='text' />
                     </div>
 
                     <div className={styles.formGroup}>
-                      <h4 className={panel.h4}>Nazwisko</h4>
+                      <h4 className={panel.h4}>
+                        Nazwisko <span className='form-required'>*</span>
+                      </h4>
                       <TextField name='last_name' type='text' />
                     </div>
 
                     <div className={styles.formGroup}>
-                      <h4 className={panel.h4}>PESEL</h4>
+                      <h4 className={panel.h4}>
+                        PESEL <span className='form-required'>*</span>
+                      </h4>
                       <TextField
                         name='pesel'
                         type='text'
@@ -190,7 +196,9 @@ const PatientForm = ({
                     </div>
 
                     <div className={styles.formGroup}>
-                      <h4 className={panel.h4}>Data urodzenia</h4>
+                      <h4 className={panel.h4}>
+                        Data urodzenia <span className='form-required'>*</span>
+                      </h4>
                       <TextField
                         name='birthdate'
                         type='date'
@@ -213,17 +221,23 @@ const PatientForm = ({
                 <div className={styles.addressArea}>
                   <h3 className={panel.h3}>Adres zamieszkania</h3>
                   <div className={styles.formGroup}>
-                    <h4 className={panel.h4}>Ulica</h4>
+                    <h4 className={panel.h4}>
+                      Ulica <span className='form-required'>*</span>
+                    </h4>
                     <TextField name='street' type='text' />
                   </div>
 
                   <div className={styles.formGroup}>
-                    <h4 className={panel.h4}>Kod pocztowy</h4>
+                    <h4 className={panel.h4}>
+                      Kod pocztowy <span className='form-required'>*</span>
+                    </h4>
                     <TextField name='postal_code' type='text' />
                   </div>
 
                   <div className={styles.formGroup}>
-                    <h4 className={panel.h4}>Miejscowość</h4>
+                    <h4 className={panel.h4}>
+                      Miejscowość <span className='form-required'>*</span>
+                    </h4>
                     <TextField name='city' type='text' />
                   </div>
                 </div>

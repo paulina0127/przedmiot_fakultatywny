@@ -47,15 +47,14 @@ const NavigationBar = ({ logout, user }) => {
         }
         id='basic-nav-dropdown'
       >
-        {user?.type === 'Pacjent' ||
-          (user?.type === 'Nowy użytkownik' && (
-            <>
-              <NavDropdown.Item as={Link} to='/panel/profil'>
-                Profil
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-            </>
-          ))}
+        {(user?.type === 'Pacjent' || user?.type === 'Nowy użytkownik') && (
+          <>
+            <NavDropdown.Item as={Link} to='/panel/profil'>
+              Profil
+            </NavDropdown.Item>
+            <NavDropdown.Divider />
+          </>
+        )}
         <NavDropdown.Item as={Link} to='/panel'>
           Panel użytkownika
         </NavDropdown.Item>

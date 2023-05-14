@@ -60,6 +60,7 @@ class PatientSerializer(serializers.ModelSerializer):
 class UserLinkPatientSerializer(serializers.Serializer):
     pesel = serializers.CharField(max_length=11, write_only=True)
     link_key = serializers.CharField(max_length=100, write_only=True)
+    user_id = serializers.IntegerField(write_only=True)
 
     def validate_pesel(self, value):
         if not correct_pesel(value):

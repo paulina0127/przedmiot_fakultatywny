@@ -12,7 +12,7 @@ from .models import Patient
 from .utils.permissions import PatientBaseAccess, PatientReadUpdate, IsPatient
 from .utils.serializers import PatientSerializer, UserLinkPatientSerializer
 from apps.users.utils.choices import UserType
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, JSONParser
 
 User = get_user_model()
 
@@ -60,6 +60,7 @@ class PatientList(generics.ListCreateAPIView):
     search_fields = ["first_name", "last_name", "pesel"]
     ordering_fields = ["id", "birthdate"]
     permission_classes = [~IsPatient, PatientBaseAccess]
+    parser_classes = [JSONParser, MultiPartParser]
 
     def perform_create(self, serializer):
         # Set link key if patient is added by receptionist
@@ -70,8 +71,8 @@ class PatientList(generics.ListCreateAPIView):
             key = secrets.token_urlsafe(10)
             while Patient.objects.filter(link_key=key).exists():
                 key = secrets.token_urlsafe(10)
-            serializer.fields['link_key'].read_only = False
-            serializer.validated_data['link_key'] = key
+            serializer.fields["link_key"].read_only = False
+            serializer.validated_data["link_key"] = key
         serializer.save()
 
     def get_queryset(self):
@@ -111,11 +112,20 @@ class PatientList(generics.ListCreateAPIView):
                     diseases_values.append(None)
                 diseases_values[index] = value
 
-        data = request.data.copy()
+        data = {}
+        for key, value in request.data.items():
+            if (
+                not (key.startswith("medicine[") and key.endswith("]"))
+                and not (key.startswith("allergies[") and key.endswith("]"))
+                and not (key.startswith("diseases[") and key.endswith("]"))
+            ):
+                data[key] = value
+
         data["medicine"] = medicine_values
         data["allergies"] = allergies_values
         data["diseases"] = diseases_values
 
+        print(data)
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -128,7 +138,7 @@ class PatientDetail(generics.RetrieveUpdateAPIView):
     serializer_class = PatientSerializer
     name = "patient"
     permission_classes = [IsAuthenticated, PatientBaseAccess, PatientReadUpdate]
-    parser_classes = [MultiPartParser]
+    parser_classes = [JSONParser, MultiPartParser]
 
     def get_queryset(self):
         user = self.request.user
@@ -170,7 +180,6 @@ class PatientDetail(generics.RetrieveUpdateAPIView):
         instance.allergies = allergies_values
         instance.diseases = diseases_values
 
-        print(medicine_values, allergies_values, diseases_values)
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
