@@ -9,6 +9,7 @@ import PatientPanelScreen from './Patient/PatientPanelScreen';
 import DoctorPanelScreen from './Doctor/DoctorPanelScreen';
 import ReceptionistPanelScreen from './Receptionist/ReceptionistPanelScreen';
 import PatientProfileScreen from './Patient/PatientProfileScreen';
+import NewUserPanelScreen from './NewUserPanelScreen';
 
 export {
   HomeScreen,
@@ -22,4 +23,5 @@ export {
   DoctorPanelScreen,
   ReceptionistPanelScreen,
   PatientProfileScreen,
+  NewUserPanelScreen,
 };

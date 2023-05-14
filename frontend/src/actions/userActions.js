@@ -62,7 +62,7 @@ export const createUserProfile = (values) => async (dispatch) => {
     const token = userTokens.access;
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         Authorization: `JWT ${token}`,
       },
     };
@@ -80,7 +80,6 @@ export const createUserProfile = (values) => async (dispatch) => {
       image: values.image,
     };
 
-    console.log(body);
     values?.medicine
       ?.filter((med) => med !== '')
       .forEach((med, index) => {
@@ -103,6 +102,8 @@ export const createUserProfile = (values) => async (dispatch) => {
       dispatch({
         type: USER_CREATE_PROFILE_REQUEST,
       });
+
+      const { data } = await axios.post(`/patients`, body, config);
 
       dispatch({
         type: USER_CREATE_PROFILE_SUCCESS,

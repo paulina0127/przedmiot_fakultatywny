@@ -72,7 +72,7 @@ const PatientForm = ({
             }
             dispatch(updateUserProfile(userProfile, updatedValues, values));
           } else {
-            dispatch(createUserProfile(user?.id, values));
+            dispatch(createUserProfile(values));
           }
         }}
       >
@@ -163,7 +163,11 @@ const PatientForm = ({
                         <FaPlus color='#fff' className={styles.avatarIcon} />
                       </div>
                     </label>
-                    <FileField name='image' type='file' />
+                    <FileField
+                      name='image'
+                      type='file'
+                      accept='image/png, image/jpeg'
+                    />
                   </div>
                 </div>
 

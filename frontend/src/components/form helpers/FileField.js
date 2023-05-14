@@ -1,7 +1,7 @@
 import { ErrorMessage, useField } from 'formik';
 import { useState } from 'react';
 
-const FileField = ({ label, ...props }) => {
+const FileField = ({ label, accept, ...props }) => {
   const [field, meta] = useField(props);
   const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -12,15 +12,6 @@ const FileField = ({ label, ...props }) => {
         value: e.target.files[0],
       },
     });
-
-    // Create a temporary URL for the selected file
-    //   const fileReader = new FileReader();
-    //   fileReader.onload = () => {
-    //     setPreviewUrl(fileReader.result);
-    //     // Set the img src to the temporary URL
-    //     document.getElementById('avatar').src = fileReader.result;
-    //   };
-    //   fileReader.readAsDataURL(e.target.files[0]);
   };
 
   return (
@@ -30,6 +21,7 @@ const FileField = ({ label, ...props }) => {
       </label>
       <input
         id={field.name}
+        accept={accept}
         className={`form-control rounded-pill border-2 shadow-sm px-4 ${
           meta.touched && meta.error && 'is-invalid'
         }`}
