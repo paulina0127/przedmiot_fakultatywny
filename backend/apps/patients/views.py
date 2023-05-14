@@ -53,7 +53,7 @@ class UserLinkPatient(generics.UpdateAPIView):
         )
 
 
-# Display all, create patients (for staff)
+# Display all, create patients
 class PatientList(generics.ListCreateAPIView):
     serializer_class = PatientSerializer
     name = "patients"

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "djoser",
     "corsheaders",
     "django_filters",
+    "django_cleanup.apps.CleanupConfig"
 ]
 
 MIDDLEWARE = [
@@ -186,8 +187,8 @@ DJOSER = {
     "ACTIVATION_URL": "aktywacja-konta/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {
-        "user_create": "djoser.serializers.UserCreatePasswordRetypeSerializer",
-        "user": "apps.users.utils.serializers.UserSerializer",
-        "current_user": "apps.users.utils.serializers.UserSerializer",
+        "user_create": "apps.users.utils.serializers.CustomUserSerializer",
+        "user": "apps.users.utils.serializers.CustomUserSerializer",
+        "current_user": "apps.users.utils.serializers.CustomUserSerializer",
     },
 }

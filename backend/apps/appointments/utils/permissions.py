@@ -22,7 +22,7 @@ class AppointmentBaseAccess(BasePermission):
 
 class AppointmentUpdate(BasePermission):
     def has_object_permission(self, request, view, obj):
-        # Allow read access to everyone
+        # Allow read access to everyone (read object permissions in AppointmentBaseAccess)
         if request.method in SAFE_METHODS or request.user.type == UserType.ADMIN:
             return True
 

@@ -51,29 +51,29 @@ class PatientUserSerializer(UserSerializer):
         fields = ["id", "email", "type", "profile"]
 
 
-class DefaultUserSerializer(UserSerializer):
+class CustomUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
         fields = ["id", "email", "type"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user = self.context['request'].user
+        if user.type != UserType.ADMIN:
+            self.fields['type'].read_only = True
 
-class UserSerializer(UserSerializer):
-    class Meta(UserSerializer.Meta):
-        model = User
-        fields = ["id", "email", "type", "password"]
-
-    def to_representation(self, instance):
-        user = self.context["request"].user
-        # Return user serializer for doctor
-        if user.type == UserType.DOCTOR:
-            serializer = DoctorUserSerializer(instance, context=self.context)
-        # Return user serializer for receptiionist
-        elif user.type == UserType.RECEPTIONIST:
-            serializer = ReceptionistUserSerializer(instance, context=self.context)
-        # Return user serializer for patient
-        elif user.type == UserType.PATIENT:
-            serializer = PatientUserSerializer(instance, context=self.context)
-        # Return default user serializer
-        else:
-            serializer = DefaultUserSerializer(instance, context=self.context)
-        return serializer.data
+    # def to_representation(self, instance):
+    #     user = self.context["request"].user
+    #     # Return user serializer for doctor
+    #     if user.type == UserType.DOCTOR:
+    #         serializer = DoctorUserSerializer(instance, context=self.context)
+    #     # Return user serializer for receptiionist
+    #     elif user.type == UserType.RECEPTIONIST:
+    #         serializer = ReceptionistUserSerializer(instance, context=self.context)
+    #     # Return user serializer for patient
+    #     elif user.type == UserType.PATIENT:
+    #         serializer = PatientUserSerializer(instance, context=self.context)
+    #     # Return default user serializer
+    #     else:
+    #         serializer = CustomUserSerializer(instance, context=self.context)
+    #     return serializer.data
