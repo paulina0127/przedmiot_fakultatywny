@@ -64,7 +64,8 @@ a {
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5 {
   font-family: var(--ff-primary);
   line-height: 1.25;
   letter-spacing: var(--spacing);
@@ -254,6 +255,10 @@ body {
 .form-control:focus,
 .form-select:focus {
   background: none;
+}
+
+.form-required {
+  color: #b10e0e;
 }
 
 /* ----------- MEDIA QUERIES ----------- */

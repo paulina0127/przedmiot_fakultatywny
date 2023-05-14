@@ -9,7 +9,10 @@ import {
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
-  USER_PROFILE_CLEAR_FEEDBACK,
+  USER_LINK_PROFILE_FAIL,
+  USER_LINK_PROFILE_RESET,
+  USER_LINK_PROFILE_SUCCESS,
+  USER_LINK_PROFILE_REQUEST,
 } from '../constants/userConst';
 
 const defaultConfig = {
@@ -51,14 +54,15 @@ export const getUserDetails = (id) => async (dispatch) => {
   }
 };
 
-export const createUserProfile = (values, accountData) => async (dispatch) => {
+export const createUserProfile = (values) => async (dispatch) => {
   const config = {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   };
+
+  console.log(values);
   const body = {
-    user: accountData,
     first_name: values.first_name,
     last_name: values.last_name,
     pesel: values.pesel,
@@ -68,102 +72,156 @@ export const createUserProfile = (values, accountData) => async (dispatch) => {
     street: values.street,
     postal_code: values.postal_code,
     city: values.city,
-    medicine: values?.medicine?.filter((med) => med !== ''),
-    allergies: values?.allergies?.filter((allergy) => allergy !== ''),
-    diseases: values?.diseases?.filter((disease) => disease !== ''),
     image: values.image,
   };
+
+  values?.medicine
+    ?.filter((med) => med !== '')
+    .forEach((med, index) => {
+      body[`medicine[${index}]`] = med;
+    });
+
+  values?.allergies
+    ?.filter((allergy) => allergy !== '')
+    .forEach((allergy, index) => {
+      body[`allergies[${index}]`] = allergy;
+    });
+
+  values?.diseases
+    ?.filter((disease) => disease !== '')
+    .forEach((disease, index) => {
+      body[`diseases[${index}]`] = disease;
+    });
+
+  console.log(body);
   try {
     dispatch({
       type: USER_CREATE_PROFILE_REQUEST,
     });
-
-    const { data } = await axios.post(`/patients/register`, body, config);
-
+    console.log(body);
+    const { data } = await axios.post(`/patients`, body, config);
+    console.log(body);
     dispatch({
       type: USER_CREATE_PROFILE_SUCCESS,
       payload: data,
     });
+    console.log(body);
   } catch (error) {
-    const errorKeys = Object.keys(error?.response?.data || {});
+    const errorKey = Object.keys(error?.response?.data || {})[0];
+    console.log(error.response.data);
     dispatch({
       type: USER_CREATE_PROFILE_FAIL,
-      payload:
-        errorKeys !== {}
-          ? errorKeys.map((errorKey) => error.response.data[errorKey])
-          : error.message,
+      payload: errorKey ? error.response.data[errorKey] : error.message,
     });
   }
 };
 
-export const updateUserProfile =
-  (id, values, oldValues) => async (dispatch) => {
-    if (localStorage.getItem('userTokens')) {
-      const userTokens = JSON.parse(localStorage.getItem('userTokens'));
-      const token = userTokens.access;
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `JWT ${token}`,
-        },
-      };
+export const linkUserProfile = (values) => async (dispatch) => {
+  if (localStorage.getItem('userTokens')) {
+    const userTokens = JSON.parse(localStorage.getItem('userTokens'));
+    const token = userTokens.access;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `JWT ${token}`,
+      },
+    };
 
-      const body = {
-        first_name: values.first_name,
-        last_name: values.last_name,
-        email: values.email,
-        phone_number: values.phone_number,
-        street: values.street,
-        postal_code: values.postal_code,
-        city: values.city,
-        image: values.image,
-      };
+    const body = JSON.stringify({
+      pesel: values.pesel,
+      link_key: values.link_key,
+    });
 
-      values?.medicine
-        ?.filter((med) => med !== '')
-        .forEach((med, index) => {
-          body[`medicine[${index}]`] = med;
-        });
-
-      values?.allergies
-        ?.filter((allergy) => allergy !== '')
-        .forEach((allergy, index) => {
-          body[`allergies[${index}]`] = allergy;
-        });
-
-      values?.diseases
-        ?.filter((disease) => disease !== '')
-        .forEach((disease, index) => {
-          body[`diseases[${index}]`] = disease;
-        });
-
-      console.log(body);
-      try {
-        dispatch({
-          type: USER_UPDATE_PROFILE_REQUEST,
-        });
-        console.log(body);
-        const { data } = await axios.patch(`/patients/${id}`, body, config);
-        console.log(body);
-        dispatch({
-          type: USER_UPDATE_PROFILE_SUCCESS,
-          payload: data,
-        });
-        console.log(body);
-      } catch (error) {
-        const errorKey = Object.keys(error?.response?.data || {})[0];
-        dispatch({
-          type: USER_UPDATE_PROFILE_FAIL,
-          payload: errorKey ? error.response.data[errorKey] : error.message,
-        });
-      }
-    } else {
+    try {
       dispatch({
-        type: USER_UPDATE_PROFILE_FAIL,
+        type: USER_LINK_PROFILE_REQUEST,
+      });
+
+      const { data } = await axios.post(`/patients/link`, body, config);
+
+      dispatch({
+        type: USER_LINK_PROFILE_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      const errorKey = Object.keys(error?.response?.data || {})[0];
+      console.log(error.response.data);
+      dispatch({
+        type: USER_LINK_PROFILE_FAIL,
+        payload: errorKey ? error.response.data[errorKey] : error.message,
       });
     }
-  };
+  } else {
+    dispatch({
+      type: USER_LINK_PROFILE_FAIL,
+    });
+  }
+};
 
-export const clearUserProfileFeedback = () => ({
-  type: USER_PROFILE_CLEAR_FEEDBACK,
-});
+export const updateUserProfile = (id, values) => async (dispatch) => {
+  if (localStorage.getItem('userTokens')) {
+    const userTokens = JSON.parse(localStorage.getItem('userTokens'));
+    const token = userTokens.access;
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `JWT ${token}`,
+      },
+    };
+
+    const body = {
+      first_name: values.first_name,
+      last_name: values.last_name,
+      email: values.email,
+      phone_number: values.phone_number,
+      street: values.street,
+      postal_code: values.postal_code,
+      city: values.city,
+      image: values.image,
+    };
+
+    values?.medicine
+      ?.filter((med) => med !== '')
+      .forEach((med, index) => {
+        body[`medicine[${index}]`] = med;
+      });
+
+    values?.allergies
+      ?.filter((allergy) => allergy !== '')
+      .forEach((allergy, index) => {
+        body[`allergies[${index}]`] = allergy;
+      });
+
+    values?.diseases
+      ?.filter((disease) => disease !== '')
+      .forEach((disease, index) => {
+        body[`diseases[${index}]`] = disease;
+      });
+
+    console.log(body);
+    try {
+      dispatch({
+        type: USER_UPDATE_PROFILE_REQUEST,
+      });
+      console.log(body);
+      const { data } = await axios.patch(`/patients/${id}`, body, config);
+      console.log(body);
+      dispatch({
+        type: USER_UPDATE_PROFILE_SUCCESS,
+        payload: data,
+      });
+      console.log(body);
+    } catch (error) {
+      const errorKey = Object.keys(error?.response?.data || {})[0];
+      console.log(error.response.data);
+      dispatch({
+        type: USER_UPDATE_PROFILE_FAIL,
+        payload: errorKey ? error.response.data[errorKey] : error.message,
+      });
+    }
+  } else {
+    dispatch({
+      type: USER_UPDATE_PROFILE_FAIL,
+    });
+  }
+};

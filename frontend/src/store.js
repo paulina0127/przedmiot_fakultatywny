@@ -6,6 +6,7 @@ import {
   userProfileDetailsReducer,
   userCreateProfileReducer,
   userUpdateProfileReducer,
+  userLinkProfileReducer,
 } from './reducers/userReducer';
 
 const reducer = combineReducers({
@@ -14,6 +15,7 @@ const reducer = combineReducers({
   userProfileDetails: userProfileDetailsReducer,
   userCreateProfile: userCreateProfileReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  userLinkProfile: userLinkProfileReducer,
 
   doctorList: doctorListReducer,
 });

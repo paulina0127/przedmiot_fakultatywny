@@ -10,7 +10,12 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(verbose_name=_("E-mail (login)"), unique=True)
     type = models.CharField(
-        verbose_name=_("Rodzaj"), max_length=50, choices=UserType.choices, default=UserType.NEW
+        verbose_name=_("Rodzaj"),
+        blank=True,
+        null=True,
+        max_length=50,
+        choices=UserType.choices,
+        default=UserType.NEW,
     )
     objects = UserManager()
 

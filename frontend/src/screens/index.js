@@ -9,7 +9,7 @@ import PatientPanelScreen from './Patient/PatientPanelScreen';
 import DoctorPanelScreen from './Doctor/DoctorPanelScreen';
 import ReceptionistPanelScreen from './Receptionist/ReceptionistPanelScreen';
 import PatientProfileScreen from './Patient/PatientProfileScreen';
-import PatientRegistrationScreen from './Patient/PatientRegistrationScreen';
+
 export {
   HomeScreen,
   ActivateAccountScreen,
@@ -22,5 +22,4 @@ export {
   DoctorPanelScreen,
   ReceptionistPanelScreen,
   PatientProfileScreen,
-  PatientRegistrationScreen
 };

@@ -10,8 +10,8 @@ const PatientProfileScreen = () => {
 
   return (
     <section className='up-section'>
-      {user?.profile === null ? (
-        <PatientProfileCreate userId={user?.id} />
+      {user?.type === 'Nowy użytkownik' ? (
+        <PatientProfileCreate />
       ) : (
         <>
           <PatientProfileUpdate userProfile={user?.profile?.id} />

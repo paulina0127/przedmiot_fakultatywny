@@ -128,29 +128,28 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
-export const signup =
-  (type, email, password, re_password) => async (dispatch) => {
-    try {
-      dispatch({
-        type: SIGNUP_REQUEST,
-      });
+export const signup = (email, password, re_password) => async (dispatch) => {
+  try {
+    dispatch({
+      type: SIGNUP_REQUEST,
+    });
 
-      const body = JSON.stringify({ type, email, password, re_password });
+    const body = JSON.stringify({ email, password, re_password });
 
-      const { data } = await axios.post('/auth/users/', body, defaultConfig);
+    const { data } = await axios.post('/auth/users/', body, defaultConfig);
 
-      dispatch({
-        type: SIGNUP_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      const errorKey = Object.keys(error?.response?.data || {})[0];
-      dispatch({
-        type: SIGNUP_FAIL,
-        payload: errorKey ? error.response.data[errorKey] : error.message,
-      });
-    }
-  };
+    dispatch({
+      type: SIGNUP_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const errorKey = Object.keys(error?.response?.data || {})[0];
+    dispatch({
+      type: SIGNUP_FAIL,
+      payload: errorKey ? error.response.data[errorKey] : error.message,
+    });
+  }
+};
 
 export const verify = (uid, token) => async (dispatch) => {
   try {

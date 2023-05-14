@@ -11,10 +11,13 @@ import {
   USER_UPDATE_PROFILE_SUCCESS,
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_RESET,
-  USER_PROFILE_CLEAR_FEEDBACK,
   // USER_DELETE_PROFILE_REQUEST,
   // USER_DELETE_PROFILE_SUCCESS,
   // USER_DELETE_PROFILE_FAIL,
+  USER_LINK_PROFILE_FAIL,
+  USER_LINK_PROFILE_SUCCESS,
+  USER_LINK_PROFILE_RESET,
+  USER_LINK_PROFILE_REQUEST,
 } from '../constants/userConst';
 
 export const userProfileDetailsReducer = (state = {}, action) => {
@@ -26,8 +29,6 @@ export const userProfileDetailsReducer = (state = {}, action) => {
     case USER_DETAILS_PROFILE_FAIL:
     case USER_DETAILS_PROFILE_RESET:
       return { ...state, user: {} };
-    case USER_PROFILE_CLEAR_FEEDBACK:
-      return {};
     default:
       return state;
   }
@@ -43,7 +44,20 @@ export const userCreateProfileReducer = (state = {}, action) => {
       return { loadingCreate: false, errorCreate: action.payload };
     case USER_CREATE_PROFILE_RESET:
       return {};
-    case USER_PROFILE_CLEAR_FEEDBACK:
+    default:
+      return state;
+  }
+};
+
+export const userLinkProfileReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_LINK_PROFILE_REQUEST:
+      return { loadingLink: true };
+    case USER_LINK_PROFILE_SUCCESS:
+      return { loadingLink: false, successLink: true };
+    case USER_LINK_PROFILE_FAIL:
+      return { loadingLink: false, errorLink: action.payload };
+    case USER_LINK_PROFILE_RESET:
       return {};
     default:
       return state;
@@ -59,8 +73,6 @@ export const userUpdateProfileReducer = (state = {}, action) => {
     case USER_UPDATE_PROFILE_FAIL:
       return { loading: false, error: action.payload };
     case USER_UPDATE_PROFILE_RESET:
-      return {};
-    case USER_PROFILE_CLEAR_FEEDBACK:
       return {};
     default:
       return state;

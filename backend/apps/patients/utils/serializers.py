@@ -14,11 +14,11 @@ class PatientSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if self.instance:
-            pesel = data.get('pesel', self.instance.pesel)
-            birthdate = data.get('birthdate', self.instance.birthdate)
+            pesel = data.get("pesel", self.instance.pesel)
+            birthdate = data.get("birthdate", self.instance.birthdate)
         else:
-            pesel = data.get('pesel')
-            birthdate = data.get('birthdate')
+            pesel = data.get("pesel")
+            birthdate = data.get("birthdate")
         if not correct_pesel_birthdate(pesel, birthdate):
             raise serializers.ValidationError("PESEL nie zgadza się z datą urodzenia.")
         return data
@@ -40,21 +40,26 @@ class PatientSerializer(serializers.ModelSerializer):
 
     def validate_city(self, value):
         if any(char.isdigit() for char in str(value)):
-            raise serializers.ValidationError("Nazwa miejscowości nie może zawierać cyfr.")
+            raise serializers.ValidationError(
+                "Nazwa miejscowości nie może zawierać cyfr."
+            )
         return value
 
     def validate_postal_code(self, value):
-        if str(value).count('-') != 1:
-            raise serializers.ValidationError("Kod pocztowy musi mieć jeden myślnik (-).")
-        if not all(char.isdigit() or char == '-' for char in str(value)):
-            raise serializers.ValidationError("Kod pocztowy może zawierać tylko cyfry i myślnik.")
+        if str(value).count("-") != 1:
+            raise serializers.ValidationError(
+                "Kod pocztowy musi mieć jeden myślnik (-)."
+            )
+        if not all(char.isdigit() or char == "-" for char in str(value)):
+            raise serializers.ValidationError(
+                "Kod pocztowy może zawierać tylko cyfry i myślnik."
+            )
         return value
 
 
 class UserLinkPatientSerializer(serializers.Serializer):
     pesel = serializers.CharField(max_length=11, write_only=True)
     link_key = serializers.CharField(max_length=100, write_only=True)
-    user_id = serializers.IntegerField(write_only=True)
 
     def validate_pesel(self, value):
         if not correct_pesel(value):

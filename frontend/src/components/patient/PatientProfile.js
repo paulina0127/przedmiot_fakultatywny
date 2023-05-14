@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { getUserDetails } from '../../actions/userActions';
 import { USER_DETAILS_PROFILE_RESET } from '../../constants/userConst';
 
-export const PatientProfileCreate = ({ userId }) => {
+export const PatientProfileCreate = () => {
   const initialValues = {
     first_name: '',
     last_name: '',
@@ -17,9 +17,9 @@ export const PatientProfileCreate = ({ userId }) => {
     street: '',
     postal_code: '',
     city: '',
-    medicine: [''],
-    allergies: [''],
-    diseases: [''],
+    medicine: [],
+    allergies: [],
+    diseases: [],
     image: null,
   };
 
@@ -28,7 +28,6 @@ export const PatientProfileCreate = ({ userId }) => {
       initialValues={initialValues}
       validate={validatePatientProfile}
       label='Zapisz'
-      userId={userId}
     />
   );
 };

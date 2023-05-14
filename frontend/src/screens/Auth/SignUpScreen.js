@@ -13,9 +13,7 @@ import LayoutAuth from '../../hocs/LayoutAuth';
 import Background from '../../images/register.jpg';
 import styles from './Auth.module.css';
 
-const SignUpScreen = ({ onSubmit, initialValues, isAuthenticated }) => {
-  const [modal, setModal] = useState(false);
-
+const SignUpScreen = ({ signup, isAuthenticated, onClick }) => {
   const validate = object({
     email: string()
       .email('To nie jest prawidłowy adres email')
@@ -33,10 +31,6 @@ const SignUpScreen = ({ onSubmit, initialValues, isAuthenticated }) => {
   const auth = useSelector((state) => state.auth);
   let { error, loading, success } = auth;
 
-  const handleSubmit = (values) => {
-    onSubmit(values);
-  };
-
   if (isAuthenticated) {
     return <Navigate replace to='/panel' />;
   }
@@ -48,14 +42,21 @@ const SignUpScreen = ({ onSubmit, initialValues, isAuthenticated }) => {
         {error && <Message variant='danger'>{error}</Message>}
         {loading && <Loader />}
         <Formik
-          initialValues={initialValues}
+          initialValues={{
+            email: '',
+            password: '',
+            re_password: '',
+          }}
           validationSchema={validate}
-          onSubmit={handleSubmit}
+          onSubmit={(values) => {
+            const { email, password, re_password } = values;
+            signup(email, password, re_password);
+          }}
         >
           {({ values }) => (
             <>
               <Modal
-                show={success && modal}
+                show={success}
                 size='lg'
                 aria-labelledby='contained-modal-title-vcenter'
                 centered
@@ -66,7 +67,9 @@ const SignUpScreen = ({ onSubmit, initialValues, isAuthenticated }) => {
                   </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                  <h5>Sprawdź pocztę i aktywuj konto</h5>
+                  <h5>
+                    Sprawdź pocztę i aktywuj konto lub utwórz kartę pacjenta
+                  </h5>
                   <p>
                     Link aktywacyjny wysłaliśmy na adres:{' '}
                     <span className='highlight'>{values.email}</span>
@@ -74,13 +77,11 @@ const SignUpScreen = ({ onSubmit, initialValues, isAuthenticated }) => {
                 </Modal.Body>
                 <Modal.Footer className='justify-content-center'>
                   <Link className='w-40' to='/logowanie'>
-                    <button className='btnSquare btnPrimaryLight'>
-                      Rozumiem
-                    </button>
+                    <button className='btnSquare btnPrimary'>Rozumiem</button>
                   </Link>
                 </Modal.Footer>
               </Modal>
-              <Form className={styles.form} encType='multipart/form-data'>
+              <Form className={styles.form}>
                 <TextField label='Email' name='email' type='email' />
                 <TextField label='Hasło' name='password' type='password' />
                 <TextField
@@ -95,7 +96,7 @@ const SignUpScreen = ({ onSubmit, initialValues, isAuthenticated }) => {
                     styles.btnPrimaryLight
                   )}
                 >
-                  Dalej
+                  Zarejestruj
                 </button>
               </Form>
             </>
@@ -116,4 +117,4 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
 });
 
-export default connect(mapStateToProps)(SignUpScreen);
+export default connect(mapStateToProps, { signup })(SignUpScreen);
