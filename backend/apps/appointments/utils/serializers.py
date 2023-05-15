@@ -6,10 +6,13 @@ from rest_framework import serializers
 from ..models import Appointment, Prescription
 from .choices import AppointmentStatus
 from ...employees.models import Schedule
+from ...patients.models import Patient
 from ...users.utils.choices import UserType
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
+    patient = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Appointment
         fields = "__all__"
@@ -24,7 +27,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
             doctor = request.data.get('doctor')
             date = request.data.get('date')
         # Get weekday name
-        date = datetime.strptime(date, "%Y-%m-%d").date()
+        if isinstance(date, str):
+            date = datetime.strptime(date, "%Y-%m-%d").date()
         weekday = date.strftime("%A").lower()
 
         # Slot unavailable if weekday is not on the schedule
@@ -72,6 +76,22 @@ class AppointmentSerializer(serializers.ModelSerializer):
         if request.user.type == UserType.PATIENT:
             if value < datetime.now().date():
                 raise serializers.ValidationError("Data nie może być z przeszłości.")
+        return value
+
+
+class PatientCreateAppointmentSerializer(AppointmentSerializer):
+    class Meta:
+        model = Appointment
+        exclude = ('status', 'symptoms', 'medicine', 'recommendations')
+
+
+class ReceptionistCreateAppointmentSerializer(AppointmentSerializer):
+    patient = serializers.PrimaryKeyRelatedField(queryset=Patient.objects.all())
+    status = serializers.ChoiceField(choices=AppointmentStatus)
+
+    class Meta:
+        model = Appointment
+        exclude = ('symptoms', 'medicine', 'recommendations')
 
 
 class PrescriptionSerializer(serializers.ModelSerializer):

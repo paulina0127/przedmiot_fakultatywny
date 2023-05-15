@@ -28,7 +28,7 @@ class AppointmentUpdate(BasePermission):
 
         data = request.data
         if request.user.type == UserType.PATIENT:
-            twelve_hours_ago = datetime.now() - timedelta(hours=12)
+            twelve_hours_ago = datetime.now().date() - timedelta(hours=12)
             if twelve_hours_ago > obj.date:
                 raise PermissionDenied(detail="Wizytę można anulować 12 godzin "
                                               "przed dniem jej rozpoczęcia.")

@@ -13,7 +13,7 @@ class Appointment(models.Model):
         verbose_name=_("Status"),
         max_length=50,
         choices=AppointmentStatus.choices,
-        blank=True,
+        default=AppointmentStatus.TO_BE_CONFIRMED
     )
     date = models.DateField(verbose_name=_("Data"))
     time = models.CharField(
