@@ -1,5 +1,6 @@
-import { Image } from 'react-bootstrap';
-import styles from './DoctorInfo.module.css';
+import { Image } from "react-bootstrap";
+
+import styles from "./DoctorInfo.module.css";
 
 const DoctorInfo = ({ doctor, children }) => {
   return (
@@ -8,7 +9,7 @@ const DoctorInfo = ({ doctor, children }) => {
         <Image
           className={styles.img}
           src={doctor?.image}
-          alt='Doctor Image'
+          alt="Doctor Image"
           roundedCircle
         />
       </div>
@@ -16,9 +17,9 @@ const DoctorInfo = ({ doctor, children }) => {
         <h4 className={styles.h4}>
           {doctor?.specializations
             .map((spec) =>
-              doctor?.gender === 'Kobieta' ? spec.fem_name : spec.name
+              doctor?.gender === "Kobieta" ? spec.fem_name : spec.name
             )
-            .join(', ')}
+            .join(", ")}
         </h4>
         <h3 className={styles.h3}>
           dr {doctor?.first_name} {doctor?.last_name}

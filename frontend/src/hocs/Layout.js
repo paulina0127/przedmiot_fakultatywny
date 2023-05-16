@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { checkAuthenticated, load_user } from '../actions/authActions';
-import { Footer, NavigationBar } from '../components/general';
+import { useEffect } from "react";
+import { connect } from "react-redux";
+import { useLocation } from "react-router-dom";
+
+import { checkAuthenticated, load_user } from "../actions/authActions";
+import { Footer, NavigationBar } from "../components/general";
 
 const Layout = ({ checkAuthenticated, load_user, children }) => {
   useEffect(() => {
@@ -16,11 +17,11 @@ const Layout = ({ checkAuthenticated, load_user, children }) => {
     <>
       <NavigationBar />
       {children}
-      {location.pathname !== '/logowanie' &&
-        location.pathname !== '/rejestracja' &&
-        !location.pathname.startsWith('/przypominanie') &&
-        !location.pathname.startsWith('/resetowanie') &&
-        !location.pathname.startsWith('/aktywacja') && <Footer />}
+      {location.pathname !== "/logowanie" &&
+        location.pathname !== "/rejestracja" &&
+        !location.pathname.startsWith("/przypominanie") &&
+        !location.pathname.startsWith("/resetowanie") &&
+        !location.pathname.startsWith("/aktywacja") && <Footer />}
     </>
   );
 };

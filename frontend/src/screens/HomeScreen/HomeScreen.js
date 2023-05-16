@@ -1,27 +1,29 @@
-import classNames from 'classnames';
-import { BsPerson } from 'react-icons/bs';
-import { CiMedicalCross } from 'react-icons/ci';
-import { IoSchoolOutline } from 'react-icons/io5';
-import { DoctorInfo } from '../../components/general';
-import styles from './HomeScreen.module.css';
-import { doctors } from './doctors';
-import { Navigate } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { BsPerson } from "react-icons/bs";
+import { CiMedicalCross } from "react-icons/ci";
+import { IoSchoolOutline } from "react-icons/io5";
+import { connect } from "react-redux";
+import { Navigate } from "react-router-dom";
+
+import classNames from "classnames";
+
+import { DoctorInfo } from "../../components/general";
+import { doctors } from "./doctors";
+import styles from "./HomeScreen.module.css";
 
 const HomeScreen = ({ isAuthenticated }) => {
   if (isAuthenticated) {
-    return <Navigate replace to='/' />;
+    return <Navigate replace to="/" />;
   }
 
   return (
     <>
       <section
-        className={classNames('hs-section', styles.sectionGradient)}
-        id='about'
+        className={classNames("hs-section", styles.sectionGradient)}
+        id="about"
       >
-        <div className='container'>
-          <div className='row'>
-            <article className='col-lg-8 col-md-12'>
+        <div className="container">
+          <div className="row">
+            <article className="col-lg-8 col-md-12">
               <h1 className={styles.sectionH1}>O przychodni</h1>
               <p>
                 Przychodnia Healthy Care to nowoczesny i profesjonalny ośrodek
@@ -50,23 +52,23 @@ const HomeScreen = ({ isAuthenticated }) => {
                 </div>
               </div>
             </article>
-            <article className={classNames('col', styles.bgImg)}>
+            <article className={classNames("col", styles.bgImg)}>
               <img
-                src={require('../../images/hs-img.png')}
+                src={require("../../images/hs-img.png")}
                 className={styles.hsImg}
-                alt=''
+                alt=""
               />
             </article>
           </div>
         </div>
       </section>
-      <section className='hs-section bg-light-blue' id='internists'>
-        <div className='container'>
-          <div className='row'>
+      <section className="hs-section bg-light-blue" id="internists">
+        <div className="container">
+          <div className="row">
             <h1 className={styles.sectionH1}>Lekarze interniści</h1>
           </div>
-          <div className='row gy-5 '>
-            <div className='col-lg-6 col-12'>
+          <div className="row gy-5 ">
+            <div className="col-lg-6 col-12">
               <DoctorInfo doctor={doctors[0]} />
               <p className={styles.doctorP}>
                 Internista specjalizujący się w chorobach układu
@@ -75,7 +77,7 @@ const HomeScreen = ({ isAuthenticated }) => {
                 medycznych w przystępny sposób.
               </p>
             </div>
-            <div className='col-lg-6 col-12'>
+            <div className="col-lg-6 col-12">
               <DoctorInfo doctor={doctors[1]} />
               <p className={styles.doctorP}>
                 Internistka z wieloletnim doświadczeniem w opiece nad pacjentami
@@ -87,13 +89,13 @@ const HomeScreen = ({ isAuthenticated }) => {
           </div>
         </div>
       </section>
-      <section className='hs-section bg-white' id='specialists'>
-        <div className='container gy-lg-5'>
-          <div className='row'>
+      <section className="hs-section bg-white" id="specialists">
+        <div className="container gy-lg-5">
+          <div className="row">
             <h1 className={styles.sectionH1}>Lekarze specjaliści</h1>
           </div>
-          <div className='row gy-5'>
-            <div className='col-lg-4 col-12'>
+          <div className="row gy-5">
+            <div className="col-lg-4 col-12">
               <DoctorInfo doctor={doctors[2]} />
               <p className={styles.doctorP}>
                 Gastrolog, który specjalizuje się w leczeniu chorób układu
@@ -102,7 +104,7 @@ const HomeScreen = ({ isAuthenticated }) => {
                 diagnostyki oraz skutecznego leczenia pacjentów.
               </p>
             </div>
-            <div className='col-lg-4 col-12'>
+            <div className="col-lg-4 col-12">
               <DoctorInfo doctor={doctors[3]} />
               <p className={styles.doctorP}>
                 Okulistka, która specjalizuje się w leczeniu chorób oczu, takich
@@ -110,7 +112,7 @@ const HomeScreen = ({ isAuthenticated }) => {
                 okulistycznych oraz empatycznego podejścia do swoich pacjentów.
               </p>
             </div>
-            <div className='col-lg-4 col-12'>
+            <div className="col-lg-4 col-12">
               <DoctorInfo doctor={doctors[4]} />
               <p className={styles.doctorP}>
                 Pulmonolog, który specjalizuje się w leczeniu chorób układu

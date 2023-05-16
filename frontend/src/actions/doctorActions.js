@@ -1,25 +1,26 @@
-import axios from 'axios';
+import axios from "axios";
+
 import {
-  DOCTOR_LIST_FAIL,
   DOCTOR_DETAILS_FAIL,
   DOCTOR_DETAILS_REQUEST,
   DOCTOR_DETAILS_SUCCESS,
+  DOCTOR_LIST_FAIL,
   DOCTOR_LIST_REQUEST,
   DOCTOR_LIST_SUCCESS,
-} from '../constants/doctorConsts';
+} from "../constants/doctorConsts";
 
 export const listDoctors = (filters) => async (dispatch) => {
-  let query = '';
+  let query = "";
 
   Object.entries(filters).forEach(([key, value]) => {
-    query = '?';
+    query = "?";
     if (Array.isArray(value)) {
       value.forEach((val) => {
-        if (val !== '') {
+        if (val !== "") {
           query += `${key}=${val}&`;
         }
       });
-    } else if (value !== '') {
+    } else if (value !== "") {
       query += `${key}=${value}&`;
     }
   });
@@ -46,7 +47,7 @@ export const listDoctors = (filters) => async (dispatch) => {
   }
 };
 
-export const listDoctor = (id) => async (dispatch) => {
+export const getDoctor = (id) => async (dispatch) => {
   try {
     dispatch({ type: DOCTOR_DETAILS_REQUEST });
 
@@ -54,7 +55,7 @@ export const listDoctor = (id) => async (dispatch) => {
 
     dispatch({
       type: DOCTOR_DETAILS_SUCCESS,
-      payload: data.results,
+      payload: data,
     });
   } catch (error) {
     const errorKey = Object.keys(error?.response?.data || {})[0];

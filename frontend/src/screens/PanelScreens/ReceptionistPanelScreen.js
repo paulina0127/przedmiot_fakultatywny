@@ -1,11 +1,9 @@
-import { DoctorsMinList } from '../../components/doctor';
-import { PatientsMinList } from '../../components/patient';
-import { Loader } from '../../components/general';
-import { useState } from 'react';
+import { DoctorsMinList } from "../../components/doctor";
+import { PatientsMinList } from "../../components/patient";
 
 function ReceptionistPanelScreen() {
   return (
-    <section className='up-section up-section-grid'>
+    <section className="up-section up-section-grid">
       <PatientsMinList />
       <DoctorsMinList />
     </section>

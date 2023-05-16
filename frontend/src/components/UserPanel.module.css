@@ -62,9 +62,9 @@
 
   .patientForm {
     grid-template-areas:
-      'img img'
-      'personal personal'
-      'address medical';
+      "img img"
+      "personal personal"
+      "address medical";
     align-items: center;
     justify-items: center;
     gap: 16px;
@@ -100,8 +100,8 @@
 
   .patientForm {
     grid-template-areas:
-      'img personal personal address'
-      'img medical medical medical';
+      "img personal personal address"
+      "img medical medical medical";
     align-items: start;
     justify-items: start;
     gap: 16px;

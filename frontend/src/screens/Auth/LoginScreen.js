@@ -1,44 +1,36 @@
-import { connect, useSelector } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
-import { login } from '../../actions/authActions';
-import { object, string } from 'yup';
-import { Form, Formik } from 'formik';
-import classNames from 'classnames';
-import { Loader, Message } from '../../components/general';
-import { TextField } from '../../components/form helpers';
-import LayoutAuth from '../../hocs/LayoutAuth';
-import Background from '../../images/login.jpg';
-import styles from './Auth.module.css';
+import { connect, useSelector } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
+
+import { Form, Formik } from "formik";
+
+import { login } from "../../actions/authActions";
+import { TextField } from "../../components/form helpers";
+import { Loader, Message } from "../../components/general";
+import LayoutAuth from "../../hocs/LayoutAuth";
+import Background from "../../images/login.jpg";
+import { validateLogin } from "../../validators";
+import styles from "./Auth.module.css";
 
 const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
-  const validate = object({
-    email: string()
-      .email('To nie jest prawidłowy adres email')
-      .required('Pole adres email jest obowiązkowe'),
-    password: string().required('Hasło jest obowiązkowe'),
-  });
-
   const auth = useSelector((state) => state.auth);
   let { error, loading, success } = auth;
 
-  // Is the user authenticated?
-  // Redirect them to the user main page
   if (isAuthenticated) {
-    return <Navigate replace to='/' />;
+    return <Navigate replace to="/" />;
   }
 
   return (
     <LayoutAuth bgImage={Background}>
       <div className={styles.formContainer}>
         <h1 className={styles.h1}>Logowanie</h1>
-        {error && <Message variant='danger'>{error}</Message>}
+        {error && <Message variant="danger">{error}</Message>}
         {!disabled && loading && <Loader />}
         <Formik
           initialValues={{
-            email: '',
-            password: '',
+            email: "",
+            password: "",
           }}
-          validationSchema={validate}
+          validationSchema={validateLogin}
           onSubmit={(values) => {
             const { email, password } = values;
             login(email, password);
@@ -47,13 +39,17 @@ const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
           {({ values }) => (
             <>
               <Form className={styles.form}>
-                <TextField label='Email' name='email' type='email' />
-                <TextField label='Hasło' name='password' type='password' />
+                <TextField label="Email" name="email" type="email" />
+                <TextField label="Hasło" name="password" type="password" />
                 <div className={styles.btnGroup}>
-                  <Link className={styles.link} to='/przypominanie-hasła'>
+                  <Link className={styles.link} to="/przypominanie-hasła">
                     Przypomnij hasło
                   </Link>
-                  <button type='submit' className='btnSquare bg-blue clr-white'>
+                  <button
+                    type="submit"
+                    className="btnSquare bg-blue clr-white"
+                    disabled={loading}
+                  >
                     Zaloguj
                   </button>
                 </div>
@@ -63,8 +59,8 @@ const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
         </Formik>
       </div>
       <p className={styles.p}>
-        Nie masz konta?{' '}
-        <Link className={styles.link} to='/rejestracja'>
+        Nie masz konta?{" "}
+        <Link className={styles.link} to="/rejestracja">
           Zarejestruj się
         </Link>
       </p>

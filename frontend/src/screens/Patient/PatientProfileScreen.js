@@ -1,20 +1,25 @@
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+
 import {
   PatientProfileCreate,
   PatientProfileUpdate,
-} from '../../components/patient';
+} from "../../components/patient";
 
 const PatientProfileScreen = () => {
   const auth = useSelector((state) => state.auth);
   const { user } = auth;
 
   return (
-    <section className='up-section'>
-      {user?.type === 'Nowy użytkownik' || user?.profile == null ? (
+    <section className="up-section">
+      {user?.type === "Nowy użytkownik" || user?.profile == null ? (
         <PatientProfileCreate user={user} />
       ) : (
         <>
-          <PatientProfileUpdate user={user} userProfile={user?.profile?.id} />
+          <PatientProfileUpdate
+            user={user}
+            patientExists={true}
+            patientId={user?.profile?.id}
+          />
         </>
       )}
     </section>

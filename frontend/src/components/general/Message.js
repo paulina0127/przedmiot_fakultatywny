@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Alert } from 'react-bootstrap';
+import { useState } from "react";
+import { Alert } from "react-bootstrap";
 
 const Message = ({ variant, children }) => {
   const [show, setShow] = useState(true);

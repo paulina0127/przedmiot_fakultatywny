@@ -1,34 +1,38 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import thunk from 'redux-thunk';
-import { authReducer } from './reducers/authReducer';
-import { doctorListReducer } from './reducers/doctorReducer';
-import { patientListReducer } from './reducers/patientReducer';
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import thunk from "redux-thunk";
+
+import { authReducer } from "./reducers/authReducer";
 import {
-  userProfileDetailsReducer,
-  userCreateProfileReducer,
-  userUpdateProfileReducer,
-  userLinkProfileReducer,
-} from './reducers/userReducer';
+  doctorDetailsReducer,
+  doctorListReducer,
+} from "./reducers/doctorReducer";
+import {
+  patientCreateReducer,
+  patientDetailsReducer,
+  patientLinkReducer,
+  patientListReducer,
+  patientUpdateReducer,
+} from "./reducers/patientReducer";
 
 const reducer = combineReducers({
   auth: authReducer,
 
-  userProfileDetails: userProfileDetailsReducer,
-  userCreateProfile: userCreateProfileReducer,
-  userUpdateProfile: userUpdateProfileReducer,
-  userLinkProfile: userLinkProfileReducer,
-
   doctorList: doctorListReducer,
+  doctorDetails: doctorDetailsReducer,
 
   patientList: patientListReducer,
+  patientDetails: patientDetailsReducer,
+  patientCreate: patientCreateReducer,
+  patientUpdate: patientUpdateReducer,
+  patientLink: patientLinkReducer,
 });
 
-const userTokensFromStorage = localStorage.getItem('userTokens')
-  ? JSON.parse(localStorage.getItem('userTokens'))
+const userTokensFromStorage = localStorage.getItem("userTokens")
+  ? JSON.parse(localStorage.getItem("userTokens"))
   : null;
 
-const userFromStorage = localStorage.getItem('user')
-  ? JSON.parse(localStorage.getItem('user'))
+const userFromStorage = localStorage.getItem("user")
+  ? JSON.parse(localStorage.getItem("user"))
   : null;
 
 export const initialState = {

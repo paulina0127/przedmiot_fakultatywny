@@ -1,24 +1,25 @@
-import { Navbar, Nav, NavDropdown, Container, Image } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { logout } from '../../../actions/authActions';
-import { FaPowerOff } from 'react-icons/fa';
-import { IoIosArrowDropdown } from 'react-icons/io';
-import avatar from '../../../images/avatar.png';
-import logo from '../../../images/logo.png';
-import styles from './NavigationBar.module.css';
+import { Container, Image, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { FaPowerOff } from "react-icons/fa";
+import { IoIosArrowDropdown } from "react-icons/io";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+
+import { logout } from "../../../actions/authActions";
+import avatar from "../../../images/avatar.png";
+import logo from "../../../images/logo.png";
+import styles from "./NavigationBar.module.css";
 
 const NavigationBar = ({ logout, user }) => {
   const guestLinks = () => {
     return (
       <>
-        <Nav.Link as={Link} to='/rejestracja'>
-          <button className='btnSquare bg-dark-blue clr-white'>
+        <Nav.Link as={Link} to="/rejestracja">
+          <button className="btnSquare bg-dark-blue clr-white">
             Rejestracja
           </button>
         </Nav.Link>
-        <Nav.Link as={Link} to='/logowanie'>
-          <button className='btnSquare bg-white clr-black'>Zaloguj się</button>
+        <Nav.Link as={Link} to="/logowanie">
+          <button className="btnSquare bg-white clr-black">Zaloguj się</button>
         </Nav.Link>
       </>
     );
@@ -32,13 +33,13 @@ const NavigationBar = ({ logout, user }) => {
           <div className={styles.user}>
             <Image
               style={{
-                height: '40px',
-                width: '40px',
-                marginRight: '10px',
-                objectFit: 'cover',
+                height: "40px",
+                width: "40px",
+                marginRight: "10px",
+                objectFit: "cover",
               }}
               src={user.profile?.image ? user.profile?.image : avatar}
-              alt='Avatar'
+              alt="Avatar"
               roundedCircle
             />
             {user?.profile
@@ -47,11 +48,11 @@ const NavigationBar = ({ logout, user }) => {
             <IoIosArrowDropdown />
           </div>
         }
-        id='basic-nav-dropdown'
+        id="basic-nav-dropdown"
       >
-        {(user?.type === 'Pacjent' || user?.type === 'Nowy użytkownik') && (
+        {(user?.type === "Pacjent" || user?.type === "Nowy użytkownik") && (
           <>
-            <NavDropdown.Item as={Link} to='/profil'>
+            <NavDropdown.Item as={Link} to="/profil">
               Profil
             </NavDropdown.Item>
             <NavDropdown.Divider />
@@ -65,15 +66,15 @@ const NavigationBar = ({ logout, user }) => {
   };
 
   return (
-    <Navbar collapseOnSelect sticky='top' expand='lg' className={styles.nav}>
+    <Navbar collapseOnSelect sticky="top" expand="lg" className={styles.nav}>
       <Container>
-        <Navbar.Brand as={Link} to='/'>
-          <img alt='Logo' src={logo} height='64px' className='logo' />
+        <Navbar.Brand as={Link} to="/">
+          <img alt="Logo" src={logo} height="64px" className="logo" />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls='responsive-navbar-nav' />
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse
-          id='responsive-navbar-nav'
-          className='justify-content-end gap-3'
+          id="responsive-navbar-nav"
+          className="justify-content-end gap-3"
         >
           <Nav>{user ? authLinks() : guestLinks()}</Nav>
         </Navbar.Collapse>

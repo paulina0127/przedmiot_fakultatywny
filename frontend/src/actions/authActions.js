@@ -1,55 +1,55 @@
+import axios from "axios";
+
 import {
-  ACTIVATION_SUCCESS,
   ACTIVATION_FAIL,
-  AUTHENTICATED_SUCCESS,
+  ACTIVATION_REQUEST,
+  ACTIVATION_SUCCESS,
   AUTHENTICATED_FAIL,
+  AUTHENTICATED_SUCCESS,
+  LOGIN_FAIL,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
-  LOGIN_FAIL,
   LOGOUT,
-  PASSWORD_RESET_REQUEST,
-  PASSWORD_RESET_FAIL,
-  PASSWORD_RESET_SUCCESS,
-  PASSWORD_RESET_CONFIRM_REQUEST,
   PASSWORD_RESET_CONFIRM_FAIL,
+  PASSWORD_RESET_CONFIRM_REQUEST,
   PASSWORD_RESET_CONFIRM_SUCCESS,
+  PASSWORD_RESET_FAIL,
+  PASSWORD_RESET_REQUEST,
+  PASSWORD_RESET_SUCCESS,
+  SIGNUP_FAIL,
   SIGNUP_REQUEST,
   SIGNUP_SUCCESS,
-  SIGNUP_FAIL,
-  USER_LOADED_SUCCESS,
   USER_LOADED_FAIL,
-  ACTIVATION_REQUEST,
-} from '../constants/authConst';
-
-import axios from 'axios';
+  USER_LOADED_SUCCESS,
+} from "../constants/authConst";
 
 const defaultConfig = {
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 };
 
 export const load_user = () => async (dispatch) => {
-  if (localStorage.getItem('userTokens')) {
-    const userTokens = JSON.parse(localStorage.getItem('userTokens'));
+  if (localStorage.getItem("userTokens")) {
+    const userTokens = JSON.parse(localStorage.getItem("userTokens"));
     const token = userTokens.access;
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `JWT ${token}`,
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     };
 
     try {
-      const { data } = await axios.get('/auth/users/me/', config);
+      const { data } = await axios.get("/auth/users/me/", config);
 
       dispatch({
         type: USER_LOADED_SUCCESS,
         payload: data,
       });
 
-      localStorage.setItem('user', JSON.stringify(data));
+      localStorage.setItem("user", JSON.stringify(data));
     } catch (error) {
       dispatch({
         type: USER_LOADED_FAIL,
@@ -63,22 +63,22 @@ export const load_user = () => async (dispatch) => {
 };
 
 export const checkAuthenticated = () => async (dispatch) => {
-  if (localStorage.getItem('userTokens')) {
-    const userTokens = JSON.parse(localStorage.getItem('userTokens'));
+  if (localStorage.getItem("userTokens")) {
+    const userTokens = JSON.parse(localStorage.getItem("userTokens"));
     const token = userTokens.access;
 
     const config = {
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
     };
 
     const body = JSON.stringify({ token: token });
 
     try {
-      const { data } = await axios.post('/auth/jwt/verify/', body, config);
-      if (data.code !== 'token_not_valid') {
+      const { data } = await axios.post("/auth/jwt/verify/", body, config);
+      if (data.code !== "token_not_valid") {
         dispatch({
           type: AUTHENTICATED_SUCCESS,
         });
@@ -109,14 +109,14 @@ export const login = (email, password) => async (dispatch) => {
 
     const body = JSON.stringify({ email, password });
 
-    const { data } = await axios.post('/auth/jwt/create/', body, defaultConfig);
+    const { data } = await axios.post("/auth/jwt/create/", body, defaultConfig);
 
     dispatch({
       type: LOGIN_SUCCESS,
       payload: data,
     });
 
-    localStorage.setItem('userTokens', JSON.stringify(data));
+    localStorage.setItem("userTokens", JSON.stringify(data));
 
     dispatch(load_user());
   } catch (error) {
@@ -136,7 +136,7 @@ export const signup = (email, password, re_password) => async (dispatch) => {
 
     const body = JSON.stringify({ email, password, re_password });
 
-    const { data } = await axios.post('/auth/users/', body, defaultConfig);
+    const { data } = await axios.post("/auth/users/", body, defaultConfig);
 
     dispatch({
       type: SIGNUP_SUCCESS,
@@ -159,7 +159,7 @@ export const verify = (uid, token) => async (dispatch) => {
 
     const body = JSON.stringify({ uid, token });
 
-    await axios.post('/auth/users/activation/', body, defaultConfig);
+    await axios.post("/auth/users/activation/", body, defaultConfig);
 
     dispatch({
       type: ACTIVATION_SUCCESS,
@@ -181,7 +181,7 @@ export const reset_password = (email) => async (dispatch) => {
 
     const body = JSON.stringify({ email });
 
-    await axios.post('/auth/users/reset_password/', body, defaultConfig);
+    await axios.post("/auth/users/reset_password/", body, defaultConfig);
 
     dispatch({
       type: PASSWORD_RESET_SUCCESS,
@@ -210,7 +210,7 @@ export const reset_password_confirm =
       });
 
       await axios.post(
-        '/auth/users/reset_password_confirm/',
+        "/auth/users/reset_password_confirm/",
         body,
         defaultConfig
       );
@@ -228,9 +228,9 @@ export const reset_password_confirm =
   };
 
 export const logout = () => (dispatch) => {
-  window.location.href = '/';
-  localStorage.removeItem('userTokens');
-  localStorage.removeItem('user');
+  window.location.href = "/";
+  localStorage.removeItem("userTokens");
+  localStorage.removeItem("user");
   dispatch({
     type: LOGOUT,
   });

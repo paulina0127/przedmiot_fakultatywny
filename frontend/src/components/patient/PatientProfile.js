@@ -1,22 +1,23 @@
-import { validatePatientProfile } from '../../validators';
-import { PatientForm } from '../patient';
-import { Message, Loader } from '../general';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { getUserDetails } from '../../actions/userActions';
-import { USER_DETAILS_PROFILE_RESET } from '../../constants/userConst';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { getPatient } from "../../actions/patientActions";
+import { PATIENT_DETAILS_RESET } from "../../constants/patientConsts";
+import { validatePatient } from "../../validators";
+import { Loader, Message } from "../general";
+import { PatientForm } from "../patient";
 
 export const PatientProfileCreate = ({ user }) => {
   const initialValues = {
-    first_name: '',
-    last_name: '',
-    pesel: '',
+    first_name: "",
+    last_name: "",
+    pesel: "",
     birthdate: new Date(),
-    email: '',
-    phone_number: '',
-    street: '',
-    postal_code: '',
-    city: '',
+    email: "",
+    phone_number: "",
+    street: "",
+    postal_code: "",
+    city: "",
     medicine: [],
     allergies: [],
     diseases: [],
@@ -27,39 +28,40 @@ export const PatientProfileCreate = ({ user }) => {
     <PatientForm
       user={user}
       initialValues={initialValues}
-      validate={validatePatientProfile}
-      label='Zapisz'
+      validate={validatePatient}
+      label="Zapisz"
     />
   );
 };
 
-export const PatientProfileUpdate = ({ user, userProfile }) => {
+export const PatientProfileUpdate = ({ user, patientId }) => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getUserDetails(userProfile));
+    dispatch(getPatient(patientId));
     return () => {
-      dispatch({ type: USER_DETAILS_PROFILE_RESET });
+      dispatch({ type: PATIENT_DETAILS_RESET });
     };
   }, []);
 
-  const profileDetails = useSelector((state) => state.userProfileDetails);
-  const { error, loading, profile } = profileDetails;
+  const patientDetails = useSelector((state) => state.patientDetails);
+  const { error, loading, patient } = patientDetails;
 
-  const initialValues = profile
+  const initialValues = patient
     ? {
-        first_name: profile.first_name,
-        last_name: profile.last_name,
-        pesel: profile.pesel,
-        birthdate: profile.birthdate,
-        email: profile.email,
-        phone_number: profile.phone_number,
-        street: profile.street,
-        postal_code: profile.postal_code,
-        city: profile.city,
-        medicine: profile.medicine,
-        allergies: profile.allergies,
-        diseases: profile.diseases,
-        image: profile.image,
+        first_name: patient.first_name,
+        last_name: patient.last_name,
+        pesel: patient.pesel,
+        birthdate: patient.birthdate,
+        email: patient.email,
+        phone_number: patient.phone_number,
+        street: patient.street,
+        postal_code: patient.postal_code,
+        city: patient.city,
+        medicine: patient.medicine,
+        allergies: patient.allergies,
+        diseases: patient.diseases,
+        link_key: patient.link_key,
+        image: patient.image,
       }
     : {};
 
@@ -68,15 +70,15 @@ export const PatientProfileUpdate = ({ user, userProfile }) => {
       {loading ? (
         <Loader />
       ) : error ? (
-        <Message variant='danger'>{error}</Message>
-      ) : profile && Object.keys(profile).count === 0 ? null : (
+        <Message variant="danger">{error}</Message>
+      ) : patient && Object.keys(patient).count === 0 ? null : (
         <PatientForm
-          profileExist={true}
-          userProfile={userProfile}
+          patientExists={true}
+          patientId={patientId}
           user={user}
           initialValues={initialValues}
-          validate={validatePatientProfile}
-          label='Zapisz zmiany'
+          validate={validatePatient}
+          label="Zapisz zmiany"
         />
       )}
     </>

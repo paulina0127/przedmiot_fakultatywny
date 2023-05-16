@@ -1,9 +1,10 @@
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
+
 import {
   PatientProfileCreate,
   PatientProfileUpdate,
-} from '../../components/patient';
-import { useLocation, useParams } from 'react-router-dom';
+} from "../../components/patient";
 
 const PatientScreen = () => {
   const auth = useSelector((state) => state.auth);
@@ -12,11 +13,15 @@ const PatientScreen = () => {
   const patient_id = useParams().id;
 
   return (
-    <section className='up-section'>
-      {location.pathname.startsWith('/rejestracja') ? (
+    <section className="up-section">
+      {location.pathname.startsWith("/rejestracja") ? (
         <PatientProfileCreate user={user} />
       ) : (
-        <PatientProfileUpdate user={user} userProfile={patient_id} />
+        <PatientProfileUpdate
+          user={user}
+          patientExists={true}
+          patientId={patient_id}
+        />
       )}
     </section>
   );
