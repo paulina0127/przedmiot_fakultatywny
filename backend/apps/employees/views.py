@@ -1,10 +1,13 @@
 from rest_framework import generics
-from rest_framework.permissions import (AllowAny,
-                                        DjangoModelPermissionsOrAnonReadOnly)
+from rest_framework.permissions import AllowAny, DjangoModelPermissionsOrAnonReadOnly
 
 from .models import Doctor, Schedule, Specialization
-from .utils.serializers import (DoctorSerializer, ScheduleSerializer,
-                                SpecializationSerializer)
+from .utils.serializers import (
+    DoctorSerializer,
+    ScheduleSerializer,
+    SpecializationSerializer,
+)
+from backend.utils.pagination import CustomPagination
 
 
 # Display list of all doctors
@@ -16,6 +19,7 @@ class DoctorList(generics.ListAPIView):
     search_fields = ["first_name", "last_name"]
     ordering_fields = ["id"]
     permission_classes = [AllowAny]
+    pagination_class = CustomPagination
 
 
 # Display single doctor

@@ -21,37 +21,33 @@ const defaultConfig = {
   },
 };
 
+const getAuthHeaders = () => {
+  const userTokens = JSON.parse(localStorage.getItem('userTokens'));
+  const token = userTokens ? userTokens.access : null;
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `JWT ${token}`,
+  };
+};
+
 export const getUserDetails = (id) => async (dispatch) => {
-  if (localStorage.getItem('userTokens')) {
-    const userTokens = JSON.parse(localStorage.getItem('userTokens'));
-    const token = userTokens.access;
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `JWT ${token}`,
-      },
-    };
+  const config = { headers: getAuthHeaders() };
 
-    try {
-      dispatch({ type: USER_DETAILS_PROFILE_REQUEST });
+  try {
+    dispatch({ type: USER_DETAILS_PROFILE_REQUEST });
 
-      const { data } = await axios.get(`/patients/${id}`, config);
+    const { data } = await axios.get(`/patients/${id}`, config);
 
-      dispatch({
-        type: USER_DETAILS_PROFILE_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      const errorKey = Object.keys(error?.response?.data || {})[0];
+    dispatch({
+      type: USER_DETAILS_PROFILE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const errorKey = Object.keys(error?.response?.data || {})[0];
 
-      dispatch({
-        type: USER_DETAILS_PROFILE_FAIL,
-        payload: errorKey ? error.response.data[errorKey] : error.message,
-      });
-    }
-  } else {
     dispatch({
       type: USER_DETAILS_PROFILE_FAIL,
+      payload: errorKey ? error.response.data[errorKey] : error.message,
     });
   }
 };

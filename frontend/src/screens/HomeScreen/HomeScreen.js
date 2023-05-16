@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { BsPerson } from 'react-icons/bs';
 import { CiMedicalCross } from 'react-icons/ci';
 import { IoSchoolOutline } from 'react-icons/io5';
-import { DoctorInfo } from '../../components';
+import { DoctorInfo } from '../../components/general';
 import styles from './HomeScreen.module.css';
 import { doctors } from './doctors';
 import { Navigate } from 'react-router-dom';

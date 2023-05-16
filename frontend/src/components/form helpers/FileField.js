@@ -3,7 +3,6 @@ import { useState } from 'react';
 
 const FileField = ({ label, accept, ...props }) => {
   const [field, meta] = useField(props);
-  const [previewUrl, setPreviewUrl] = useState(null);
 
   const onChange = (e) => {
     field.onChange({
@@ -16,9 +15,6 @@ const FileField = ({ label, accept, ...props }) => {
 
   return (
     <div className='form-group mb-3'>
-      <label htmlFor={field.name} className='mx-2 my-2 text-muted'>
-        {label}
-      </label>
       <input
         id={field.name}
         accept={accept}

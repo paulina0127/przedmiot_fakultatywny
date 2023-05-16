@@ -10,14 +10,19 @@
   /* Colors */
   --clr-white: #fff;
   --clr-white-hover: #dadada;
+  --clr-white-opacity: rgba(255, 255, 255, 0.85);
+
   --clr-black: #303030;
+
   --clr-blue: #51abf3;
   --clr-blue-hover: #4189c2;
+
   --clr-light-blue: #cde7fc;
+
   --clr-dark-blue: #324985;
   --clr-dark-blue-hover: #4362b4;
+
   --clr-footer-blue: #5b8db6;
-  --clr-gray: rgba(0, 0, 0, 0.5);
 
   /* Others */
   --transition: all 0.3s linear;
@@ -59,6 +64,7 @@ img:not(.logo) {
 
 a {
   text-decoration: none;
+  transition: var(--transition);
 }
 
 h1,
@@ -119,12 +125,18 @@ body {
   min-height: calc(100vh - 90px - 175px);
 }
 
+.up-section-grid {
+  display: grid;
+  gap: 32px;
+}
+
 /* White bg for user panel */
 .container-bg {
   padding: 16px 8px;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.85);
+  gap: 16px;
+  background: var(--clr-white-opacity);
   border-radius: var(--radius-primary);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
@@ -134,7 +146,8 @@ body {
   padding: 48px;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.85);
+  gap: 8px;
+  background: var(--clr-white-opacity);
   border: 1px solid var(--clr-dark-blue);
 }
 
@@ -143,6 +156,24 @@ body {
   font-weight: bold;
 }
 
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.paginationBtn {
+  padding: 4px;
+  border: 0;
+  border-radius: 25%;
+  background: var(--clr-light-blue);
+  color: var(--clr-dark-blue);
+}
+
+.paginationBtn:disabled {
+  background: var(--clr-white-hover);
+}
 /* ----------- LAYOUT ----------- */
 .twoColumnGrid {
   display: grid;
@@ -156,7 +187,15 @@ body {
   display: grid;
 }
 
-/* ----------- BACKGROUND ----------- */
+.gridSpanRow {
+  grid-row: span 1;
+}
+
+.gridSpanCol {
+  grid-column: span 1;
+}
+
+/* ----------- BACKGROUNDS & COLORS ----------- */
 .bg-white {
   background: var(--clr-white);
 }
@@ -167,6 +206,26 @@ body {
 
 .bg-blue {
   background: var(--clr-blue);
+}
+
+.bg-dark-blue {
+  background: var(--clr-dark-blue);
+}
+
+.clr-white {
+  color: var(--clr-white);
+}
+
+.clr-black {
+  color: var(--clr-black);
+}
+
+.clr-blue {
+  color: var(--clr-blue);
+}
+
+.clr-dark-blue {
+  color: var(--clr-dark-blue);
 }
 
 /* ----------- BUTTONS ----------- */
@@ -207,33 +266,6 @@ body {
   transition: var(--transition);
 }
 
-.btnPrimary {
-  background: var(--clr-dark-blue);
-  color: var(--clr-white);
-}
-
-.btnPrimary:hover {
-  background: var(--clr-dark-blue-hover);
-}
-
-.btnPrimaryLight {
-  background: var(--clr-blue);
-  color: var(--clr-white);
-}
-
-.btnPrimaryLight:hover {
-  background: var(--clr-blue-hover);
-}
-
-.btnSecondary {
-  background: var(--clr-white);
-  color: var(--clr-black);
-}
-
-.btnSecondary:hover {
-  background: var(--clr-white-hover);
-}
-
 .btnCircle {
   display: grid;
   justify-content: center;
@@ -241,6 +273,21 @@ body {
   height: 40px;
   width: 40px;
   border-radius: 50%;
+}
+
+.btnSquare.bg-dark-blue:hover,
+.btnRound.bg-dark-blue:hover {
+  background: var(--clr-dark-blue-hover);
+}
+
+.btnSquare.bg-blue:hover,
+.btnRound.bg-blue:hover {
+  background: var(--clr-blue-hover);
+}
+
+.btnSquare.bg-white:hover,
+.btnRound.bg-white:hover {
+  background: var(--clr-white-hover);
 }
 
 /* ----------- FORMS ----------- */
@@ -258,6 +305,35 @@ body {
 
 .form-required {
   color: #b10e0e;
+}
+
+.formGroup {
+  padding: 8px;
+}
+
+/* ----------- SCROLLBAR ----------- */
+/* width */
+::-webkit-scrollbar {
+  width: 16px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--clr-dark-blue);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--clr-white);
+  border-top-left-radius: 50rem;
+  border-top-right-radius: 50rem;
+  border-bottom-left-radius: 50rem;
+  border-bottom-right-radius: 50rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clr-white-hover);
 }
 
 /* ----------- MEDIA QUERIES ----------- */
@@ -294,7 +370,7 @@ body {
   }
 
   h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   h4 {
@@ -317,5 +393,18 @@ body {
   .btnSimple {
     min-width: 100px;
     font-size: 16px;
+  }
+
+  .gridSpanRow {
+    grid-row: span 2;
+  }
+
+  .gridSpanRow {
+    grid-column: span 2;
+  }
+
+  .up-section-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: min-content;
   }
 }

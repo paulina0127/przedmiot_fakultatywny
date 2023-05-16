@@ -4,7 +4,8 @@ import { login } from '../../actions/authActions';
 import { object, string } from 'yup';
 import { Form, Formik } from 'formik';
 import classNames from 'classnames';
-import { Loader, Message, TextField } from '../../components';
+import { Loader, Message } from '../../components/general';
+import { TextField } from '../../components/form helpers';
 import LayoutAuth from '../../hocs/LayoutAuth';
 import Background from '../../images/login.jpg';
 import styles from './Auth.module.css';
@@ -52,13 +53,7 @@ const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
                   <Link className={styles.link} to='/przypominanie-hasła'>
                     Przypomnij hasło
                   </Link>
-                  <button
-                    type='submit'
-                    className={classNames(
-                      'btnSquare btnPrimaryLight',
-                      styles.btnPrimaryLight
-                    )}
-                  >
+                  <button type='submit' className='btnSquare bg-blue clr-white'>
                     Zaloguj
                   </button>
                 </div>

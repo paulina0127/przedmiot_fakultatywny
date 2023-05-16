@@ -3,12 +3,11 @@ import { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import { object, ref, string } from 'yup';
-
-import classNames from 'classnames';
 import { Modal } from 'react-bootstrap';
 import { BsSendCheck } from 'react-icons/bs';
 import { signup } from '../../actions/authActions';
-import { Loader, Message, TextField } from '../../components';
+import { Loader, Message } from '../../components/general';
+import { TextField } from '../../components/form helpers';
 import LayoutAuth from '../../hocs/LayoutAuth';
 import Background from '../../images/register.jpg';
 import styles from './Auth.module.css';
@@ -77,7 +76,9 @@ const SignUpScreen = ({ signup, isAuthenticated, onClick }) => {
                 </Modal.Body>
                 <Modal.Footer className='justify-content-center'>
                   <Link className='w-40' to='/logowanie'>
-                    <button className='btnSquare btnPrimary'>Rozumiem</button>
+                    <button className='btnSquare bg-dark-blue clr-white'>
+                      Rozumiem
+                    </button>
                   </Link>
                 </Modal.Footer>
               </Modal>
@@ -89,13 +90,7 @@ const SignUpScreen = ({ signup, isAuthenticated, onClick }) => {
                   name='re_password'
                   type='password'
                 />
-                <button
-                  type='submit'
-                  className={classNames(
-                    'btnSquare btnPrimaryLight',
-                    styles.btnPrimaryLight
-                  )}
-                >
+                <button type='submit' className='btnSquare bg-blue clr-white'>
                   Zarejestruj
                 </button>
               </Form>

@@ -21,7 +21,7 @@ const NewUserPanelScreen = () => {
         </Modal.Body>
         <Modal.Footer className='justify-content-center'>
           <Link className='w-40' to='/profil'>
-            <button className='btnSquare btnPrimary'>
+            <button className='btnSquare bg-dark-blue clr-white'>
               Przejdź do karty zdrowia
             </button>
           </Link>

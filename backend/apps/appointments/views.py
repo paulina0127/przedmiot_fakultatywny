@@ -13,13 +13,24 @@ from apps.employees.models import Schedule
 from apps.users.utils.choices import UserType
 from .models import Appointment, Prescription
 from .utils.choices import AppointmentStatus
-from .utils.email_templates import APPOINTMENT_TO_BE_CONFIRMED, appointment_email_template
-from .utils.permissions import (AppointmentBaseAccess, AppointmentUpdate,
-                                PrescriptionBaseAccess, PrescriptionUpdateDestroy,
-                                IsReceptionistOrAdmin)
-from .utils.serializers import (AppointmentSerializer,
-                                PrescriptionSerializer, PatientCreateAppointmentSerializer,
-                                ReceptionistCreateAppointmentSerializer)
+from .utils.email_templates import (
+    APPOINTMENT_TO_BE_CONFIRMED,
+    appointment_email_template,
+)
+from .utils.permissions import (
+    AppointmentBaseAccess,
+    AppointmentUpdate,
+    PrescriptionBaseAccess,
+    PrescriptionUpdateDestroy,
+    IsReceptionistOrAdmin,
+)
+from .utils.serializers import (
+    AppointmentSerializer,
+    PrescriptionSerializer,
+    PatientCreateAppointmentSerializer,
+    ReceptionistCreateAppointmentSerializer,
+)
+from backend.utils.pagination import CustomPagination
 
 
 # Display list, create appointments
@@ -30,6 +41,7 @@ class AppointmentList(generics.ListCreateAPIView):
     search_fields = ["patient__first_name", "patient__last_name", "patient__pesel"]
     ordering_fields = ["id", "date"]
     permission_classes = [IsAuthenticated, AppointmentBaseAccess]
+    pagination_class = CustomPagination
 
     def get_serializer_class(self):
         if self.request.user.type == UserType.PATIENT:
@@ -42,7 +54,9 @@ class AppointmentList(generics.ListCreateAPIView):
         user = self.request.user
         # Return patient's appointments
         if user.type == UserType.PATIENT:
-            return Appointment.objects.filter(patient=user.patient).exclude(patient=None)
+            return Appointment.objects.filter(patient=user.patient).exclude(
+                patient=None
+            )
         # Return doctor's appointments
         elif user.type == UserType.DOCTOR:
             return Appointment.objects.filter(doctor=user.doctor).exclude(doctor=None)
@@ -56,21 +70,23 @@ class AppointmentList(generics.ListCreateAPIView):
         user = self.request.user
         data = serializer.validated_data
         if user.type == UserType.PATIENT:
-            serializer.validated_data['status'] = AppointmentStatus.TO_BE_CONFIRMED  # set status
-            serializer.fields['patient'].read_only = False
-            serializer.validated_data['patient'] = user.patient
+            serializer.validated_data[
+                "status"
+            ] = AppointmentStatus.TO_BE_CONFIRMED  # set status
+            serializer.fields["patient"].read_only = False
+            serializer.validated_data["patient"] = user.patient
             serializer.save()
             # Email user
             email = APPOINTMENT_TO_BE_CONFIRMED
-            email['body'] += f"{data['doctor']}, {data['date']}, {data['time']}"
-            user.email_user(email['subject'], email['body'])
+            email["body"] += f"{data['doctor']}, {data['date']}, {data['time']}"
+            user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST:
             serializer.save()
             # Email patient user
-            email = appointment_email_template(data['status'])
-            email['body'] += f"{data['doctor']}, {data['date']}, {data['time']}."
-            data['patient'].user.email_user(email['subject'], email['body'])
+            email = appointment_email_template(data["status"])
+            email["body"] += f"{data['doctor']}, {data['date']}, {data['time']}."
+            data["patient"].user.email_user(email["subject"], email["body"])
         else:
             serializer.save()
 
@@ -85,36 +101,47 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
         user = self.request.user
         # Return patient's appointment
         if user.type == UserType.PATIENT:
-            return Appointment.objects.filter(patient=user.patient).exclude(patient=None)
+            return Appointment.objects.filter(patient=user.patient).exclude(
+                patient=None
+            )
         # Return doctor's appointments
         elif user.type == UserType.DOCTOR:
             return Appointment.objects.filter(doctor=user.doctor).exclude(doctor=None)
         # Return appointments without medical data for receptionist and admin
         else:
-            return Appointment.objects.all().exclude(symptoms=None, medicine=None, recommendations=None)
+            return Appointment.objects.all().exclude(
+                symptoms=None, medicine=None, recommendations=None
+            )
 
     def partial_update(self, request, *args, **kwargs):
         # Get object/request values and email patient
         user = self.request.user
         appointment = self.get_object()
-        status = request.data.get('status', appointment.status)
-        doctor = request.data.get('doctor', appointment.doctor)
-        date = request.data.get('date', appointment.date)
-        time = request.data.get('time', appointment.time)
-        patient = request.data.get('patient', appointment.patient)
+        status = request.data.get("status", appointment.status)
+        doctor = request.data.get("doctor", appointment.doctor)
+        date = request.data.get("date", appointment.date)
+        time = request.data.get("time", appointment.time)
+        patient = request.data.get("patient", appointment.patient)
 
         if user.type == UserType.DOCTOR:
-            request.data['status'] = AppointmentStatus.COMPLETED  # set completed by default
-            email = appointment_email_template(request.data['status'])
-            email['body'] += f"{doctor}, {date}, {time}."
-            patient.user.email_user(email['subject'], email['body'])
+            request.data[
+                "status"
+            ] = AppointmentStatus.COMPLETED  # set completed by default
+            email = appointment_email_template(request.data["status"])
+            email["body"] += f"{doctor}, {date}, {time}."
+            patient.user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST:
-            if appointment.status != status or appointment.doctor != doctor \
-                    or appointment.date != date or appointment.time != time or appointment.patient != patient:
+            if (
+                appointment.status != status
+                or appointment.doctor != doctor
+                or appointment.date != date
+                or appointment.time != time
+                or appointment.patient != patient
+            ):
                 email = appointment_email_template(status)
-                email['body'] += f"{doctor}, {date}, {time}."
-                patient.user.email_user(email['subject'], email['body'])
+                email["body"] += f"{doctor}, {date}, {time}."
+                patient.user.email_user(email["subject"], email["body"])
 
         return super().partial_update(request, *args, **kwargs)
 
@@ -144,7 +171,11 @@ class PrescriptionList(generics.ListCreateAPIView):
 class PrescriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PrescriptionSerializer
     name = "prescription"
-    permission_classes = [IsAuthenticated, PrescriptionBaseAccess, PrescriptionUpdateDestroy]
+    permission_classes = [
+        IsAuthenticated,
+        PrescriptionBaseAccess,
+        PrescriptionUpdateDestroy,
+    ]
 
     def get_queryset(self):
         user = self.request.user
@@ -235,15 +266,20 @@ class AvailableSlotsList(generics.ListAPIView):
                 .values_list("time", flat=True)
             )
 
-            # Doctor's availability for the date 
+            # Doctor's availability for the date
             temp = Schedule.objects.filter(
-                Q(start_date__isnull=False) & Q(start_date__lte=date, end_date__gte=date), doctor=doctor)
+                Q(start_date__isnull=False)
+                & Q(start_date__lte=date, end_date__gte=date),
+                doctor=doctor,
+            )
             # First check if there are schedules with start-end dates that include the date
             if temp:
                 doctor_availability = temp.values_list(weekday, flat=True)
             # Else return doctor's fixed schedule
             else:
-                doctor_availability = Schedule.objects.filter(doctor=doctor).values_list(weekday, flat=True)
+                doctor_availability = Schedule.objects.filter(
+                    doctor=doctor
+                ).values_list(weekday, flat=True)
 
             # Delete extra dimension in the list
             if len(doctor_availability) > 0:

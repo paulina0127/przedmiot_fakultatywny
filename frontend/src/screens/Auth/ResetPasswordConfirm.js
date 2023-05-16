@@ -6,7 +6,8 @@ import { reset_password_confirm } from '../../actions/authActions';
 
 import { Modal } from 'react-bootstrap';
 import { BsPersonCheck } from 'react-icons/bs';
-import { Loader, Message, TextField } from '../../components';
+import { Loader, Message } from '../../components/general';
+import { TextField } from '../../components/form helpers';
 import LoginScreen from './LoginScreen';
 
 const ResetPasswordConfirm = ({ reset_password_confirm }) => {
@@ -91,7 +92,7 @@ const ResetPasswordConfirm = ({ reset_password_confirm }) => {
         <Modal.Footer className='justify-content-center'>
           {success ? (
             <Link className='w-40' to='/logowanie'>
-              <button className='btnSquare btnPrimaryLight'>
+              <button className='btnSquare bg-blue clr-white'>
                 Przejdź do logowania
               </button>
             </Link>
@@ -100,7 +101,7 @@ const ResetPasswordConfirm = ({ reset_password_confirm }) => {
               <button
                 type='submit'
                 form='form'
-                className='btnSquare btnPrimaryLight'
+                className='btnSquare bg-blue clr-white'
               >
                 Zmień hasło
               </button>

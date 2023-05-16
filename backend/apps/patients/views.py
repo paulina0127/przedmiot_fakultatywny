@@ -13,6 +13,7 @@ from .utils.permissions import PatientBaseAccess, PatientReadUpdate, IsPatient
 from .utils.serializers import PatientSerializer, UserLinkPatientSerializer
 from apps.users.utils.choices import UserType
 from rest_framework.parsers import MultiPartParser, JSONParser
+from backend.utils.pagination import CustomPagination
 
 User = get_user_model()
 
@@ -61,6 +62,7 @@ class PatientList(generics.ListCreateAPIView):
     ordering_fields = ["id", "birthdate"]
     permission_classes = [~IsPatient, PatientBaseAccess]
     parser_classes = [JSONParser, MultiPartParser]
+    pagination_class = CustomPagination
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -75,11 +77,13 @@ class PatientList(generics.ListCreateAPIView):
 
         # Assign current user (type new) to new patient profile
         elif user.type == UserType.NEW:
-            if hasattr(user, 'patient'):
-                raise ValidationError("Błąd: pacjent jest już przypisany. "
-                                      "Skontaktuj się z administracją.")
-            serializer.fields['user'].read_only = False
-            serializer.validated_data['user'] = user
+            if hasattr(user, "patient"):
+                raise ValidationError(
+                    "Błąd: pacjent jest już przypisany. "
+                    "Skontaktuj się z administracją."
+                )
+            serializer.fields["user"].read_only = False
+            serializer.validated_data["user"] = user
             with transaction.atomic():
                 user.type = UserType.PATIENT
                 user.save()
@@ -94,9 +98,7 @@ class PatientList(generics.ListCreateAPIView):
             return Patient.objects.filter(user=user)
         # Return doctor's patients
         elif user.type == UserType.DOCTOR:
-            return Patient.objects.filter(
-                appointments__doctor=user.doctor
-            ).distinct()
+            return Patient.objects.filter(appointments__doctor=user.doctor).distinct()
         # Return all patients if the user is admin or receptionist
         elif user.type in [UserType.ADMIN, UserType.RECEPTIONIST]:
             return Patient.objects.all()

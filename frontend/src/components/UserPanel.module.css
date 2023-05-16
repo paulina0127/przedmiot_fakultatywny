@@ -9,7 +9,7 @@
 }
 
 .h2 {
-  margin-bottom: 48px;
+  margin-bottom: 16px;
 }
 
 /* ----------- AVATAR ----------- */
@@ -32,11 +32,59 @@
   cursor: pointer;
 }
 
+.avatarIcon {
+  font-size: 16px;
+}
+
+/* ----------- PATIENT FORM ----------- */
+.patientForm {
+  display: grid;
+  place-items: center;
+  gap: 16px;
+}
+
+.medicalGrid {
+  display: grid;
+}
+
+.imgArea {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+}
+
 /* ----------- MEDIA QUERIES ----------- */
 @media screen and (min-width: 768px) {
   .avatarContainer {
     height: 200px;
     width: 200px;
+  }
+
+  .patientForm {
+    grid-template-areas:
+      'img img'
+      'personal personal'
+      'address medical';
+    align-items: center;
+    justify-items: center;
+    gap: 16px;
+  }
+
+  .imgArea {
+    grid-area: img;
+    align-self: start;
+  }
+
+  .personalArea {
+    grid-area: personal;
+  }
+
+  .addressArea {
+    grid-area: address;
+  }
+
+  .medicalArea {
+    grid-area: medical;
   }
 }
 
@@ -44,5 +92,29 @@
   .avatarContainer {
     height: 300px;
     width: 300px;
+  }
+
+  .avatarIcon {
+    font-size: 40px;
+  }
+
+  .patientForm {
+    grid-template-areas:
+      'img personal personal address'
+      'img medical medical medical';
+    align-items: start;
+    justify-items: start;
+    gap: 16px;
+  }
+
+  .imgArea,
+  .personalArea,
+  .addressArea,
+  .medicalArea {
+    width: -webkit-fill-available;
+  }
+
+  .medicalGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

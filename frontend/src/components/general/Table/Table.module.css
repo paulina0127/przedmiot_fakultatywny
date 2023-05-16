@@ -1,0 +1,24 @@
+.th,
+a {
+  color: var(--clr-dark-blue);
+}
+
+.th,
+.td {
+  padding: 8px 0;
+}
+
+.th:first-of-type,
+.td:first-of-type,
+.th:last-of-type,
+.td:last-of-type {
+  text-align: center;
+}
+
+.tr:not(.tr:last-of-type) {
+  border-bottom: 2px solid var(--clr-blue);
+}
+
+.th:first-of-type {
+  min-width: 32px;
+}

@@ -13,10 +13,12 @@ const NavigationBar = ({ logout, user }) => {
     return (
       <>
         <Nav.Link as={Link} to='/rejestracja'>
-          <button className='btnSquare btnPrimary'>Rejestracja</button>
+          <button className='btnSquare bg-dark-blue clr-white'>
+            Rejestracja
+          </button>
         </Nav.Link>
         <Nav.Link as={Link} to='/logowanie'>
-          <button className='btnSquare btnSecondary'>Zaloguj się</button>
+          <button className='btnSquare bg-white clr-black'>Zaloguj się</button>
         </Nav.Link>
       </>
     );

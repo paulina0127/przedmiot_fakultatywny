@@ -10,7 +10,7 @@ const Footer = () => {
     <div className={styles.footer}>
       <div className='container'>
         <div className='row justify-content-between gy-4'>
-          <div className='col-lg-6 col-12 d-flex flex-row gap-3 align-self-center'>
+          <div className='col-lg-6 col-md-6 col-12 d-flex flex-row gap-3 align-self-center'>
             <p>
               <BsTelephone size={'56px'} />
             </p>
@@ -19,7 +19,7 @@ const Footer = () => {
               naszego serwisu
             </p>
           </div>
-          <div className='col-lg-4 col-12'>
+          <div className='col-lg-4 col-md-6 col-12'>
             <div className={'row gy-4'}>
               <div className='col-12'>
                 <h4 className={styles.h4}>Kontakt</h4>

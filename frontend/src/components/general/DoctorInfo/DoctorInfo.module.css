@@ -7,8 +7,8 @@
 }
 
 .imgContainer {
-  height: 100px;
-  width: 100px;
+  height: 80px;
+  width: 80px;
 }
 .img {
   border: 2px solid var(--clr-dark-blue);
@@ -32,7 +32,7 @@
 
 @media screen and (min-width: 992px) {
   .imgContainer {
-    height: 125px;
-    width: 125px;
+    height: 100px;
+    width: 100px;
   }
 }

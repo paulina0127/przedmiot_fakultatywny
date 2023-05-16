@@ -8,6 +8,9 @@ import {
   ResetPasswordConfirm,
   SignUpScreen,
   PatientProfileScreen,
+  DoctorListScreen,
+  PatientListScreen,
+  PatientScreen,
 } from './screens';
 
 const App = () => {
@@ -29,6 +32,10 @@ const App = () => {
               element={<ActivateAccountScreen />}
             />
             <Route path='/profil' element={<PatientProfileScreen />} />
+            <Route path='/rejestracja-pacjenta' element={<PatientScreen />} />
+            <Route path='/lekarze' element={<DoctorListScreen />} />
+            <Route path='/pacjenci' element={<PatientListScreen />} />
+            <Route path='/pacjenci/:id' element={<PatientScreen />} />
           </Routes>
         </Layout>
       </BrowserRouter>

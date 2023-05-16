@@ -2,30 +2,30 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import panel from '../../UserPanel.module.css';
 import DoctorInfo from '../DoctorInfo/DoctorInfo';
-import { Loader, Message } from '../../../components';
-import { DOCTOR_LIST_CLEAR } from '../../../constants/doctorConsts';
+import { Loader, Message } from '../../../components/general';
+import { DOCTOR_LIST_RESET } from '../../../constants/doctorConsts';
 import { listDoctors } from '../../../actions/doctorActions';
 
 const ChooseDoctor = () => {
   const doctorList = useSelector((state) => state.doctorList);
-  const { doctors, loading, length, error } = doctorList;
+  const { doctors, loading, count, error } = doctorList;
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(listDoctors());
+    dispatch(listDoctors({}));
     return () => {
-      dispatch({ type: DOCTOR_LIST_CLEAR });
+      dispatch({ type: DOCTOR_LIST_RESET });
     };
   }, []);
 
   return (
-    <div className='main-container-bg'>
+    <div className='main-container-bg gridSpanCol'>
       <h2 className={panel.h2}>Umów się na wizytę</h2>
       {loading ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
-      ) : length === 0 ? (
+      ) : count === 0 ? (
         <Message variant='danger'>Brak wyników</Message>
       ) : (
         <div className='d-flex flex-column align-items-normal w-100 gap-5'>
@@ -33,7 +33,9 @@ const ChooseDoctor = () => {
             {doctors.slice(0, 2).map((doctor) => (
               <div className='gridCenter gap-2'>
                 <DoctorInfo key={doctor.id} doctor={doctor}>
-                  <button className='btnRound btnPrimary'>Wybierz</button>
+                  <button className='btnRound bg-dark-blue clr-white'>
+                    Wybierz
+                  </button>
                 </DoctorInfo>
               </div>
             ))}
@@ -42,7 +44,9 @@ const ChooseDoctor = () => {
             {doctors.slice(2, 5).map((doctor) => (
               <div className='gridCenter gap-2'>
                 <DoctorInfo key={doctor.id} doctor={doctor}>
-                  <button className='btnRound btnPrimary'>Wybierz</button>
+                  <button className='btnRound bg-dark-blue clr-white'>
+                    Wybierz
+                  </button>
                 </DoctorInfo>
               </div>
             ))}

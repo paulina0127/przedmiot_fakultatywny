@@ -6,7 +6,8 @@ import { reset_password } from '../../actions/authActions';
 import { Modal } from 'react-bootstrap';
 import { BsPersonCheck, BsSendCheck } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
-import { Loader, Message, TextField } from '../../components';
+import { Loader, Message } from '../../components/general';
+import { TextField } from '../../components/form helpers';
 import LoginScreen from './LoginScreen';
 
 const ResetPassword = ({ reset_password }) => {
@@ -65,7 +66,7 @@ const ResetPassword = ({ reset_password }) => {
         <Modal.Footer className='justify-content-center'>
           {success ? (
             <Link className='w-40' to='/logowanie'>
-              <button className='btnSquare btnPrimaryLight'>
+              <button className='btnSquare bg-blue clr-white'>
                 Przejdź do logowania
               </button>
             </Link>
@@ -74,7 +75,7 @@ const ResetPassword = ({ reset_password }) => {
               <button
                 type='submit'
                 form='form'
-                className='btnSquare btnPrimaryLight'
+                className='btnSquare bg-blue clr-white'
               >
                 Wyślij
               </button>

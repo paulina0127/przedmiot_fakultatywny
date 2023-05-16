@@ -25,7 +25,7 @@ export const userProfileDetailsReducer = (state = {}, action) => {
     case USER_DETAILS_PROFILE_REQUEST:
       return { ...state, loading: true };
     case USER_DETAILS_PROFILE_SUCCESS:
-      return { ...state, loading: false, user: action.payload };
+      return { ...state, loading: false, profile: action.payload };
     case USER_DETAILS_PROFILE_FAIL:
     case USER_DETAILS_PROFILE_RESET:
       return { ...state, user: {} };
