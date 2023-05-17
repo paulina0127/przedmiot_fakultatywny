@@ -16,7 +16,7 @@ import {
 } from "../../actions/patientActions";
 import avatar from "../../images/avatar.png";
 import { validatePatientLink } from "../../validators";
-import { FileField, TextField } from "../form helpers";
+import { FileField, TextField } from "../formHelpers";
 import { Loader, Message } from "../general";
 import panel from "../UserPanel.module.css";
 

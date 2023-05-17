@@ -6,10 +6,10 @@ import { Link, useParams } from "react-router-dom";
 import { Form, Formik } from "formik";
 
 import { reset_password_confirm } from "../../actions/authActions";
-import { TextField } from "../../components/form helpers";
+import { TextField } from "../../components/formHelpers";
 import { Loader, Message } from "../../components/general";
-import LoginScreen from "./LoginScreen";
 import { validateResetPasswordConfirm } from "../../validators";
+import LoginScreen from "./LoginScreen";
 
 const ResetPasswordConfirm = ({ reset_password_confirm }) => {
   const uid = useParams().uid;
@@ -88,7 +88,8 @@ const ResetPasswordConfirm = ({ reset_password_confirm }) => {
               <button
                 type="submit"
                 form="form"
-                className="btnSquare bg-blue clr-white" disabled={loading}
+                className="btnSquare bg-blue clr-white"
+                disabled={loading}
               >
                 Zmień hasło
               </button>

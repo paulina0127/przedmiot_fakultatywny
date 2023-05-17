@@ -1,22 +1,22 @@
-import ActivateAccountScreen from "./Auth/ActivateAccountScreen";
-import LoginScreen from "./Auth/LoginScreen";
-import ResetPassword from "./Auth/ResetPassword";
-import ResetPasswordConfirm from "./Auth/ResetPasswordConfirm";
-import SignUpScreen from "./Auth/SignUpScreen";
-import DoctorListScreen from "./General/DoctorListScreen";
-import DoctorScreen from "./General/DoctorScreen";
-import PatientListScreen from "./General/PatientListScreen";
-import PatientScreen from "./General/PatientScreen";
+import AppointmentScreen from "./appointment/AppointmentScreen";
+import ActivateAccountScreen from "./auth/ActivateAccountScreen";
+import LoginScreen from "./auth/LoginScreen";
+import ResetPassword from "./auth/ResetPassword";
+import ResetPasswordConfirm from "./auth/ResetPasswordConfirm";
+import SignUpScreen from "./auth/SignUpScreen";
+import DoctorListScreen from "./doctor/DoctorListScreen";
+import DoctorScreen from "./doctor/DoctorScreen";
 import HomeScreen from "./HomeScreen/HomeScreen";
 import MainScreen from "./MainScreen";
-import DoctorPanelScreen from "./PanelScreens/DoctorPanelScreen";
-import NewUserPanelScreen from "./PanelScreens/NewUserPanelScreen";
-import PatientPanelScreen from "./PanelScreens/PatientPanelScreen";
-import ReceptionistPanelScreen from "./PanelScreens/ReceptionistPanelScreen";
+import DoctorPanelScreen from "./panel/DoctorPanelScreen";
+import NewUserPanelScreen from "./panel/NewUserPanelScreen";
+import PatientPanelScreen from "./panel/PatientPanelScreen";
+import ReceptionistPanelScreen from "./panel/ReceptionistPanelScreen";
+import PatientListScreen from "./patient/PatientListScreen";
+import PatientScreen from "./patient/PatientScreen";
 
 export {
   ActivateAccountScreen,
-  LoginScreen,
   ResetPassword,
   ResetPasswordConfirm,
   SignUpScreen,
@@ -30,4 +30,6 @@ export {
   DoctorListScreen,
   PatientListScreen,
   DoctorScreen,
+  LoginScreen,
+  AppointmentScreen,
 };

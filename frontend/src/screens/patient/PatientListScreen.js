@@ -16,8 +16,13 @@ const PatientListScreen = () => {
   const { patients, loading, count, error } = patientList;
 
   const dispatch = useDispatch();
+
+  const params = {
+    page: page,
+  };
+
   useEffect(() => {
-    dispatch(listPatients({ page: page }));
+    dispatch(listPatients(params));
     return () => {
       dispatch({ type: PATIENT_LIST_RESET });
     };
@@ -30,8 +35,6 @@ const PatientListScreen = () => {
   const handleClickForward = () => {
     setPage(page + 1);
   };
-
-  console.log(count);
 
   return (
     <section className="up-section">

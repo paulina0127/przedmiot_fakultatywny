@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { listDoctors } from "../../../actions/doctorActions";
 import { Loader, Message } from "../../../components/general";
@@ -34,9 +35,11 @@ const ChooseDoctor = () => {
             {doctors.slice(0, 2).map((doctor) => (
               <div className="gridCenter gap-2">
                 <DoctorInfo key={doctor.id} doctor={doctor}>
-                  <button className="btnRound bg-dark-blue clr-white">
-                    Wybierz
-                  </button>
+                  <Link to={`/nowa-wizyta/${doctor?.id}`}>
+                    <button className="btnRound bg-dark-blue clr-white">
+                      Wybierz
+                    </button>
+                  </Link>
                 </DoctorInfo>
               </div>
             ))}
@@ -45,9 +48,11 @@ const ChooseDoctor = () => {
             {doctors.slice(2, 5).map((doctor) => (
               <div className="gridCenter gap-2">
                 <DoctorInfo key={doctor.id} doctor={doctor}>
-                  <button className="btnRound bg-dark-blue clr-white">
-                    Wybierz
-                  </button>
+                  <Link to={`/nowa-wizyta/${doctor?.id}`}>
+                    <button className="btnRound bg-dark-blue clr-white">
+                      Wybierz
+                    </button>
+                  </Link>
                 </DoctorInfo>
               </div>
             ))}

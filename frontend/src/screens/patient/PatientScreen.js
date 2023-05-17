@@ -13,14 +13,14 @@ const PatientScreen = () => {
   return (
     <section className="up-section">
       {user?.type === "Nowy użytkownik" ||
-      (user?.type == "Recepcjonista" &&
+      (user?.type === "Recepcjonista" &&
         location.pathname.startsWith("/rejestracja")) ? (
         <PatientCreate user={user} />
       ) : (
         <PatientUpdate
           user={user}
           patientExists={true}
-          patientId={user?.type == "Pacjent" ? user?.profile?.id : patient_id}
+          patientId={user?.type === "Pacjent" ? user?.profile?.id : patient_id}
         />
       )}
     </section>

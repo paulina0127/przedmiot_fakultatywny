@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
-import { DoctorRead } from "../../components/doctor";
+import AppointmentForm from "../../components/appointment/AppointmentForm";
 
-const DoctorScreen = () => {
+const AppointmentScreen = () => {
   const auth = useSelector((state) => state.auth);
   const { user } = auth;
 
@@ -12,9 +12,13 @@ const DoctorScreen = () => {
 
   return (
     <section className="up-section">
-      <DoctorRead doctorId={doctor_id} />
+      {location.pathname.startsWith("/nowa") ? (
+        <AppointmentForm doctorId={doctor_id} />
+      ) : (
+        <AppointmentForm />
+      )}
     </section>
   );
 };
 
-export default DoctorScreen;
+export default AppointmentScreen;

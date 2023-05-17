@@ -1,8 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import AppointmentForm from "./components/appointment/AppointmentForm";
 import Layout from "./hocs/Layout";
 import {
   ActivateAccountScreen,
+  AppointmentScreen,
   DoctorListScreen,
   DoctorScreen,
   LoginScreen,
@@ -20,6 +22,7 @@ const App = () => {
       <BrowserRouter>
         <Layout>
           <Routes>
+            {/* Auth */}
             <Route path="/" element={<MainScreen />} exact />
             <Route path="/logowanie" element={<LoginScreen />} />
             <Route path="/rejestracja" element={<SignUpScreen />} />
@@ -32,12 +35,22 @@ const App = () => {
               path="/aktywacja-konta/:uid/:token"
               element={<ActivateAccountScreen />}
             />
+
+            {/* Profile & account */}
             <Route path="/profil" element={<PatientScreen />} />
-            <Route path="/rejestracja-pacjenta" element={<PatientScreen />} />
+            {/* <Route path="/konto" element={<AccountScreen />} /> */}
+
+            {/* Doctors */}
             <Route path="/lekarze" element={<DoctorListScreen />} />
             <Route path="/lekarze/:id" element={<DoctorScreen />} />
+
+            {/* Patients */}
+            <Route path="/rejestracja-pacjenta" element={<PatientScreen />} />
             <Route path="/pacjenci" element={<PatientListScreen />} />
             <Route path="/pacjenci/:id" element={<PatientScreen />} />
+
+            {/* Appointments */}
+            <Route path="/nowa-wizyta/:id" element={<AppointmentScreen />} />
           </Routes>
         </Layout>
       </BrowserRouter>

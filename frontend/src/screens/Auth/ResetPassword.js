@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Form, Formik } from "formik";
 
 import { reset_password } from "../../actions/authActions";
-import { TextField } from "../../components/form helpers";
+import { TextField } from "../../components/formHelpers";
 import { Loader, Message } from "../../components/general";
 import { validateResetPassword } from "../../validators";
 import LoginScreen from "./LoginScreen";
@@ -46,9 +46,8 @@ const ResetPassword = ({ reset_password }) => {
                 onSubmit={(values, { resetForm }) => {
                   const { email } = values;
                   reset_password(email);
-                  {
-                    success && resetForm({ values: "" });
-                  }
+
+                  success && resetForm({ values: "" });
                 }}
               >
                 {({ values }) => (

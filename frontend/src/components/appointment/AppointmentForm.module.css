@@ -1,0 +1,44 @@
+.appointmentForm {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+.h3 {
+  margin-bottom: 20px;
+  color: var(--clr-blue);
+  text-align: center;
+}
+
+/* ----------- SLOTS ----------- */
+.slotsContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: min-content;
+  gap: 16px;
+}
+
+.slot {
+  padding: 4px;
+  height: fit-content;
+  width: 70px;
+  background: none;
+  border-radius: 50rem;
+  border: 1px solid var(--clr-dark-blue);
+  color: var(--clr-dark-blue);
+  text-align: center;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.slot:hover {
+  background: var(--clr-light-blue);
+}
+
+input[type="radio"]:checked + .slot {
+  background: var(--clr-dark-blue);
+  color: var(--clr-white);
+}
+
+input[type="radio"] {
+  display: none;
+}
