@@ -1,12 +1,12 @@
+import { PatientCreate, PatientUpdate } from "./PatientCRUD";
 import PatientForm from "./PatientForm";
-import { PatientProfileCreate, PatientProfileUpdate } from "./PatientProfile";
-import Patients from "./Patients";
 import PatientsMinList from "./PatientsMinList";
+import PatientsTable from "./PatientsTable";
 
 export {
   PatientForm,
-  PatientProfileCreate,
-  PatientProfileUpdate,
-  Patients,
+  PatientCreate,
+  PatientUpdate,
+  PatientsTable,
   PatientsMinList,
 };

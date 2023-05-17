@@ -4,10 +4,10 @@ import Layout from "./hocs/Layout";
 import {
   ActivateAccountScreen,
   DoctorListScreen,
+  DoctorScreen,
   LoginScreen,
   MainScreen,
   PatientListScreen,
-  PatientProfileScreen,
   PatientScreen,
   ResetPassword,
   ResetPasswordConfirm,
@@ -32,9 +32,10 @@ const App = () => {
               path="/aktywacja-konta/:uid/:token"
               element={<ActivateAccountScreen />}
             />
-            <Route path="/profil" element={<PatientProfileScreen />} />
+            <Route path="/profil" element={<PatientScreen />} />
             <Route path="/rejestracja-pacjenta" element={<PatientScreen />} />
             <Route path="/lekarze" element={<DoctorListScreen />} />
+            <Route path="/lekarze/:id" element={<DoctorScreen />} />
             <Route path="/pacjenci" element={<PatientListScreen />} />
             <Route path="/pacjenci/:id" element={<PatientScreen />} />
           </Routes>

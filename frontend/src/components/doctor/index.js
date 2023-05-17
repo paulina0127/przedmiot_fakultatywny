@@ -1,4 +1,5 @@
-import Doctors from "./Doctors";
+import { DoctorRead } from "./DoctorCRUD";
 import DoctorsMinList from "./DoctorsMinList";
+import DoctorsTable from "./DoctorsTable";
 
-export { Doctors, DoctorsMinList };
+export { DoctorsTable, DoctorsMinList, DoctorRead };

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { Row, Table } from "../general";
 
-const Doctors = ({ doctors }) => {
+const DoctorsTable = ({ doctors }) => {
   return (
     <Table headers={["Imię", "Nazwisko", "Specjalizacje", "Karta lekarza"]}>
       {doctors.map((doctor, index) => (
@@ -30,4 +30,4 @@ const Doctors = ({ doctors }) => {
   );
 };
 
-export default Doctors;
+export default DoctorsTable;

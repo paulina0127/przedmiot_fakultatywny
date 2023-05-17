@@ -1,3 +1,7 @@
+.table {
+  height: fit-content;
+}
+
 .th,
 a {
   color: var(--clr-dark-blue);

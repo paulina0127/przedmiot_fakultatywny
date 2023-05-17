@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { Doctors } from ".";
+import { DoctorsTable } from ".";
 import { listDoctors } from "../../actions/doctorActions";
 import { Loader, Message } from "../../components/general";
 import { DOCTOR_LIST_RESET } from "../../constants/doctorConsts";
@@ -31,7 +31,7 @@ function DoctorsMinList() {
         <Message variant="danger">Brak wyników</Message>
       ) : (
         <>
-          <Doctors doctors={doctors} />
+          <DoctorsTable doctors={doctors} />
 
           <Link to="/lekarze" className="align-self-center">
             <button className="btnRound bg-dark-blue clr-white">

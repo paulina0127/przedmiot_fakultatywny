@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { listDoctors } from "../../actions/doctorActions";
-import Doctors from "../../components/doctor/Doctors";
+import { DoctorsTable } from "../../components/doctor";
 import { Loader, Message, Pagination } from "../../components/general";
 import panel from "../../components/UserPanel.module.css";
 import { DOCTOR_LIST_RESET } from "../../constants/doctorConsts";
@@ -34,19 +34,28 @@ const DoctorListScreen = () => {
   return (
     <section className="up-section">
       <div className="container container-bg">
-        <h2 className={panel.h2}>Lekarze</h2>
-        {loading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant="danger">{error}</Message>
-        ) : count === 0 ? (
-          <Message variant="danger">Brak wyników</Message>
-        ) : (
-          <>
-            <button className="btnRound bg-blue clr-white align-self-end mx-4">
-              Filtry
-            </button>
-            <Doctors doctors={doctors} />
+        <div className="container-bg-content">
+          <h2 className={panel.h2}>Lekarze</h2>
+          {loading ? (
+            <Loader />
+          ) : error ? (
+            <Message variant="danger">{error}</Message>
+          ) : count === 0 || typeof count === "undefined" ? (
+            <Message variant="danger">Brak wyników</Message>
+          ) : (
+            <>
+              <button
+                className="btnRound bg-blue clr-white mx-4"
+                style={{ justifySelf: "end" }}
+              >
+                Filtry
+              </button>
+              <DoctorsTable doctors={doctors} />
+            </>
+          )}
+        </div>
+        {loading ? null : (
+          <div className="container-bg-pagination">
             <Pagination
               page={page}
               pageSize={pageSize}
@@ -54,7 +63,7 @@ const DoctorListScreen = () => {
               clickBack={handleClickBack}
               clickForward={handleClickForward}
             />
-          </>
+          </div>
         )}
       </div>
     </section>

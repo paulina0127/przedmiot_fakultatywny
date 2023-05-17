@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { Row, Table } from "../general";
 
-const Patients = ({ patients, min }) => {
+const PatientsTable = ({ patients, min }) => {
   const headers = min
     ? ["Imię", "Nazwisko", "Data urodzenia", "Karta pacjenta"]
     : [
@@ -35,4 +35,4 @@ const Patients = ({ patients, min }) => {
   );
 };
 
-export default Patients;
+export default PatientsTable;

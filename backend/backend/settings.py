@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "djoser",
     "corsheaders",
     "django_filters",
-    "django_cleanup.apps.CleanupConfig"
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
@@ -177,6 +177,7 @@ DOMAIN = "localhost:3000"
 SITE_NAME = "Healthy Care"
 
 DJOSER = {
+    "TOKEN_MODEL": None,
     "LOGIN_FIELD": "email",
     "USER_CREATE_PASSWORD_RETYPE": True,
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,

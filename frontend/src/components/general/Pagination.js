@@ -4,25 +4,27 @@ function Pagination({ page, pageSize, count, clickBack, clickForward }) {
   const pages = Math.ceil(count / pageSize);
 
   return (
-    <div className="paginationContainer">
-      <button
-        onClick={clickBack}
-        disabled={page === 1}
-        className="paginationBtn"
-      >
-        <AiOutlineArrowLeft size="1.5rem" />
-      </button>
-      <div>
-        {page} z {pages}
+    !isNaN(pages) && (
+      <div className="paginationContainer">
+        <button
+          onClick={clickBack}
+          disabled={page === 1}
+          className="paginationBtn"
+        >
+          <AiOutlineArrowLeft size="1.5rem" />
+        </button>
+        <div>
+          {page} z {pages}
+        </div>
+        <button
+          onClick={clickForward}
+          disabled={page === pages}
+          className="paginationBtn"
+        >
+          <AiOutlineArrowRight size="1.5rem" />
+        </button>
       </div>
-      <button
-        onClick={clickForward}
-        disabled={page === pages}
-        className="paginationBtn"
-      >
-        <AiOutlineArrowRight size="1.5rem" />
-      </button>
-    </div>
+    )
   );
 }
 

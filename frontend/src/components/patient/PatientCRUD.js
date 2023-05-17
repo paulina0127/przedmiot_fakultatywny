@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { PatientForm } from ".";
 import { getPatient } from "../../actions/patientActions";
 import { PATIENT_DETAILS_RESET } from "../../constants/patientConsts";
 import { validatePatient } from "../../validators";
 import { Loader, Message } from "../general";
-import { PatientForm } from "../patient";
 
-export const PatientProfileCreate = ({ user }) => {
+export const PatientCreate = ({ user }) => {
   const initialValues = {
     first_name: "",
     last_name: "",
@@ -34,7 +34,7 @@ export const PatientProfileCreate = ({ user }) => {
   );
 };
 
-export const PatientProfileUpdate = ({ user, patientId }) => {
+export const PatientUpdate = ({ user, patientId }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getPatient(patientId));

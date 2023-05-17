@@ -4,6 +4,7 @@ import ResetPassword from "./Auth/ResetPassword";
 import ResetPasswordConfirm from "./Auth/ResetPasswordConfirm";
 import SignUpScreen from "./Auth/SignUpScreen";
 import DoctorListScreen from "./General/DoctorListScreen";
+import DoctorScreen from "./General/DoctorScreen";
 import PatientListScreen from "./General/PatientListScreen";
 import PatientScreen from "./General/PatientScreen";
 import HomeScreen from "./HomeScreen/HomeScreen";
@@ -12,7 +13,6 @@ import DoctorPanelScreen from "./PanelScreens/DoctorPanelScreen";
 import NewUserPanelScreen from "./PanelScreens/NewUserPanelScreen";
 import PatientPanelScreen from "./PanelScreens/PatientPanelScreen";
 import ReceptionistPanelScreen from "./PanelScreens/ReceptionistPanelScreen";
-import PatientProfileScreen from "./Patient/PatientProfileScreen";
 
 export {
   ActivateAccountScreen,
@@ -24,10 +24,10 @@ export {
   PatientPanelScreen,
   DoctorPanelScreen,
   ReceptionistPanelScreen,
-  PatientProfileScreen,
+  PatientScreen,
   NewUserPanelScreen,
   HomeScreen,
   DoctorListScreen,
   PatientListScreen,
-  PatientScreen,
+  DoctorScreen,
 };

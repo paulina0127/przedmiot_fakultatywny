@@ -118,9 +118,9 @@ body {
   background: var(--clr-light-blue)
     linear-gradient(
       42deg,
-      rgba(254, 205, 255, 0.9864320728291317) 0%,
+      rgba(205, 255, 238, 0.986) 0%,
       rgba(205, 231, 252, 1) 48%,
-      rgba(205, 231, 252, 1) 100%
+      rgb(205, 217, 252) 100%
     );
   min-height: calc(100vh - 90px - 175px);
 }
@@ -132,13 +132,25 @@ body {
 
 /* White bg for user panel */
 .container-bg {
+  min-height: 500px;
   padding: 16px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  grid-auto-rows: min-content 1fr;
   background: var(--clr-white-opacity);
   border-radius: var(--radius-primary);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: var(--transition);
+}
+
+.container-bg-pagination {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.container-bg-content {
+  display: grid;
+  gap: 16px;
 }
 
 /* White bg for main user panel */
@@ -149,6 +161,7 @@ body {
   gap: 8px;
   background: var(--clr-white-opacity);
   border: 1px solid var(--clr-dark-blue);
+  transition: var(--transition);
 }
 
 .highlight {
@@ -162,6 +175,7 @@ body {
   justify-content: center;
   align-items: center;
   gap: 8px;
+  align-self: end;
 }
 
 .paginationBtn {
@@ -239,6 +253,7 @@ body {
 
 .btnSquare {
   padding: 10px 16px;
+  height: fit-content;
   width: fit-content;
   font: bold 16px var(--ff-primary);
   border: 0;
@@ -249,6 +264,7 @@ body {
 
 .btnRound {
   padding: 10px 16px;
+  height: fit-content;
   width: fit-content;
   font: bold 14px var(--ff-primary);
   border: 0;
@@ -259,6 +275,7 @@ body {
 
 .btnSimple {
   padding: 10px 16px;
+  height: fit-content;
   width: fit-content;
   font: bold 14px var(--ff-primary);
   color: var(--clr-dark-blue);
