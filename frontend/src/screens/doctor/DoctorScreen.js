@@ -18,7 +18,7 @@ const DoctorScreen = () => {
 
   return (
     <section className="up-section">
-      <div className="container container-bg">
+      <div className="container container-bg container-bg-tabs">
         <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
           <Tab eventKey="profile" title="Karta lekarza" tabClassName="firstTab">
             <DoctorRead doctorId={doctor_id} />

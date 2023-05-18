@@ -4,7 +4,7 @@ function Pagination({ page, pageSize, count, clickBack, clickForward }) {
   const pages = Math.ceil(count / pageSize);
 
   return (
-    !isNaN(pages) && (
+    (!isNaN(pages) || pages === 0) && (
       <div className="paginationContainer">
         <button
           onClick={clickBack}

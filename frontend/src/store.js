@@ -13,6 +13,7 @@ import {
   patientListReducer,
   patientUpdateReducer,
 } from "./reducers/patientReducer";
+import { slotsListReducer } from "./reducers/statsAndSlotsReducer";
 
 const reducer = combineReducers({
   auth: authReducer,
@@ -25,6 +26,8 @@ const reducer = combineReducers({
   patientCreate: patientCreateReducer,
   patientUpdate: patientUpdateReducer,
   patientLink: patientLinkReducer,
+
+  slotsList: slotsListReducer,
 });
 
 const userTokensFromStorage = localStorage.getItem("userTokens")

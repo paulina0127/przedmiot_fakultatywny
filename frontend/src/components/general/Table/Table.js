@@ -6,7 +6,7 @@ const Table = ({ headers, children }) => {
       <thead>
         <tr className={styles.tr}>
           <th className={styles.th}>#</th>
-          {headers.map((header, index) => (
+          {headers?.map((header, index) => (
             <th
               key={index}
               className={styles.th}

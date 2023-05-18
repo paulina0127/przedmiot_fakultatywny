@@ -22,7 +22,7 @@ const PatientsTable = ({ patients, min }) => {
 
   return (
     <Table headers={headers}>
-      {patients.map((patient, index) => (
+      {patients?.map((patient, index) => (
         <Row key={index} number={index} object={patient} values={values}>
           {
             <Link to={`/pacjenci/${patient?.id}`}>

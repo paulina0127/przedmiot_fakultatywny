@@ -4,7 +4,7 @@ import validateResetPasswordConfirm from "./auth/validateResetPasswordConfirm";
 import validateSignUp from "./auth/validateSignUp";
 import validatePatient from "./validatePatient";
 import validatePatientLink from "./validatePatientLink";
-
+import validateAppointment from "./validateAppointment";
 export {
   validatePatient,
   validateResetPassword,
@@ -12,4 +12,5 @@ export {
   validateLogin,
   validateResetPasswordConfirm,
   validateSignUp,
+  validateAppointment
 };

@@ -1,20 +1,8 @@
 import { Spinner } from "react-bootstrap";
 
-const Loader = () => {
+const Loader = ({ style }) => {
   return (
-    <Spinner
-      animation="border"
-      role="status"
-      style={{
-        height: "50px",
-        width: "50px",
-        margin: "auto",
-        display: "block",
-        marginTop: "1.5rem",
-        marginBottom: "1.5rem",
-        color: "var(--clr-dark-blue)",
-      }}
-    >
+    <Spinner animation="border" role="status" className="loader" style={style}>
       <span className="visually-hidden">Loading...</span>
     </Spinner>
   );

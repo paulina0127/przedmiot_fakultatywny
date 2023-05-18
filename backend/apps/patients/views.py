@@ -14,6 +14,7 @@ from .utils.serializers import PatientSerializer, UserLinkPatientSerializer
 from apps.users.utils.choices import UserType
 from rest_framework.parsers import MultiPartParser, JSONParser
 from backend.utils.pagination import CustomPagination
+from .utils.filters import PatientFilter
 
 User = get_user_model()
 
@@ -60,6 +61,7 @@ class PatientList(generics.ListCreateAPIView):
     name = "patients"
     search_fields = ["first_name", "last_name", "pesel"]
     ordering_fields = ["id", "birthdate"]
+    filterset_class = PatientFilter
     permission_classes = [~IsPatient, PatientBaseAccess]
     parser_classes = [JSONParser, MultiPartParser]
     pagination_class = CustomPagination

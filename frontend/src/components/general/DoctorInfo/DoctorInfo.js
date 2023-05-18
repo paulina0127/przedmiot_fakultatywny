@@ -16,7 +16,7 @@ const DoctorInfo = ({ doctor, children }) => {
       <div>
         <h4 className={styles.h4}>
           {doctor?.specializations
-            .map((spec) =>
+            ?.map((spec) =>
               doctor?.gender === "Kobieta" ? spec.fem_name : spec.name
             )
             .join(", ")}

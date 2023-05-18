@@ -7,7 +7,7 @@ import { Row, Table } from "../general";
 const DoctorsTable = ({ doctors }) => {
   return (
     <Table headers={["Imię", "Nazwisko", "Specjalizacje", "Karta lekarza"]}>
-      {doctors.map((doctor, index) => (
+      {doctors?.map((doctor, index) => (
         <Row
           key={index}
           number={index}
@@ -15,7 +15,7 @@ const DoctorsTable = ({ doctors }) => {
           values={["first_name", "last_name"]}
         >
           {doctor?.specializations
-            .map((spec) =>
+            ?.map((spec) =>
               doctor?.gender === "Kobieta" ? spec.fem_name : spec.name
             )
             .join(", ")}

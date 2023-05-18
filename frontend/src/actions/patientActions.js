@@ -39,10 +39,9 @@ const defaultConfig = {
 export const listPatients = (filters) => async (dispatch) => {
   const config = { headers: getAuthHeaders("application/json") };
 
-  let query = "";
+  let query = "?";
 
   Object.entries(filters).forEach(([key, value]) => {
-    query = "?";
     if (Array.isArray(value)) {
       value.forEach((val) => {
         if (val !== "") {

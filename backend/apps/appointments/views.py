@@ -272,14 +272,17 @@ class AvailableSlotsList(generics.ListAPIView):
                 & Q(start_date__lte=date, end_date__gte=date),
                 doctor=doctor,
             )
+
             # First check if there are schedules with start-end dates that include the date
-            if temp:
+            if temp.count() > 0:
                 doctor_availability = temp.values_list(weekday, flat=True)
             # Else return doctor's fixed schedule
             else:
-                doctor_availability = Schedule.objects.filter(
-                    doctor=doctor
-                ).values_list(weekday, flat=True)
+                doctor_availability = list(
+                    Schedule.objects.filter(doctor=doctor).values_list(
+                        weekday, flat=True
+                    )
+                )
 
             # Delete extra dimension in the list
             if len(doctor_availability) > 0:
@@ -287,6 +290,7 @@ class AvailableSlotsList(generics.ListAPIView):
 
             # Slots that are in doctor's availability but aren't in taken slots
             slots = [slot for slot in doctor_availability if slot not in taken_slots]
+
             return Response(slots)
         else:
             # Raise BadRequest if there's no query params

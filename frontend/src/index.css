@@ -133,13 +133,17 @@ body {
 /* White bg for user panel */
 .container-bg {
   min-height: 500px;
-  padding: 0 8px 16px 8px;
+  padding: 16px 8px;
   display: grid;
-  grid-auto-rows: min-content min-content 1fr;
+  grid-auto-rows: min-content 1fr;
   background: var(--clr-white-opacity);
   border-radius: var(--radius-primary);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   transition: var(--transition);
+}
+
+.container-bg-tabs {
+  padding-top: 0 !important;
 }
 
 .container-bg-pagination {
@@ -151,7 +155,6 @@ body {
 .container-bg-content {
   display: grid;
   gap: 16px;
-  padding-top: 16px;
 }
 
 /* White bg for main user panel */
@@ -168,6 +171,14 @@ body {
 .highlight {
   color: var(--clr-dark-blue);
   font-weight: bold;
+}
+
+.loader {
+  height: 50px;
+  width: 50px;
+  margin: 1.5rem auto;
+  display: block;
+  color: var(--clr-dark-blue);
 }
 
 /* ----------- PAGINATION ----------- */
@@ -192,6 +203,10 @@ body {
 }
 
 /* ----------- TABS ----------- */
+.nav-tabs {
+  margin-bottom: 16px;
+}
+
 .nav-link {
   padding: 10px 32px;
   font-size: 20px;
@@ -401,11 +416,6 @@ body {
 
   .container-bg {
     padding: 48px;
-    padding-top: 0;
-  }
-
-  .container-bg-content {
-    padding-top: 48px;
   }
 }
 
@@ -451,7 +461,7 @@ body {
     grid-row: span 2;
   }
 
-  .gridSpanRow {
+  .gridSpanCol {
     grid-column: span 2;
   }
 

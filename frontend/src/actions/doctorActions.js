@@ -10,10 +10,9 @@ import {
 } from "../constants/doctorConsts";
 
 export const listDoctors = (filters) => async (dispatch) => {
-  let query = "";
+  let query = "?";
 
   Object.entries(filters).forEach(([key, value]) => {
-    query = "?";
     if (Array.isArray(value)) {
       value.forEach((val) => {
         if (val !== "") {
@@ -32,7 +31,6 @@ export const listDoctors = (filters) => async (dispatch) => {
     dispatch({ type: DOCTOR_LIST_REQUEST });
 
     const { data } = await axios.get(`/doctors${query}`);
-
     dispatch({
       type: DOCTOR_LIST_SUCCESS,
       payload: data,

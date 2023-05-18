@@ -21,7 +21,7 @@ const ChooseDoctor = () => {
   }, []);
 
   return (
-    <div className="main-container-bg gridSpanCol">
+    <div className="main-container-bg gridSpanRow">
       <h2 className={panel.h2}>Umów się na wizytę</h2>
       {loading ? (
         <Loader />
@@ -32,7 +32,7 @@ const ChooseDoctor = () => {
       ) : (
         <div className="d-flex flex-column align-items-normal w-100 gap-5">
           <div className="twoColumnGrid">
-            {doctors.slice(0, 2).map((doctor) => (
+            {doctors?.slice(0, 2)?.map((doctor) => (
               <div className="gridCenter gap-2">
                 <DoctorInfo key={doctor.id} doctor={doctor}>
                   <Link to={`/nowa-wizyta/${doctor?.id}`}>
@@ -45,7 +45,7 @@ const ChooseDoctor = () => {
             ))}
           </div>
           <div className="threeColumnGrid">
-            {doctors.slice(2, 5).map((doctor) => (
+            {doctors?.slice(2, 5)?.map((doctor) => (
               <div className="gridCenter gap-2">
                 <DoctorInfo key={doctor.id} doctor={doctor}>
                   <Link to={`/nowa-wizyta/${doctor?.id}`}>
