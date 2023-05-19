@@ -23,7 +23,7 @@ APPOINTMENT_COMPLETED = {"subject": "Twoja wizyta",
 
 
 def appointment_email_template(status) -> None | dict[str, str]:
-    if not (status):
+    if not status:
         raise ValueError("Argument status: AppointmentStatus jest wymagany")
     if status == AppointmentStatus.TO_BE_CONFIRMED:
         return APPOINTMENT_TO_BE_CONFIRMED
