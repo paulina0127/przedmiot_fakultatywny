@@ -74,16 +74,16 @@ class AppointmentList(generics.ListCreateAPIView):
             serializer.save()
             # Email user
             email = APPOINTMENT_TO_BE_CONFIRMED
-            email["body"] += f"{data['doctor']}, {data['date']}, {data['time']}"
+            email["body"] += f"\nLekarz: {data['doctor']} \nData: {data['date']} \nGodzina: {data['time']}"
             user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST:
             serializer.validated_data["status"] = AppointmentStatus.CONFIRMED
             serializer.save()
             # Email patient user
-            if data["patient"].user:
+            if serializer.validated_data["patient"].user:
                 email = APPOINTMENT_CONFIRMED
-                email["body"] += f"{data['doctor']}, {data['date']}, {data['time']}."
+                email["body"] += f"\nLekarz: {data['doctor']} \nData: {data['date']} \nGodzina: {data['time']}"
                 data["patient"].user.email_user(email["subject"], email["body"])
         else:
             serializer.save()
@@ -127,7 +127,7 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
             request.data["status"] = AppointmentStatus.COMPLETED
             if patient.user:
                 email = appointment_email_template(request.data["status"])
-                email["body"] += f"{doctor}, {date}, {time}."
+                email["body"] += f"\nLekarz: {doctor} \nData: {date} \nGodzina: {time}"
                 patient.user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST and patient.user:
@@ -139,7 +139,7 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
                 or appointment.patient != patient
             ):
                 email = appointment_email_template(status)
-                email["body"] += f"{doctor}, {date}, {time}."
+                email["body"] += f"\nLekarz: {doctor} \nData: {date} \nGodzina: {time}"
                 patient.user.email_user(email["subject"], email["body"])
 
         return super().partial_update(request, *args, **kwargs)
