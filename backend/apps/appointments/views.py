@@ -74,7 +74,9 @@ class AppointmentList(generics.ListCreateAPIView):
             serializer.save()
             # Email user
             email = APPOINTMENT_TO_BE_CONFIRMED
-            email["body"] += f"\nLekarz: {data['doctor']} \nData: {data['date']} \nGodzina: {data['time']}"
+            email[
+                "body"
+            ] += f"\nLekarz: {data['doctor']} \nData: {data['date']} \nGodzina: {data['time']}"
             user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST:
@@ -83,8 +85,12 @@ class AppointmentList(generics.ListCreateAPIView):
             # Email patient user
             if serializer.validated_data["patient"].user:
                 email = APPOINTMENT_CONFIRMED
-                email["body"] += f"\nLekarz: {data['doctor']} \nData: {data['date']} \nGodzina: {data['time']}"
-                data["patient"].user.email_user(email["subject"], email["body"])
+                email[
+                    "body"
+                ] += f"\nLekarz: {data['doctor']} \nData: {data['date']} \nGodzina: {data['time']}"
+                serializer.validated_data["patient"].user.email_user(
+                    email["subject"], email["body"]
+                )
         else:
             serializer.save()
 
