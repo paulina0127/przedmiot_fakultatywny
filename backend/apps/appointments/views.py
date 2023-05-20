@@ -5,7 +5,6 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
@@ -14,8 +13,9 @@ from apps.users.utils.choices import UserType
 from .models import Appointment, Prescription
 from .utils.choices import AppointmentStatus
 from .utils.email_templates import (
-    APPOINTMENT_TO_BE_CONFIRMED,
     appointment_email_template,
+    APPOINTMENT_TO_BE_CONFIRMED,
+    APPOINTMENT_CONFIRMED,
 )
 from .utils.permissions import (
     AppointmentBaseAccess,
@@ -70,9 +70,7 @@ class AppointmentList(generics.ListCreateAPIView):
         user = self.request.user
         data = serializer.validated_data
         if user.type == UserType.PATIENT:
-            serializer.validated_data[
-                "status"
-            ] = AppointmentStatus.TO_BE_CONFIRMED  # set status
+            serializer.validated_data["status"] = AppointmentStatus.TO_BE_CONFIRMED
             serializer.fields["patient"].read_only = False
             serializer.validated_data["patient"] = user.patient
             serializer.save()
@@ -82,9 +80,10 @@ class AppointmentList(generics.ListCreateAPIView):
             user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST:
+            serializer.validated_data["status"] = AppointmentStatus.CONFIRMED
             serializer.save()
             # Email patient user
-            email = appointment_email_template(data["status"])
+            email = APPOINTMENT_CONFIRMED
             email["body"] += f"{data['doctor']}, {data['date']}, {data['time']}."
             data["patient"].user.email_user(email["subject"], email["body"])
         else:

@@ -87,7 +87,7 @@ class PatientCreateAppointmentSerializer(AppointmentSerializer):
 
 class ReceptionistAppointmentSerializer(AppointmentSerializer):
     patient = serializers.PrimaryKeyRelatedField(queryset=Patient.objects.all())
-    status = serializers.ChoiceField(choices=AppointmentStatus)
+    status = serializers.ChoiceField(choices=AppointmentStatus, read_only=True)
 
     class Meta:
         model = Appointment
