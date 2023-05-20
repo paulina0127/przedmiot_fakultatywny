@@ -66,7 +66,7 @@ class AppointmentList(generics.ListCreateAPIView):
     # handle status and patient fields
     def perform_create(self, serializer):
         user = self.request.user
-        data = serializer.validated_data
+        data = self.request.data
         if user.type == UserType.PATIENT:
             serializer.validated_data["status"] = AppointmentStatus.TO_BE_CONFIRMED
             serializer.fields["patient"].read_only = False
