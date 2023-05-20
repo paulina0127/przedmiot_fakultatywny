@@ -208,7 +208,7 @@ body {
 }
 
 .nav-link {
-  padding: 10px 32px;
+  padding: 16px 32px;
   font-size: 20px;
   font-family: var(--ff-primary);
   font-weight: bold;
