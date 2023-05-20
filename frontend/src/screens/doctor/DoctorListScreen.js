@@ -13,7 +13,7 @@ const DoctorListScreen = () => {
   const pageSize = 10;
 
   const doctorList = useSelector((state) => state.doctorList);
-  const { doctors, loading, count, error } = doctorList;
+  const { doctors, loadingDoctors, countDoctors, errorDoctors } = doctorList;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -36,11 +36,11 @@ const DoctorListScreen = () => {
       <div className="container container-bg">
         <div className="container-bg-content">
           <h2 className={panel.h2}>Lekarze</h2>
-          {loading ? (
+          {loadingDoctors ? (
             <Loader />
-          ) : error ? (
-            <Message variant="danger">{error}</Message>
-          ) : count === 0 || typeof count === "undefined" ? (
+          ) : errorDoctors ? (
+            <Message variant="danger">{errorDoctors}</Message>
+          ) : countDoctors === 0 || typeof countDoctors === "undefined" ? (
             <Message variant="danger">Brak wyników</Message>
           ) : (
             <>
@@ -54,12 +54,12 @@ const DoctorListScreen = () => {
             </>
           )}
         </div>
-        {loading ? null : (
+        {loadingDoctors ? null : (
           <div className="container-bg-pagination">
             <Pagination
               page={page}
               pageSize={pageSize}
-              count={count}
+              countDoctors={countDoctors}
               clickBack={handleClickBack}
               clickForward={handleClickForward}
             />

@@ -10,7 +10,7 @@ import DoctorInfo from "../DoctorInfo/DoctorInfo";
 
 const ChooseDoctor = () => {
   const doctorList = useSelector((state) => state.doctorList);
-  const { doctors, loading, count, error } = doctorList;
+  const { doctors, loadingDoctors, countDoctors, errorDoctors } = doctorList;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -23,11 +23,11 @@ const ChooseDoctor = () => {
   return (
     <div className="main-container-bg gridSpanRow">
       <h2 className={panel.h2}>Umów się na wizytę</h2>
-      {loading ? (
+      {loadingDoctors ? (
         <Loader />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
-      ) : count === 0 ? (
+      ) : errorDoctors ? (
+        <Message variant="danger">{errorDoctors}</Message>
+      ) : typeof countDoctors === "undefined" || countDoctors === 0 ? (
         <Message variant="danger">Brak wyników</Message>
       ) : (
         <div className="d-flex flex-column align-items-normal w-100 gap-5">

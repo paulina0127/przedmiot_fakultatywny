@@ -10,6 +10,22 @@
   text-align: center;
 }
 
+.h4 {
+  color: var(--clr-blue);
+}
+
+.p {
+  margin-top: 8px;
+}
+
+.summaryContainer {
+  padding: 16px 32px;
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  background: var(--clr-light-blue);
+  border-radius: var(--radius-secondary);
+}
 /* ----------- SLOTS ----------- */
 .slotsContainer {
   display: grid;

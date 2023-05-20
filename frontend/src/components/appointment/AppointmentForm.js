@@ -7,12 +7,16 @@ import { MdOutlineAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 
 import { format } from "date-fns";
+import { pl } from "date-fns/locale";
 import { Field, FieldArray, Form, Formik } from "formik";
 
+import { createAppointment } from "../../actions/appointmentActions";
+import { getDoctor } from "../../actions/doctorActions";
+import { getPatient } from "../../actions/patientActions";
 import { listSlots } from "../../actions/statsAndSlotsActions";
 import { SLOT_LIST_RESET } from "../../constants/statsAndSlotsConsts";
 import { DoctorReadMin } from "../doctor/DoctorCRUD";
-import { SelectField } from "../formHelpers";
+import { RadioField, SelectField, TextField } from "../formHelpers";
 import { Loader, Message } from "../general";
 import panel from "../UserPanel.module.css";
 import styles from "./AppointmentForm.module.css";
@@ -26,61 +30,71 @@ function AppointmentForm({
   doctorId,
   user,
 }) {
+  const dispatch = useDispatch();
   const [key, setKey] = useState("date");
-  const [date, setDate] = useState(new Date());
 
+  // Slots
   const slotsList = useSelector((state) => state.slotsList);
-  const { slots, loading, error } = slotsList;
+  const { slots, loadingSlots, errorSlots } = slotsList;
 
+  // Patients and doctors for receptionist
   const patients = patientsList?.map((patient) => ({
     value: patient.id.toString(),
     label: patient.pesel,
   }));
+
+  const findPatient = ({ value }) => {
+    return patients.find((patient) => patient.value === value);
+  };
 
   const doctors = doctorsList?.map((doctor) => ({
     value: doctor.id.toString(),
     label: `${doctor.first_name} ${doctor.last_name}`,
   }));
 
-  const dispatch = useDispatch();
+  const findDoctor = ({ value }) => {
+    return doctors.find((doctor) => doctor.value === value);
+  };
+
+  // Slots params
+  const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [doctor, setDoctor] = useState();
 
   const slotsParams = {
-    doctor: doctorId,
-    date: format(date, "yyyy-MM-dd"),
+    doctor: doctorId ? doctorId : doctor,
+    date: date,
   };
+
+  console.log(slotsParams);
+
+  const appointmentCreate = useSelector((state) => state.appointmentCreate);
+  const {
+    errorAppointmentCreate,
+    successAppointmentCreate,
+    loadingAppointmentCreate,
+  } = appointmentCreate;
 
   useEffect(() => {
-    dispatch(listSlots(slotsParams));
-    return () => {
-      dispatch({ type: SLOT_LIST_RESET });
-    };
-  }, [date]);
-
-  const handleDateChange = (newDate) => {
-    setDate(newDate);
-  };
+    if (doctor || doctorId) {
+      dispatch(listSlots(slotsParams));
+      return () => {
+        dispatch({ type: SLOT_LIST_RESET });
+      };
+    }
+  }, [date, doctor]);
 
   return (
     <div className="container container-bg container-bg-tabs">
       <div className="container-bg-content">
         <Formik
           initialValues={initialValues}
-          // validationSchema={validate}
-          // onSubmit={(values) => {
-          //   if (slotsExists) {
-          //     const updatedValues = {};
-          //     for (const key in values) {
-          //       if (values[key] !== initialValues[key]) {
-          //         updatedValues[key] = values[key];
-          //       }
-          //     }
-          //     dispatch(updatePatient(slotsId, updatedValues));
-          //   } else {
-          //     dispatch(createPatient(values));
-          //   }
-          // }}
+          onSubmit={(values) => {
+            console.log("init", initialValues);
+            console.log(values);
+            dispatch(createAppointment(values));
+          }}
         >
-          {({ values }) => (
+          {({ values, setFieldValue }) => (
             <Form id="form" encType="multipart/form-data">
               <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
                 <Tab eventKey="date" title="Termin" tabClassName="firstTab">
@@ -89,15 +103,18 @@ function AppointmentForm({
                   </h3>
                   <div className="threeColumnGrid gap-5 align-items-center">
                     <Calendar
-                      value={date}
-                      onChange={handleDateChange}
                       minDate={new Date()}
+                      value={values.date}
+                      onChange={(date) => {
+                        setFieldValue("date", format(date, "yyyy-MM-dd"));
+                        setDate(format(date, "yyyy-MM-dd"));
+                      }}
                     />
                     <div className={styles.slotsContainer}>
-                      {loading ? (
+                      {loadingSlots ? (
                         <Loader style={{ gridColumn: "span 5" }} />
-                      ) : error ? (
-                        <Message variant="danger">{error}</Message>
+                      ) : errorSlots ? (
+                        <Message variant="danger">{errorSlots}</Message>
                       ) : typeof slots === "undefined" || slots.length === 0 ? (
                         <Message
                           variant="danger"
@@ -108,11 +125,12 @@ function AppointmentForm({
                       ) : (
                         slots?.map((slot, index) => (
                           <div key={index} style={{ width: "min-content" }}>
-                            <input
+                            <Field
                               id={`slot_${index}`}
                               type="radio"
-                              name="slot"
+                              name="time"
                               value={slot}
+                              className={`form-control rounded-pill border-2 shadow-sm px-4`}
                             />
                             <label
                               htmlFor={`slot_${index}`}
@@ -125,7 +143,8 @@ function AppointmentForm({
                       )}
                     </div>
 
-                    {user?.type === "Recepcjonista" ? (
+                    {user?.type === "Recepcjonista" ||
+                    user?.type === "Admin" ? (
                       <div>
                         <h3 className={panel.h3}>Lekarz</h3>
                         <Field
@@ -134,8 +153,11 @@ function AppointmentForm({
                           options={doctors}
                           isSearchable={true}
                           placeholder="Wybierz lekarza"
+                          onChange={({ value }) => {
+                            setFieldValue("doctor", value);
+                            setDoctor(value);
+                          }}
                         />
-
                         <h3 className={panel.h3}>Pacjent</h3>
                         <Field
                           name="patient"
@@ -143,6 +165,9 @@ function AppointmentForm({
                           options={patients}
                           isSearchable={true}
                           placeholder="Wybierz pacjenta"
+                          onChange={({ value }) => {
+                            setFieldValue("patient", value);
+                          }}
                         />
                       </div>
                     ) : (
@@ -150,6 +175,7 @@ function AppointmentForm({
                     )}
 
                     <button
+                      type="button"
                       className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
                       style={{ justifySelf: "end", gridColumn: "span 3" }}
                       onClick={() => setKey("details")}
@@ -159,105 +185,172 @@ function AppointmentForm({
                   </div>
                 </Tab>
                 <Tab eventKey="details" title="Podsumowanie">
-                  <div className="formGroup">
-                    <FieldArray name="medicine">
-                      {({ push, remove, form }) => {
-                        const { values } = form;
-                        const { medicine } = values ? values : {};
-                        return (
-                          <>
-                            <div className="d-flex align-items-baseline gap-2">
-                              <h4 className={panel.h4}>Stosowane leki</h4>
-                              <button
-                                type="button"
-                                className="btn btn-success btnCircle"
-                                onClick={() => push("")}
-                              >
-                                <MdOutlineAdd />
-                              </button>
-                            </div>
+                  {loadingAppointmentCreate && <Loader />}
+                  {successAppointmentCreate && (
+                    <Message variant="success">
+                      Wizyta została umówiona. Proszę czekać na potwierdzenie
+                      wizyty.
+                    </Message>
+                  )}
 
-                            {medicine?.map((med, index) => (
-                              <div
-                                key={index}
-                                className="d-flex align-items-baseline gap-2"
-                              >
-                                <Field
-                                  name={`medicine[${index}]`}
-                                  className="form-control rounded-pill border-2 shadow-sm px-4 mr-3 my-1"
-                                />
+                  {errorAppointmentCreate && (
+                    <Message variant="danger">{errorAppointmentCreate}</Message>
+                  )}
+                  <div
+                    className="threeColumnGrid"
+                    style={{ columnGap: "32px" }}
+                  >
+                    <h3 className={styles.h3} style={{ gridColumn: "span 2" }}>
+                      Uzupełnij objawy i stosowane leki{" "}
+                      <span
+                        style={{
+                          fontSize: "16px",
+                          color: "var(--clr-dark-blue-hover)",
+                        }}
+                      >
+                        (Opcjonalne)
+                      </span>
+                    </h3>
+                    <h3 className={styles.h3}>Podsumowanie wizyty</h3>
+                    <div className="formGroup">
+                      <FieldArray name="symptoms">
+                        {({ push, remove, form }) => {
+                          const { values } = form;
+                          const { symptoms } = values ? values : {};
+                          return (
+                            <>
+                              <div className="d-flex align-items-baseline gap-2">
+                                <h4 className={styles.h4}>Objawy</h4>
                                 <button
                                   type="button"
-                                  className="btn btn-danger btnCircle"
-                                  onClick={() => remove(index)}
+                                  className="btn btn-success btnCircle"
+                                  onClick={() => push("")}
                                 >
-                                  <HiOutlineTrash />
+                                  <MdOutlineAdd />
                                 </button>
                               </div>
-                            ))}
-                          </>
-                        );
-                      }}
-                    </FieldArray>
-                  </div>
 
-                  <div className="formGroup">
-                    <FieldArray name="symptoms">
-                      {({ push, remove, form }) => {
-                        const { values } = form;
-                        const { symptoms } = values ? values : {};
-                        return (
-                          <>
-                            <div className="d-flex align-items-baseline gap-2">
-                              <h4 className={panel.h4}>Objawy</h4>
-                              <button
-                                type="button"
-                                className="btn btn-success btnCircle"
-                                onClick={() => push("")}
-                              >
-                                <MdOutlineAdd />
-                              </button>
-                            </div>
-
-                            {symptoms?.map((symptom, index) => (
-                              <div
-                                key={index}
-                                className="d-flex align-items-baseline gap-2"
-                              >
-                                <Field
-                                  name={`symptoms[${index}]`}
-                                  className="form-control rounded-pill border-2 shadow-sm px-4 mr-3 my-1"
-                                />
+                              {symptoms?.map((symptom, index) => (
+                                <div
+                                  key={index}
+                                  className="d-flex align-items-baseline gap-2"
+                                >
+                                  <Field
+                                    name={`symptoms[${index}]`}
+                                    className="form-control rounded-pill border-2 shadow-sm px-4 mr-3 my-1"
+                                  />
+                                  <button
+                                    type="button"
+                                    className="btn btn-danger btnCircle"
+                                    onClick={() => remove(index)}
+                                  >
+                                    <HiOutlineTrash />
+                                  </button>
+                                </div>
+                              ))}
+                            </>
+                          );
+                        }}
+                      </FieldArray>
+                    </div>
+                    <div className="formGroup">
+                      <FieldArray name="medicine">
+                        {({ push, remove, form }) => {
+                          const { values } = form;
+                          const { medicine } = values ? values : {};
+                          return (
+                            <>
+                              <div className="d-flex align-items-baseline gap-2">
+                                <h4 className={styles.h4}>Stosowane leki</h4>
                                 <button
                                   type="button"
-                                  className="btn btn-danger btnCircle"
-                                  onClick={() => remove(index)}
+                                  className="btn btn-success btnCircle"
+                                  onClick={() => push("")}
                                 >
-                                  <HiOutlineTrash />
+                                  <MdOutlineAdd />
                                 </button>
                               </div>
-                            ))}
-                          </>
-                        );
-                      }}
-                    </FieldArray>
+
+                              {medicine?.map((med, index) => (
+                                <div
+                                  key={index}
+                                  className="d-flex align-items-baseline gap-2"
+                                >
+                                  <Field
+                                    name={`medicine[${index}]`}
+                                    className="form-control rounded-pill border-2 shadow-sm px-4 mr-3 my-1"
+                                  />
+                                  <button
+                                    type="button"
+                                    className="btn btn-danger btnCircle"
+                                    onClick={() => remove(index)}
+                                  >
+                                    <HiOutlineTrash />
+                                  </button>
+                                </div>
+                              ))}
+                            </>
+                          );
+                        }}
+                      </FieldArray>
+                    </div>
+
+                    <div className={styles.summaryContainer}>
+                      {user?.type === "Recepcjonista" ||
+                      user?.type === "Admin" ? (
+                        <div className="d-flex flex-column gap-4 justify-content-center">
+                          <div>
+                            <h4 className={panel.h4}>Lekarz</h4>
+                            <p className={styles.p}>
+                              {findDoctor({ value: values?.doctor })?.label}
+                            </p>
+                          </div>
+                          <div>
+                            <h4 className={panel.h4}>Pacjent</h4>
+                            <p className={styles.p}>
+                              {findPatient({ value: values?.patient })?.label}
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <DoctorReadMin doctorId={doctorId} />
+                      )}
+
+                      <div className="d-flex flex-column gap-4 justify-content-center">
+                        <div>
+                          <h4 className={panel.h4}>Termin</h4>
+                          <p className={styles.p}>{`${format(
+                            new Date(date),
+                            "d LLL y",
+                            {
+                              locale: pl,
+                            }
+                          )}`}</p>
+                        </div>
+                        <div>
+                          <h4 className={panel.h4}>Godzina</h4>
+                          <p className={styles.p}>{`${values?.time}`}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </Tab>
               </Tabs>
+              {console.log(values)}
             </Form>
           )}
         </Formik>
-        {key === "details" && (
-          <button
-            type="submit"
-            className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
-            style={{ justifySelf: "end" }}
-            form="form"
-          >
-            Zatwierdź
-          </button>
-        )}
       </div>
+      {key === "details" && (
+        <button
+          type="submit"
+          className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
+          style={{ justifySelf: "end", alignSelf: "end" }}
+          form="form"
+        >
+          Zatwierdź
+        </button>
+      )}
     </div>
   );
 }

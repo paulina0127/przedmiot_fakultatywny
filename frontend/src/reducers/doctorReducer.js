@@ -12,16 +12,16 @@ import {
 export const doctorListReducer = (state = { doctors: [] }, action) => {
   switch (action.type) {
     case DOCTOR_LIST_REQUEST:
-      return { loading: true, doctors: [] };
+      return { loadingDoctors: true, doctors: [] };
 
     case DOCTOR_LIST_SUCCESS:
       return {
-        loading: false,
+        loadingDoctors: false,
         doctors: action.payload.results,
-        count: action.payload.count,
+        countDoctors: action.payload.count,
       };
     case DOCTOR_LIST_FAIL:
-      return { loading: false, error: action.payload.results };
+      return { loadingDoctors: false, errorDoctors: action.payload.results };
 
     case DOCTOR_LIST_RESET:
       return { doctors: [] };
@@ -34,13 +34,13 @@ export const doctorListReducer = (state = { doctors: [] }, action) => {
 export const doctorDetailsReducer = (state = {}, action) => {
   switch (action.type) {
     case DOCTOR_DETAILS_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loadingDoctor: true };
 
     case DOCTOR_DETAILS_SUCCESS:
-      return { ...state, loading: false, doctor: action.payload };
+      return { ...state, loadingDoctor: false, doctor: action.payload };
 
     case DOCTOR_DETAILS_FAIL:
-      return { ...state, error: action.payload };
+      return { ...state, errorDoctor: action.payload };
 
     case DOCTOR_DETAILS_RESET:
       return { ...state, doctor: {} };

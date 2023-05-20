@@ -1,6 +1,7 @@
 .container {
   display: grid;
   grid-template-columns: repeat(3, auto);
+  align-content: center;
   place-items: center;
   gap: 8px;
   text-align: center;

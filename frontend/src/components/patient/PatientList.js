@@ -13,7 +13,8 @@ const PatientList = ({ doctorId }) => {
   const pageSize = 10;
 
   const patientList = useSelector((state) => state.patientList);
-  const { patients, loading, count, error } = patientList;
+  const { patients, loadingPatients, countPatients, errorPatients } =
+    patientList;
 
   const dispatch = useDispatch();
 
@@ -40,11 +41,11 @@ const PatientList = ({ doctorId }) => {
   return (
     <>
       <div className="container-bg-content">
-        {loading ? (
+        {loadingPatients ? (
           <Loader />
-        ) : error ? (
-          <Message variant="danger">{error}</Message>
-        ) : count === 0 || typeof count === "undefined" ? (
+        ) : errorPatients ? (
+          <Message variant="danger">{errorPatients}</Message>
+        ) : typeof countPatients === "undefined" || countPatients === 0 ? (
           <Message variant="danger">Brak wyników</Message>
         ) : (
           <>
@@ -58,12 +59,12 @@ const PatientList = ({ doctorId }) => {
           </>
         )}
       </div>
-      {loading ? null : (
+      {loadingPatients ? null : (
         <div className="container-bg-pagination">
           <Pagination
             page={page}
             pageSize={pageSize}
-            count={count}
+            countPatients={countPatients}
             clickBack={handleClickBack}
             clickForward={handleClickForward}
           />

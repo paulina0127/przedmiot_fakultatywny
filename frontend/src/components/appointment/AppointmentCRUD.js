@@ -10,15 +10,45 @@ import { validateAppointment } from "../../validators";
 import { Loader, Message } from "../general";
 import AppointmentForm from "./AppointmentForm";
 
-export const AppointmentCreate = ({ user }) => {
-  const dispatch = useDispatch();
+export const AppointmentCreateForPatient = ({ user }) => {
   const doctor_id = useParams().id;
 
+  const initialValues = {
+    date: new Date(),
+    time: "",
+    symptoms: [],
+    medicine: [],
+    doctor: doctor_id,
+  };
+
+  return (
+    <AppointmentForm
+      user={user}
+      doctorId={doctor_id}
+      initialValues={initialValues}
+      validate={validateAppointment}
+    />
+  );
+};
+
+export const AppointmentCreate = ({ user }) => {
+  const dispatch = useDispatch();
+
+  const initialValues = {
+    date: new Date(),
+    time: "",
+    symptoms: [],
+    medicine: [],
+    doctor: "",
+    patient: "",
+  };
+
   const patientList = useSelector((state) => state.patientList);
-  const { patients, loading, count, error } = patientList;
+  const { patients, loadingPatients, countPatients, errorPatients } =
+    patientList;
 
   const doctorList = useSelector((state) => state.doctorList);
-  const { doctors, loadingDoctor, countDoctor, errorDoctor } = doctorList;
+  const { doctors, loadingDoctors, countDoctors, errorDoctors } = doctorList;
 
   useEffect(() => {
     dispatch(listPatients({}));
@@ -34,36 +64,14 @@ export const AppointmentCreate = ({ user }) => {
     };
   }, []);
 
-  const initialValues = {
-    date: new Date(),
-    time: "",
-    symptoms: [],
-    medicine: [],
-    recommendations: "",
-    doctor: "",
-    patient: "",
-  };
-
   return (
-    <>
-      {user?.type === "Pacjent" ? (
-        <AppointmentForm
-          user={user}
-          doctorId={doctor_id}
-          initialValues={initialValues}
-          validate={validateAppointment}
-        />
-      ) : (
-        <AppointmentForm
-          user={user}
-          doctorId={doctor_id}
-          patientsList={patients}
-          doctorsList={doctors}
-          initialValues={initialValues}
-          validate={validateAppointment}
-        />
-      )}
-    </>
+    <AppointmentForm
+      user={user}
+      patientsList={patients}
+      doctorsList={doctors}
+      initialValues={initialValues}
+      validate={validateAppointment}
+    />
   );
 };
 

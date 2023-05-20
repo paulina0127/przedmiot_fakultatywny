@@ -18,7 +18,7 @@ export const DoctorRead = ({ doctorId }) => {
   }, []);
 
   const doctorDetails = useSelector((state) => state.doctorDetails);
-  const { error, loading, doctor } = doctorDetails;
+  const { doctor, loadingDoctor, errorDoctor } = doctorDetails;
 
   const initialValues = doctor
     ? {
@@ -32,12 +32,12 @@ export const DoctorRead = ({ doctorId }) => {
 
   return (
     <>
-      {loading ? (
+      {loadingDoctor ? (
         <Loader />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
+      ) : errorDoctor ? (
+        <Message variant="danger">{errorDoctor}</Message>
       ) : doctor && Object.keys(doctor).count === 0 ? null : (
-        <DoctorForm doctorId={doctorId} initialValues={initialValues}/>
+        <DoctorForm doctorId={doctorId} initialValues={initialValues} />
       )}
     </>
   );
@@ -54,7 +54,7 @@ export const DoctorReadMin = ({ doctorId }) => {
   }, []);
 
   const doctorDetails = useSelector((state) => state.doctorDetails);
-  const { error, loading, doctor } = doctorDetails;
+  const { errorDoctor, loadingDoctor, doctor } = doctorDetails;
 
   const values = doctor
     ? {
@@ -68,10 +68,10 @@ export const DoctorReadMin = ({ doctorId }) => {
 
   return (
     <>
-      {loading ? (
+      {loadingDoctor ? (
         <Loader />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
+      ) : errorDoctor ? (
+        <Message variant="danger">{errorDoctor}</Message>
       ) : values ? (
         <DoctorInfo doctor={values} />
       ) : null}

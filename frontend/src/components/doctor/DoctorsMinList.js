@@ -10,7 +10,7 @@ import panel from "../UserPanel.module.css";
 
 function DoctorsMinList() {
   const doctorList = useSelector((state) => state.doctorList);
-  const { doctors, loading, count, error } = doctorList;
+  const { doctors, loadingDoctors, countDoctors, errorDoctors } = doctorList;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -23,11 +23,11 @@ function DoctorsMinList() {
   return (
     <div className="main-container-bg" id="doctors">
       <h2 className={panel.h2}>Lekarze</h2>
-      {loading ? (
+      {loadingDoctors ? (
         <Loader />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
-      ) : count === 0 ? (
+      ) : errorDoctors ? (
+        <Message variant="danger">{errorDoctors}</Message>
+      ) : countDoctors === 0 ? (
         <Message variant="danger">Brak wyników</Message>
       ) : (
         <>

@@ -24,17 +24,17 @@ import {
 export const patientListReducer = (state = { patients: [] }, action) => {
   switch (action.type) {
     case PATIENT_LIST_REQUEST:
-      return { loading: true, patients: [] };
+      return { loadingPatients: true, patients: [] };
 
     case PATIENT_LIST_SUCCESS:
       return {
-        loading: false,
+        loadingPatients: false,
         patients: action.payload.results,
-        count: action.payload.count,
+        countPatients: action.payload.count,
       };
 
     case PATIENT_LIST_FAIL:
-      return { loading: false, error: action.payload.results };
+      return { loadingPatients: false, errorPatients: action.payload.results };
     case PATIENT_LIST_RESET:
       return { patients: [] };
 
@@ -46,14 +46,18 @@ export const patientListReducer = (state = { patients: [] }, action) => {
 export const patientDetailsReducer = (state = {}, action) => {
   switch (action.type) {
     case PATIENT_DETAILS_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loadingPatient: true };
 
     case PATIENT_DETAILS_SUCCESS:
-      return { ...state, loading: false, patient: action.payload };
+      return {
+        ...state,
+        loadingPatient: false,
+        patient: action.payload,
+      };
 
     case PATIENT_DETAILS_FAIL:
     case PATIENT_DETAILS_RESET:
-      return { ...state, error: action.payload };
+      return { ...state, errorPatient: action.payload };
 
     case PATIENT_DETAILS_RESET:
       return { ...state, patient: {} };
@@ -66,13 +70,16 @@ export const patientDetailsReducer = (state = {}, action) => {
 export const patientCreateReducer = (state = {}, action) => {
   switch (action.type) {
     case PATIENT_CREATE_REQUEST:
-      return { loadingCreate: true };
+      return { loadingPatientCreate: true };
 
     case PATIENT_CREATE_SUCCESS:
-      return { loadingCreate: false, successCreate: true };
+      return { loadingPatientCreate: false, successPatientCreate: true };
 
     case PATIENT_CREATE_FAIL:
-      return { loadingCreate: false, errorCreate: action.payload };
+      return {
+        loadingPatientCreate: false,
+        errorPatientCreate: action.payload,
+      };
 
     case PATIENT_CREATE_RESET:
       return {};
@@ -85,13 +92,16 @@ export const patientCreateReducer = (state = {}, action) => {
 export const patientUpdateReducer = (state = {}, action) => {
   switch (action.type) {
     case PATIENT_UPDATE_REQUEST:
-      return { loadingUpdate: true };
+      return { loadingPatientUpdate: true };
 
     case PATIENT_UPDATE_SUCCESS:
-      return { loadingUpdate: false, successUpdate: true };
+      return { loadingPatientUpdate: false, successPatientUpdate: true };
 
     case PATIENT_UPDATE_FAIL:
-      return { loadingUpdate: false, errorUpdate: action.payload };
+      return {
+        loadingPatientUpdate: false,
+        errorPatientUpdate: action.payload,
+      };
 
     case PATIENT_UPDATE_RESET:
       return {};
@@ -104,13 +114,13 @@ export const patientUpdateReducer = (state = {}, action) => {
 export const patientLinkReducer = (state = {}, action) => {
   switch (action.type) {
     case PATIENT_LINK_REQUEST:
-      return { loadingLink: true };
+      return { loadingPatientLink: true };
 
     case PATIENT_LINK_SUCCESS:
-      return { loadingLink: false, successLink: true };
+      return { loadingPatientLink: false, successPatientLink: true };
 
     case PATIENT_LINK_FAIL:
-      return { loadingLink: false, errorLink: action.payload };
+      return { loadingPatientLink: false, errorPatientLink: action.payload };
 
     case PATIENT_LINK_RESET:
       return {};

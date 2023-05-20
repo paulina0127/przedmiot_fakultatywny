@@ -8,15 +8,15 @@ import {
 export const slotsListReducer = (state = { slots: [] }, action) => {
   switch (action.type) {
     case SLOT_LIST_REQUEST:
-      return { loading: true, slots: [] };
+      return { loadingSlots: true, slots: [] };
 
     case SLOT_LIST_SUCCESS:
       return {
-        loading: false,
+        loadingSlots: false,
         slots: action.payload,
       };
     case SLOT_LIST_FAIL:
-      return { loading: false, error: action.payload };
+      return { loadingSlots: false, errorSlots: action.payload };
 
     case SLOT_LIST_RESET:
       return { slots: [] };

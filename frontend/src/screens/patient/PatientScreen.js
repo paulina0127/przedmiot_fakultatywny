@@ -13,7 +13,7 @@ const PatientScreen = () => {
   return (
     <section className="up-section">
       {user?.type === "Nowy użytkownik" ||
-      (user?.type === "Recepcjonista" &&
+      ((user?.type === "Recepcjonista" || user?.type === "Admin") &&
         location.pathname.startsWith("/rejestracja")) ? (
         <PatientCreate user={user} />
       ) : (

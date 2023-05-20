@@ -44,7 +44,7 @@ export const PatientUpdate = ({ user, patientId }) => {
   }, []);
 
   const patientDetails = useSelector((state) => state.patientDetails);
-  const { error, loading, patient } = patientDetails;
+  const { patient, loadingPatient, errorPatient } = patientDetails;
 
   const initialValues = patient
     ? {
@@ -67,10 +67,10 @@ export const PatientUpdate = ({ user, patientId }) => {
 
   return (
     <>
-      {loading ? (
+      {loadingPatient ? (
         <Loader />
-      ) : error ? (
-        <Message variant="danger">{error}</Message>
+      ) : errorPatient ? (
+        <Message variant="danger">{errorPatient}</Message>
       ) : patient && Object.keys(patient).count === 0 ? null : (
         <PatientForm
           patientExists={true}

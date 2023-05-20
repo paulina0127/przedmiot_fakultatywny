@@ -1,7 +1,10 @@
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
-import { AppointmentCreate } from "../../components/appointment/AppointmentCRUD";
+import {
+  AppointmentCreate,
+  AppointmentCreateForPatient,
+} from "../../components/appointment/AppointmentCRUD";
 
 const AppointmentScreen = () => {
   const auth = useSelector((state) => state.auth);
@@ -9,7 +12,11 @@ const AppointmentScreen = () => {
 
   return (
     <section className="up-section">
-      <AppointmentCreate user={user} />
+      {user?.type === "Pacjent" ? (
+        <AppointmentCreateForPatient user={user} />
+      ) : (
+        <AppointmentCreate user={user} />
+      )}
     </section>
   );
 };

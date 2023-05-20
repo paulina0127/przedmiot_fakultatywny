@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 
+import { appointmentCreateReducer } from "./reducers/appointmentReducer";
 import { authReducer } from "./reducers/authReducer";
 import {
   doctorDetailsReducer,
@@ -28,6 +29,8 @@ const reducer = combineReducers({
   patientLink: patientLinkReducer,
 
   slotsList: slotsListReducer,
+
+  appointmentCreate: appointmentCreateReducer,
 });
 
 const userTokensFromStorage = localStorage.getItem("userTokens")

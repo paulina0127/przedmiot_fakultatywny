@@ -4,8 +4,9 @@ import { ErrorMessage, useField } from "formik";
 
 import "./SelectField.css";
 
-const SelectField = ({ field, form, label, ...props }) => {
-  const meta = useField(props);
+const SelectField = ({ label, ...props }) => {
+  const [field, meta, { setTouched }] = useField(props?.field.name);
+
   return (
     <div className="form-group mb-3">
       <label htmlFor={field.name} className="mx-2 my-2 text-muted">
@@ -16,13 +17,9 @@ const SelectField = ({ field, form, label, ...props }) => {
         className={`form-control rounded-pill border-2 shadow-sm px-4 ${
           meta.touched && meta.error && "is-invalid"
         }`}
-        {...field}
+        noOptionsMessage={() => "Brak opcji"}
         {...props}
-        noOptionsMessage="Brak opcji"
-        onChange={(selectedOption) =>
-          form.setFieldValue(field.name, selectedOption)
-        }
-        onBlur={() => form.setFieldTouched(field.name, true)}
+        onBlur={setTouched}
       />
       <ErrorMessage
         component="div"

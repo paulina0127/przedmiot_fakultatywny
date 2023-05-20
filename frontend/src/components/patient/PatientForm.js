@@ -49,10 +49,10 @@ const PatientForm = ({
       {loadingUpdate && <Loader />}
       {loadingCreate && <Loader />}
       {successUpdate && (
-        <Message variant="success">Pomyślnie zapisano zmiany</Message>
+        <Message variant="success">Pomyślnie zapisano zmiany.</Message>
       )}
       {successCreate && (
-        <Message variant="success">Pomyślnie utworzono kartę pacjenta</Message>
+        <Message variant="success">Pomyślnie utworzono kartę pacjenta.</Message>
       )}
       {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
       {errorCreate && <Message variant="danger">{errorCreate}</Message>}
@@ -94,7 +94,7 @@ const PatientForm = ({
                   {loadingLink && <Loader />}
                   {successLink && (
                     <Message variant="success">
-                      Pomyślnie połączono konto z kartą pacjenta
+                      Pomyślnie połączono konto z kartą pacjenta.
                     </Message>
                   )}
                   {errorLink && <Message variant="danger">{errorLink}</Message>}
@@ -154,6 +154,7 @@ const PatientForm = ({
                             ? values?.image
                             : avatar
                         }
+                        alt=""
                         style={{ objectFit: "cover", borderRadius: "50%" }}
                       />
                       <label htmlFor="image">
@@ -167,9 +168,7 @@ const PatientForm = ({
                         accept="image/png, image/jpeg"
                       />
                     </div>
-                    {patientExists &&
-                    (user?.type === "Recepcjonista" ||
-                      user?.type === "Lekarz") ? (
+                    {patientExists && user?.type !== "Pacjent" ? (
                       <>
                         <Link to="" className="align-self-center">
                           <button className="btnRound bg-dark-blue clr-white">
