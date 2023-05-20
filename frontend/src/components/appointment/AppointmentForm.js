@@ -81,7 +81,7 @@ function AppointmentForm({
         dispatch({ type: SLOT_LIST_RESET });
       };
     }
-  }, [date, doctor]);
+  }, [date, doctor, successAppointmentCreate]);
 
   return (
     <div className="container container-bg container-bg-tabs">
@@ -188,8 +188,9 @@ function AppointmentForm({
                   {loadingAppointmentCreate && <Loader />}
                   {successAppointmentCreate && (
                     <Message variant="success">
-                      Wizyta została umówiona. Proszę czekać na potwierdzenie
-                      wizyty.
+                      {user?.type === "Pacjent"
+                        ? "Wizyta została umówiona. Proszę czekać na potwierdzenie wizyty."
+                        : "Wizyta została umówiona."}
                     </Message>
                   )}
 

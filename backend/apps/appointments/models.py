@@ -13,7 +13,7 @@ class Appointment(models.Model):
         verbose_name=_("Status"),
         max_length=50,
         choices=AppointmentStatus.choices,
-        default=AppointmentStatus.TO_BE_CONFIRMED
+        default=AppointmentStatus.TO_BE_CONFIRMED,
     )
     date = models.DateField(verbose_name=_("Data"))
     time = models.CharField(
@@ -23,7 +23,10 @@ class Appointment(models.Model):
         models.TextField(blank=True), verbose_name=_("Objawy"), blank=True, default=list
     )
     medicine = ArrayField(
-        models.TextField(blank=True), verbose_name=_("Stosowane leki"), blank=True, default=list
+        models.TextField(blank=True),
+        verbose_name=_("Stosowane leki"),
+        blank=True,
+        default=list,
     )
     recommendations = models.TextField(verbose_name=_("Zalecenia"), blank=True)
     doctor = models.ForeignKey(
@@ -46,12 +49,6 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.doctor}, {self.patient} - {self.date} {self.time}"
-
-    def save(self, *args, **kwargs):
-        # Set status as to be confirmed on create
-        if not self.pk:
-            self.status = AppointmentStatus.TO_BE_CONFIRMED
-        super(Appointment, self).save(*args, **kwargs)
 
 
 class Prescription(models.Model):

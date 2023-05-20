@@ -26,6 +26,7 @@
   background: var(--clr-light-blue);
   border-radius: var(--radius-secondary);
 }
+
 /* ----------- SLOTS ----------- */
 .slotsContainer {
   display: grid;

@@ -42,10 +42,11 @@ export const createAppointment = (values) => async (dispatch) => {
   } catch (error) {
     console.log(error.response.data);
     const errorKey = Object.keys(error?.response?.data || {})[0];
-
+    console.log(error.response.data);
     dispatch({
       type: APPOINTMENT_CREATE_FAIL,
       payload: errorKey ? error.response.data[errorKey] : error.message,
     });
+    console.log(error.response.data);
   }
 };
