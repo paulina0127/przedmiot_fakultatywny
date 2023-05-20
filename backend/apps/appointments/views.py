@@ -28,7 +28,7 @@ from .utils.serializers import (
     AppointmentSerializer,
     PrescriptionSerializer,
     PatientCreateAppointmentSerializer,
-    ReceptionistCreateAppointmentSerializer,
+    ReceptionistAppointmentSerializer,
 )
 from backend.utils.pagination import CustomPagination
 
@@ -47,7 +47,7 @@ class AppointmentList(generics.ListCreateAPIView):
         if self.request.user.type == UserType.PATIENT:
             return PatientCreateAppointmentSerializer
         elif self.request.user.type == UserType.RECEPTIONIST:
-            return ReceptionistCreateAppointmentSerializer
+            return ReceptionistAppointmentSerializer
         return self.serializer_class
 
     def get_queryset(self):
@@ -97,21 +97,22 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, AppointmentBaseAccess, AppointmentUpdate]
     serializer_class = AppointmentSerializer
 
+    def get_serializer_class(self):
+        if self.request.user.type == UserType.RECEPTIONIST:
+            return ReceptionistAppointmentSerializer
+        return AppointmentSerializer
+
     def get_queryset(self):
         user = self.request.user
         # Return patient's appointment
         if user.type == UserType.PATIENT:
-            return Appointment.objects.filter(patient=user.patient).exclude(
-                patient=None
-            )
+            return Appointment.objects.filter(patient=user.patient)
         # Return doctor's appointments
         elif user.type == UserType.DOCTOR:
-            return Appointment.objects.filter(doctor=user.doctor).exclude(doctor=None)
-        # Return appointments without medical data for receptionist and admin
+            return Appointment.objects.filter(doctor=user.doctor)
+        # Return appointments for receptionist and admin
         else:
-            return Appointment.objects.all().exclude(
-                symptoms=None, medicine=None, recommendations=None
-            )
+            return Appointment.objects.all()
 
     def partial_update(self, request, *args, **kwargs):
         # Get object/request values and email patient
@@ -124,9 +125,8 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
         patient = request.data.get("patient", appointment.patient)
 
         if user.type == UserType.DOCTOR:
-            request.data[
-                "status"
-            ] = AppointmentStatus.COMPLETED  # set completed by default
+            # set completed by default
+            request.data["status"] = AppointmentStatus.COMPLETED
             email = appointment_email_template(request.data["status"])
             email["body"] += f"{doctor}, {date}, {time}."
             patient.user.email_user(email["subject"], email["body"])
