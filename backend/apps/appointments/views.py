@@ -54,12 +54,10 @@ class AppointmentList(generics.ListCreateAPIView):
         user = self.request.user
         # Return patient's appointments
         if user.type == UserType.PATIENT:
-            return Appointment.objects.filter(patient=user.patient).exclude(
-                patient=None
-            )
+            return Appointment.objects.filter(patient=user.patient)
         # Return doctor's appointments
         elif user.type == UserType.DOCTOR:
-            return Appointment.objects.filter(doctor=user.doctor).exclude(doctor=None)
+            return Appointment.objects.filter(doctor=user.doctor)
         # Return all appointments if the user is admin or receptionist
         else:
             return Appointment.objects.all()
@@ -83,9 +81,10 @@ class AppointmentList(generics.ListCreateAPIView):
             serializer.validated_data["status"] = AppointmentStatus.CONFIRMED
             serializer.save()
             # Email patient user
-            email = APPOINTMENT_CONFIRMED
-            email["body"] += f"{data['doctor']}, {data['date']}, {data['time']}."
-            data["patient"].user.email_user(email["subject"], email["body"])
+            if data["patient"].user:
+                email = APPOINTMENT_CONFIRMED
+                email["body"] += f"{data['doctor']}, {data['date']}, {data['time']}."
+                data["patient"].user.email_user(email["subject"], email["body"])
         else:
             serializer.save()
 
@@ -126,11 +125,12 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
         if user.type == UserType.DOCTOR:
             # set completed by default
             request.data["status"] = AppointmentStatus.COMPLETED
-            email = appointment_email_template(request.data["status"])
-            email["body"] += f"{doctor}, {date}, {time}."
-            patient.user.email_user(email["subject"], email["body"])
+            if patient.user:
+                email = appointment_email_template(request.data["status"])
+                email["body"] += f"{doctor}, {date}, {time}."
+                patient.user.email_user(email["subject"], email["body"])
 
-        elif user.type == UserType.RECEPTIONIST:
+        elif user.type == UserType.RECEPTIONIST and patient.user:
             if (
                 appointment.status != status
                 or appointment.doctor != doctor
