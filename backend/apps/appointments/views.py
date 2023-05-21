@@ -28,7 +28,7 @@ from .utils.serializers import (
     AppointmentSerializer,
     PrescriptionSerializer,
     PatientCreateAppointmentSerializer,
-    ReceptionistAppointmentSerializer,
+    ReceptionistCreateAppointmentSerializer,
 )
 from backend.utils.pagination import CustomPagination
 
@@ -44,10 +44,17 @@ class AppointmentList(generics.ListCreateAPIView):
     pagination_class = CustomPagination
 
     def get_serializer_class(self):
-        if self.request.user.type == UserType.PATIENT:
+        if self.request.user.type == UserType.PATIENT and self.request.method in [
+            "POST",
+            "PUT",
+            "PATCH",
+        ]:
             return PatientCreateAppointmentSerializer
-        elif self.request.user.type == UserType.RECEPTIONIST:
-            return ReceptionistAppointmentSerializer
+        elif (
+            self.request.user.type == UserType.RECEPTIONIST
+            and self.request.method in ["POST", "PUT", "PATCH"]
+        ):
+            return ReceptionistCreateAppointmentSerializer
         return self.serializer_class
 
     def get_queryset(self):
@@ -100,11 +107,6 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
     name = "appointment"
     permission_classes = [IsAuthenticated, AppointmentBaseAccess, AppointmentUpdate]
     serializer_class = AppointmentSerializer
-
-    def get_serializer_class(self):
-        if self.request.user.type == UserType.RECEPTIONIST:
-            return ReceptionistAppointmentSerializer
-        return AppointmentSerializer
 
     def get_queryset(self):
         user = self.request.user

@@ -4,6 +4,10 @@ import Tabs from "react-bootstrap/Tabs";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
+import {
+  AppointmentCreate,
+  AppointmentList,
+} from "../../components/appointment";
 import { PatientCreate, PatientUpdate } from "../../components/patient";
 
 const PatientScreen = () => {
@@ -38,7 +42,7 @@ const PatientScreen = () => {
               <Tab
                 eventKey="profile"
                 title="Karta pacjenta"
-                tabClassName="firstTab"
+                tabClassName="tab firstTab"
               >
                 <PatientUpdate
                   user={user}
@@ -46,8 +50,8 @@ const PatientScreen = () => {
                   patientId={patient_id}
                 />
               </Tab>
-              <Tab eventKey="appointments" title="Wizyty">
-                Wizyty
+              <Tab eventKey="appointments" title="Wizyty" tabClassName="tab">
+                <AppointmentList patientId={patient_id} type="Pacjent" />
               </Tab>
             </Tabs>
           </div>

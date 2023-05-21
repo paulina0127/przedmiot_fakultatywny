@@ -93,7 +93,7 @@ function AppointmentForm({
           {({ values, setFieldValue }) => (
             <Form id="form" encType="multipart/form-data">
               <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
-                <Tab eventKey="date" title="Termin" tabClassName="firstTab">
+                <Tab eventKey="date" title="Termin" tabClassName="tab firstTab">
                   <h3 className={styles.h3} style={{ gridColumn: "span 3" }}>
                     Wybierz datę i godzinę wizyty
                   </h3>
@@ -180,7 +180,7 @@ function AppointmentForm({
                     </button>
                   </div>
                 </Tab>
-                <Tab eventKey="details" title="Podsumowanie">
+                <Tab eventKey="details" title="Podsumowanie" tabClassName="tab">
                   {loadingAppointmentCreate && <Loader />}
                   {successAppointmentCreate && (
                     <Message variant="success">

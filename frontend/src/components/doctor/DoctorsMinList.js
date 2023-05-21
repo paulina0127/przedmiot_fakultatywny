@@ -21,7 +21,7 @@ function DoctorsMinList() {
   }, []);
 
   return (
-    <div className="main-container-bg" id="doctors">
+    <div className="main-container-bg" id="lekarze">
       <h2 className={panel.h2}>Lekarze</h2>
       {loadingDoctors ? (
         <Loader />

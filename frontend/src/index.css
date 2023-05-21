@@ -343,6 +343,7 @@ body {
 
 /* ----------- PAGINATION ----------- */
 .paginationContainer {
+  margin-top: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -372,20 +373,20 @@ body {
   margin-bottom: 16px;
 }
 
-.nav-link {
-  padding: 16px 32px;
+.tab {
+  padding: 16px 32px !important;
   font-size: 20px;
   font-family: var(--ff-primary);
   font-weight: bold;
-  color: var(--clr-dark-blue);
+  color: var(--clr-dark-blue) !important;
   transition: var(--transition);
 }
 
-.nav-link:hover {
-  color: var(--clr-dark-blue-hover);
+.tab:hover {
+  color: var(--clr-dark-blue-hover) !important;
 }
 
-.nav-link.active {
+.tab.active {
   background: transparent !important;
   color: var(--clr-blue) !important;
 }

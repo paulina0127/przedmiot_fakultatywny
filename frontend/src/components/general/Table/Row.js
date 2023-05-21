@@ -13,6 +13,8 @@ const Row = ({ number, object, values, children }) => {
               ? `${object.street}, ${object.postal_code} ${object.city}`
               : value.includes("date")
               ? object[value].split("-").reverse().join("-")
+              : value === "patient" || value === "doctor"
+              ? `${object[value]["first_name"]} ${object[value]["last_name"]}`
               : object[value]}
           </td>
         </>

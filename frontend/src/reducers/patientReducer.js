@@ -34,7 +34,7 @@ export const patientListReducer = (state = { patients: [] }, action) => {
       };
 
     case PATIENT_LIST_FAIL:
-      return { loadingPatients: false, errorPatients: action.payload.results };
+      return { loadingPatients: false, errorPatients: action.payload };
     case PATIENT_LIST_RESET:
       return { patients: [] };
 

@@ -4,6 +4,7 @@ import Tabs from "react-bootstrap/Tabs";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
+import { AppointmentList } from "../../components/appointment";
 import { DoctorRead } from "../../components/doctor";
 import { PatientList } from "../../components/patient";
 
@@ -20,14 +21,18 @@ const DoctorScreen = () => {
     <section className="up-section">
       <div className="container container-bg container-bg-tabs">
         <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
-          <Tab eventKey="profile" title="Karta lekarza" tabClassName="firstTab">
+          <Tab
+            eventKey="profile"
+            title="Karta lekarza"
+            tabClassName="tab firstTab"
+          >
             <DoctorRead doctorId={doctor_id} />
           </Tab>
-          <Tab eventKey="patients" title="Pacjenci">
+          <Tab eventKey="patients" title="Pacjenci" tabClassName="tab">
             <PatientList doctorId={doctor_id} />
           </Tab>
-          <Tab eventKey="appointments" title="Wizyty">
-            Wizyty
+          <Tab eventKey="appointments" title="Wizyty" tabClassName="tab">
+            <AppointmentList doctorId={doctor_id} type="Lekarz" />
           </Tab>
         </Tabs>
       </div>

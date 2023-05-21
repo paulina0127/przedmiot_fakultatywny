@@ -21,7 +21,7 @@ export const doctorListReducer = (state = { doctors: [] }, action) => {
         countDoctors: action.payload.count,
       };
     case DOCTOR_LIST_FAIL:
-      return { loadingDoctors: false, errorDoctors: action.payload.results };
+      return { loadingDoctors: false, errorDoctors: action.payload };
 
     case DOCTOR_LIST_RESET:
       return { doctors: [] };
