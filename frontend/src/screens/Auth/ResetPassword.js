@@ -26,7 +26,7 @@ const ResetPassword = ({ reset_password }) => {
       >
         <Modal.Header className="bg-blue text-light">
           <Modal.Title id="contained-modal-title-vcenter">
-            Przypomnij hasło {success ? <BsSendCheck /> : <BsPersonCheck />}
+            Przypomnienie hasła {success ? <BsSendCheck /> : <BsPersonCheck />}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -77,7 +77,9 @@ const ResetPassword = ({ reset_password }) => {
                 Wyślij
               </button>
               <Link className="w-40" to="/logowanie">
-                <button className="btnSquare bg-white clr-black">Anuluj</button>
+                <button className="btnSquare bg-white clr-dark-blue">
+                  Anuluj
+                </button>
               </Link>
             </div>
           )}

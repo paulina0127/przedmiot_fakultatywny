@@ -6,6 +6,7 @@ import { getPatient } from "../../actions/patientActions";
 import { PATIENT_DETAILS_RESET } from "../../constants/patientConsts";
 import { validatePatient } from "../../validators";
 import { Loader, Message } from "../general";
+import panel from "../UserPanel.module.css";
 
 export const PatientCreate = ({ user }) => {
   const initialValues = {
@@ -30,7 +31,9 @@ export const PatientCreate = ({ user }) => {
       initialValues={initialValues}
       validate={validatePatient}
       label="Zapisz"
-    />
+    >
+      <h2 className={panel.h2}>Karta pacjenta</h2>
+    </PatientForm>
   );
 };
 
@@ -79,7 +82,11 @@ export const PatientUpdate = ({ user, patientId }) => {
           initialValues={initialValues}
           validate={validatePatient}
           label="Zapisz zmiany"
-        />
+        >
+          {user?.type === "Pacjent" && (
+            <h2 className={panel.h2}>Karta pacjenta</h2>
+          )}
+        </PatientForm>
       )}
     </>
   );

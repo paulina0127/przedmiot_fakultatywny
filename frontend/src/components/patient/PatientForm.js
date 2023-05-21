@@ -27,6 +27,7 @@ const PatientForm = ({
   patientExists,
   patientId,
   user,
+  children,
 }) => {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
@@ -45,7 +46,7 @@ const PatientForm = ({
   };
 
   return (
-    <div className="container container-bg">
+    <>
       {loadingUpdate && <Loader />}
       {loadingCreate && <Loader />}
       {successUpdate && (
@@ -58,7 +59,7 @@ const PatientForm = ({
       {errorCreate && <Message variant="danger">{errorCreate}</Message>}
 
       <div className="container-bg-content">
-        <h2 className={panel.h2}>Karta pacjenta</h2>
+        {children}
         <Formik
           initialValues={initialValues}
           validationSchema={validate}
@@ -170,14 +171,13 @@ const PatientForm = ({
                     </div>
                     {patientExists && user?.type !== "Pacjent" ? (
                       <>
-                        <Link to="" className="align-self-center">
-                          <button className="btnRound bg-dark-blue clr-white">
-                            Historia leczenia
-                          </button>
-                        </Link>
                         <div className="formGroup">
                           <h4 className={panel.h4}>Klucz połączenia profilu</h4>
-                          <TextField name="link_key" type="text" />
+                          <TextField
+                            name="link_key"
+                            type="text"
+                            disabled={true}
+                          />
                         </div>
                       </>
                     ) : null}
@@ -421,7 +421,7 @@ const PatientForm = ({
           </button>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

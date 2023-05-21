@@ -1,9 +1,14 @@
+import { useState } from "react";
+import Tab from "react-bootstrap/Tab";
+import Tabs from "react-bootstrap/Tabs";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
 import { PatientCreate, PatientUpdate } from "../../components/patient";
 
 const PatientScreen = () => {
+  const [key, setKey] = useState("profile");
+
   const auth = useSelector((state) => state.auth);
   const { user } = auth;
 
@@ -15,13 +20,38 @@ const PatientScreen = () => {
       {user?.type === "Nowy użytkownik" ||
       ((user?.type === "Recepcjonista" || user?.type === "Admin") &&
         location.pathname.startsWith("/rejestracja")) ? (
-        <PatientCreate user={user} />
+        <div className="container container-bg">
+          <PatientCreate user={user} />
+        </div>
+      ) : user?.type === "Pacjent" ? (
+        <div className="container container-bg">
+          <PatientUpdate
+            user={user}
+            patientExists={true}
+            patientId={user?.profile?.id}
+          />
+        </div>
       ) : (
-        <PatientUpdate
-          user={user}
-          patientExists={true}
-          patientId={user?.type === "Pacjent" ? user?.profile?.id : patient_id}
-        />
+        user && (
+          <div className="container container-bg container-bg-tabs">
+            <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
+              <Tab
+                eventKey="profile"
+                title="Karta pacjenta"
+                tabClassName="firstTab"
+              >
+                <PatientUpdate
+                  user={user}
+                  patientExists={true}
+                  patientId={patient_id}
+                />
+              </Tab>
+              <Tab eventKey="appointments" title="Wizyty">
+                Wizyty
+              </Tab>
+            </Tabs>
+          </div>
+        )
       )}
     </section>
   );

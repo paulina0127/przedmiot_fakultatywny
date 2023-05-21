@@ -64,7 +64,7 @@ const PatientList = ({ doctorId }) => {
           <Pagination
             page={page}
             pageSize={pageSize}
-            countPatients={countPatients}
+            count={countPatients}
             clickBack={handleClickBack}
             clickForward={handleClickForward}
           />

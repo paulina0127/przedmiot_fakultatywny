@@ -19,7 +19,9 @@ const NavigationBar = ({ logout, user }) => {
           </button>
         </Nav.Link>
         <Nav.Link as={Link} to="/logowanie">
-          <button className="btnSquare bg-white clr-black">Zaloguj się</button>
+          <button className="btnSquare bg-white clr-dark-blue">
+            Zaloguj się
+          </button>
         </Nav.Link>
       </>
     );
@@ -53,13 +55,19 @@ const NavigationBar = ({ logout, user }) => {
         {(user?.type === "Pacjent" || user?.type === "Nowy użytkownik") && (
           <>
             <NavDropdown.Item as={Link} to="/profil">
-              Profil
+              Karta pacjenta
+            </NavDropdown.Item>
+            <NavDropdown.Divider />
+            <NavDropdown.Item as={Link} to="/konto">
+              Ustawienia konta
             </NavDropdown.Item>
             <NavDropdown.Divider />
           </>
         )}
         <NavDropdown.Item onClick={logout}>
-          Wyloguj się <FaPowerOff />
+          <span className="clr-red">
+            Wyloguj się <FaPowerOff />
+          </span>
         </NavDropdown.Item>
       </NavDropdown>
     );

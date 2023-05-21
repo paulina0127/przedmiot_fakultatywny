@@ -17,11 +17,11 @@ const NewUserPanelScreen = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Utwórz swoją kartę pacjenta by móc korzystać z naszych usług</p>
+          <p>Utwórz swoją kartę pacjenta by móc korzystać z naszych usług.</p>
         </Modal.Body>
         <Modal.Footer className="justify-content-center">
           <Link className="w-40" to="/profil">
-            <button className="btnSquare bg-dark-blue clr-white">
+            <button className="btnSquare bg-blue clr-white">
               Przejdź do karty zdrowia
             </button>
           </Link>

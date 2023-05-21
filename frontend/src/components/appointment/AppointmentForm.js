@@ -65,8 +65,6 @@ function AppointmentForm({
     date: date,
   };
 
-  console.log(slotsParams);
-
   const appointmentCreate = useSelector((state) => state.appointmentCreate);
   const {
     errorAppointmentCreate,
@@ -89,8 +87,6 @@ function AppointmentForm({
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            console.log("init", initialValues);
-            console.log(values);
             dispatch(createAppointment(values));
           }}
         >
@@ -337,7 +333,6 @@ function AppointmentForm({
                   </div>
                 </Tab>
               </Tabs>
-              {console.log(values)}
             </Form>
           )}
         </Formik>

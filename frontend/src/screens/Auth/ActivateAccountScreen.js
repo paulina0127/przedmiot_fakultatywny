@@ -43,11 +43,11 @@ const ActivateAccountScreen = ({ verify }) => {
         <Modal.Body>
           {success ? (
             <h5>
-              Zaloguj się na swoje konto i zacznij korzystać z naszego serwisu
+              Zaloguj się na swoje konto i zacznij korzystać z naszego serwisu.
             </h5>
           ) : (
             <>
-              <h5>Potwierdź, aby aktywować założone konto</h5>
+              <h5>Potwierdź, aby aktywować założone konto.</h5>
               {error && <Message variant="danger">{error}</Message>}
               {loading && <Loader />}
             </>

@@ -29,7 +29,7 @@ const ResetPasswordConfirm = ({ reset_password_confirm }) => {
       >
         <Modal.Header className="bg-blue text-light">
           <Modal.Title id="contained-modal-title-vcenter">
-            Resetuj hasło <BsPersonCheck />
+            Zmiana hasła <BsPersonCheck />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -94,7 +94,9 @@ const ResetPasswordConfirm = ({ reset_password_confirm }) => {
                 Zmień hasło
               </button>
               <Link className="w-40" to="/logowanie">
-                <button className="btnSquare bg-white clr-black">Anuluj</button>
+                <button className="btnSquare bg-white clr-dark-blue">
+                  Anuluj
+                </button>
               </Link>
             </div>
           )}

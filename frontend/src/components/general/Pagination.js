@@ -2,9 +2,11 @@ import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 
 function Pagination({ page, pageSize, count, clickBack, clickForward }) {
   const pages = Math.ceil(count / pageSize);
+  console.log(count, pageSize);
 
   return (
-    (!isNaN(pages) || pages === 0) && (
+    !isNaN(pages) &&
+    pages !== 0 && (
       <div className="paginationContainer">
         <button
           onClick={clickBack}

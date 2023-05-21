@@ -59,7 +59,7 @@ const DoctorListScreen = () => {
             <Pagination
               page={page}
               pageSize={pageSize}
-              countDoctors={countDoctors}
+              count={countDoctors}
               clickBack={handleClickBack}
               clickForward={handleClickForward}
             />
