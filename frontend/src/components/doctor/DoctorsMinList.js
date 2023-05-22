@@ -8,7 +8,7 @@ import { Loader, Message } from "../../components/general";
 import { DOCTOR_LIST_RESET } from "../../constants/doctorConsts";
 import panel from "../UserPanel.module.css";
 
-function DoctorsMinList() {
+const DoctorsMinList = () => {
   const doctorList = useSelector((state) => state.doctorList);
   const { doctors, loadingDoctors, countDoctors, errorDoctors } = doctorList;
 
@@ -42,6 +42,6 @@ function DoctorsMinList() {
       )}
     </div>
   );
-}
+};
 
 export default DoctorsMinList;

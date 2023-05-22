@@ -1,6 +1,6 @@
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 
-function Pagination({ page, pageSize, count, clickBack, clickForward }) {
+const Pagination = ({ page, pageSize, count, clickBack, clickForward }) => {
   const pages = Math.ceil(count / pageSize);
 
   return (
@@ -27,6 +27,6 @@ function Pagination({ page, pageSize, count, clickBack, clickForward }) {
       </div>
     )
   );
-}
+};
 
 export default Pagination;

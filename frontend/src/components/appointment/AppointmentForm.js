@@ -22,14 +22,14 @@ import panel from "../UserPanel.module.css";
 import styles from "./AppointmentForm.module.css";
 import "./Calendar.css";
 
-function AppointmentForm({
+const AppointmentForm = ({
   initialValues,
   validate,
   patientsList,
   doctorsList,
   doctorId,
   user,
-}) {
+}) => {
   const dispatch = useDispatch();
   const [key, setKey] = useState("date");
 
