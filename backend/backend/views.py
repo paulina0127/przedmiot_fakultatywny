@@ -54,7 +54,7 @@ class ApiRoot(generics.GenericAPIView):
                 "doctors": reverse(DoctorList.name, request=request),
                 "patients": reverse(PatientList.name, request=request),
                 "appointments": reverse(AppointmentList.name, request=request),
-                "prescriptions": reverse(PrescriptionList.name, request=request),
+                # "prescriptions": reverse(PrescriptionList.name, request=request),
                 "available_slots": reverse(AvailableSlotsList.name, request=request),
                 # Statistics
                 "patient_stats": reverse(PatientStatisticsList.name, request=request),
