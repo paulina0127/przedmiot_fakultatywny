@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-from apps.appointments.utils.choices import AppointmentStatus
+from apps.appointments.utils.choices import AppointmentStatus, PrescriptionStatus
 from apps.users.utils.choices import UserType
 
 
@@ -21,6 +21,9 @@ class AppointmentBaseAccess(BasePermission):
 
 
 class AppointmentUpdate(BasePermission):
+    # Patient can cancel 12h before day of appointment
+    # Allow only certain keys in request data
+    # Allow editing for workers only on the same day (or earlier)
     def has_object_permission(self, request, view, obj):
         # Allow read access to everyone (read object permissions in AppointmentBaseAccess)
         if request.method in SAFE_METHODS or request.user.type == UserType.ADMIN:
@@ -54,17 +57,15 @@ class AppointmentUpdate(BasePermission):
 
 
 class PrescriptionBaseAccess(BasePermission):
-
+    # Only doctor and admin can create a prescription
+    # object access to patient (read), doctor (read/write) associated with prescription
     def has_permission(self, request, view):
         if request.method == 'POST':
-            if request.user not in [UserType.ADMIN, UserType.DOCTOR]:
+            if request.user.type not in [UserType.ADMIN, UserType.DOCTOR]:
                 return False
         return True
 
     def has_object_permission(self, request, view, obj):
-        # True if user type is admin or
-        # a doctor/patient associated with the Prescription,
-        # patient is readonly, receptionist doesn't have any access.
         user = request.user
         if user.type == UserType.DOCTOR:
             return obj.appointment.doctor.user == user
@@ -73,18 +74,19 @@ class PrescriptionBaseAccess(BasePermission):
         return user.type == UserType.ADMIN
 
 
-class PrescriptionUpdateDestroy(BasePermission):
+class PrescriptionUpdate(BasePermission):
+    # Allow doctor associated with the prescription to cancel
+    # allow read access to everyone (read object permissions in PrescriptionBaseAccess)
     def has_object_permission(self, request, view, obj):
-        # Only allow doctor associated with the prescription to edit and delete,
-        # can only happen on the same day or earlier.
         if request.method in SAFE_METHODS:
             return True
 
         user = request.user
         if user.type == UserType.DOCTOR and obj.appointment.doctor.user == user:
-            if datetime.now().date() > obj.appointment.date:
-                raise PermissionDenied(detail="Edycja możliwa tego samego dnia, "
-                                              "co wizyta (lub wcześniej).")
+            if obj.status == PrescriptionStatus.COMPLETED:
+                raise PermissionDenied(detail="Nie można anulować już zrealizowanej recepty.")
+            if len(request.data) != 1 and request.data.get('status') != PrescriptionStatus.CANCELLED:
+                raise PermissionDenied(detail="Już wystawioną receptę można tylko anulować.")
             return True
         return False
 

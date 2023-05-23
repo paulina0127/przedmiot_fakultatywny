@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime
 
 from django.core.exceptions import BadRequest
@@ -16,12 +17,14 @@ from .utils.email_templates import (
     appointment_email_template,
     APPOINTMENT_TO_BE_CONFIRMED,
     APPOINTMENT_CONFIRMED,
+    PRESCRIPTION_ADDED,
+    prescription_email_template,
 )
 from .utils.permissions import (
     AppointmentBaseAccess,
     AppointmentUpdate,
     PrescriptionBaseAccess,
-    PrescriptionUpdateDestroy,
+    PrescriptionUpdate,
     IsReceptionistOrAdmin,
 )
 from .utils.serializers import (
@@ -78,23 +81,25 @@ class AppointmentList(generics.ListCreateAPIView):
             serializer.validated_data["status"] = AppointmentStatus.TO_BE_CONFIRMED
             serializer.fields["patient"].read_only = False
             serializer.validated_data["patient"] = user.patient
+            doctor = serializer.validated_data["doctor"]
             serializer.save()
             # Email user
             email = APPOINTMENT_TO_BE_CONFIRMED
-            email[
-                "body"
-            ] += f"\nLekarz: {data['doctor']} \nData: {data['date']} \nGodzina: {data['time']}"
+            email["body"] += f"\nLekarz: {doctor.first_name} {doctor.last_name} \n" \
+                             f"Data: {data['date']} \n" \
+                             f"Godzina: {data['time']}"
             user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST:
             serializer.validated_data["status"] = AppointmentStatus.CONFIRMED
+            doctor = serializer.validated_data["doctor"]
             serializer.save()
             # Email patient user
             if serializer.validated_data["patient"].user:
                 email = APPOINTMENT_CONFIRMED
-                email[
-                    "body"
-                ] += f"\nLekarz: {data['doctor']} \nData: {data['date']} \nGodzina: {data['time']}"
+                email["body"] += f"\nLekarz: {doctor.first_name} {doctor.last_name} \n" \
+                                 f"Data: {data['date']} \n" \
+                                 f"Godzina: {data['time']}"
                 serializer.validated_data["patient"].user.email_user(
                     email["subject"], email["body"]
                 )
@@ -121,43 +126,37 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
             return Appointment.objects.all()
 
     def partial_update(self, request, *args, **kwargs):
-        # Get object/request values and email patient
+        # Get appointment request/object values
         user = self.request.user
-        appointment = self.get_object()
-        status = request.data.get("status", appointment.status)
-        doctor = request.data.get("doctor", appointment.doctor)
-        date = request.data.get("date", appointment.date)
-        time = request.data.get("time", appointment.time)
-        patient = request.data.get("patient", appointment.patient)
-
+        obj = self.get_object()
+        doctor = request.data.get("doctor", obj.doctor)
+        date = request.data.get("date", obj.date)
+        time = request.data.get("time", obj.time)
+        patient = request.data.get("patient", obj.patient)
         if user.type == UserType.DOCTOR:
-            # set completed by default
+            # set completed by default when doctor updates
             request.data["status"] = AppointmentStatus.COMPLETED
-            if patient.user:
-                email = appointment_email_template(request.data["status"])
-                email["body"] += f"\nLekarz: {doctor} \nData: {date} \nGodzina: {time}"
-                patient.user.email_user(email["subject"], email["body"])
+        status = request.data.get("status", obj.status)
 
-        elif user.type == UserType.RECEPTIONIST and patient.user:
-            if (
-                appointment.status != status
-                or appointment.doctor != doctor
-                or appointment.date != date
-                or appointment.time != time
-                or appointment.patient != patient
-            ):
-                email = appointment_email_template(status)
-                email["body"] += f"\nLekarz: {doctor} \nData: {date} \nGodzina: {time}"
-                patient.user.email_user(email["subject"], email["body"])
+        response = super().partial_update(request, *args, **kwargs)
 
-        return super().partial_update(request, *args, **kwargs)
+        # Send email if any value got changed
+        if patient.user and (obj.status != status or obj.doctor != doctor
+                             or obj.date != date or obj.time != time or obj.patient != patient):
+            email = appointment_email_template(status)
+            email["body"] += f"\nLekarz: {doctor} \n" \
+                                f"Data: {date} \n" \
+                                f"Godzina: {time}"
+            patient.user.email_user(email["subject"], email["body"])
+
+        return response
 
 
 # Display list, create prescriptions
 class PrescriptionList(generics.ListCreateAPIView):
     serializer_class = PrescriptionSerializer
     name = "prescriptions"
-    filterset_fields = ["appointment"]
+    filterset_fields = ["appointment", "status"]
     ordering_fields = ["id", "created_at"]
     permission_classes = [IsAuthenticated, PrescriptionBaseAccess]
 
@@ -173,16 +172,38 @@ class PrescriptionList(generics.ListCreateAPIView):
         else:
             return Prescription.objects.all()
 
+    def perform_create(self, serializer):
+        # Generate 4-digit PIN for prescription
+        pesel = Appointment(id=self.request.data.get('appointment')).patient.pesel
+        code = str(secrets.randbelow(10000)).zfill(4)
+        while Prescription.objects.filter(access_code=code, appointment__patient__pesel=pesel).exists():
+            code = str(secrets.randbelow(10000)).zfill(4)
+        serializer.fields["access_code"].read_only = False
+        serializer.validated_data["access_code"] = code
+        # Assign appointment, save
+        serializer.fields["appointment"].read_only = False
+        serializer.validated_data["appointment"] = Appointment.objects.get(pk=self.kwargs['pk'])
+        serializer.save()
+        # Email patient
+        if serializer.validated_data["patient"].user:
+            email = PRESCRIPTION_ADDED
+            serializer.validated_data["patient"].user.email_user(email["subject"], email["body"])
+
 
 # Display, update single prescription
-class PrescriptionDetail(generics.RetrieveUpdateDestroyAPIView):
+class PrescriptionDetail(generics.RetrieveUpdateAPIView):
     serializer_class = PrescriptionSerializer
     name = "prescription"
     permission_classes = [
         IsAuthenticated,
         PrescriptionBaseAccess,
-        PrescriptionUpdateDestroy,
+        PrescriptionUpdate,
     ]
+
+    def get_serializer(self, *args, **kwargs):
+        serializer = super().get_serializer(*args, **kwargs)
+        serializer.fields['status'].read_only = False
+        return serializer
 
     def get_queryset(self):
         user = self.request.user
@@ -195,6 +216,21 @@ class PrescriptionDetail(generics.RetrieveUpdateDestroyAPIView):
         # Return all prescriptions if the user is admin
         else:
             return Prescription.objects.all()
+
+    def partial_update(self, request, *args, **kwargs):
+        # Get object/request values and email patient
+        prescription = self.get_object()
+        status = request.data.get("status", prescription.status)
+        patient = prescription.appointment.patient
+
+        response = super().partial_update(request, *args, **kwargs)
+
+        if patient.user:
+            email = prescription_email_template(status)
+            if email:
+                patient.user.email_user(email["subject"], email["body"])
+
+        return response
 
 
 # Appointment statistics

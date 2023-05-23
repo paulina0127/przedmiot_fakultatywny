@@ -4,7 +4,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from ..models import Appointment, Prescription
-from .choices import AppointmentStatus
+from .choices import AppointmentStatus, PrescriptionStatus
 from ...employees.models import Schedule, Doctor
 from ...patients.models import Patient
 from ...users.utils.choices import UserType
@@ -118,6 +118,11 @@ class ReceptionistCreateAppointmentSerializer(AppointmentSerializer):
 
 
 class PrescriptionSerializer(serializers.ModelSerializer):
+    access_code = serializers.CharField(read_only=True)
+    expires_at = serializers.DateTimeField(read_only=True)
+    appointment = serializers.PrimaryKeyRelatedField(read_only=True)
+    status = serializers.ChoiceField(choices=PrescriptionStatus, read_only=True)
+
     class Meta:
         model = Prescription
         fields = "__all__"

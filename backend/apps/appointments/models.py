@@ -1,11 +1,13 @@
+from datetime import timedelta
 from apps.employees.models import Doctor
 from apps.employees.utils.choices import Slot
 from apps.patients.models import Patient
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django_better_admin_arrayfield.models.fields import ArrayField
 
-from .utils.choices import AppointmentStatus
+from .utils.choices import AppointmentStatus, PrescriptionStatus
 
 
 class Appointment(models.Model):
@@ -53,8 +55,15 @@ class Appointment(models.Model):
 
 class Prescription(models.Model):
     access_code = models.CharField(verbose_name=_("Kod dostępu"), max_length=4)
-    created_at = models.DateTimeField(verbose_name=_("Wystawiono"), auto_now_add=True)
     medicine = ArrayField(models.CharField(max_length=255), verbose_name=_("Leki"))
+    status = models.CharField(
+        verbose_name=_("Status"),
+        max_length=50,
+        choices=PrescriptionStatus.choices,
+        default=PrescriptionStatus.CONFIRMED,
+    )
+    created_at = models.DateTimeField(verbose_name=_("Wystawiono"), auto_now_add=True)
+    expires_at = models.DateTimeField(verbose_name=_("Wygasa"), default=timezone.now() + timedelta(days=30))
     appointment = models.ForeignKey(
         verbose_name=_("Wizyta"),
         to=Appointment,

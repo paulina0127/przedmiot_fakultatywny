@@ -7,3 +7,9 @@ class AppointmentStatus(models.TextChoices):
     CONFIRMED = "Potwierdzona", _("Potwierdzona")
     COMPLETED = "Odbyta", _("Odbyta")
     CANCELLED = "Anulowana", _("Anulowana")
+
+
+class PrescriptionStatus(models.TextChoices):
+    CONFIRMED = "Zatwierdzona", _("Zatwierdzona")
+    COMPLETED = "Zrealizowana", _("Zrealizowana")
+    CANCELLED = "Anulowana", _("Anulowana")
