@@ -50,7 +50,11 @@ const PatientScreen = () => {
                   patientId={patient_id}
                 />
               </Tab>
-              <Tab eventKey="appointments" title="Wizyty" tabClassName="tab">
+              <Tab
+                eventKey="appointments"
+                title="Historia leczenia"
+                tabClassName="tab"
+              >
                 <AppointmentList patientId={patient_id} type="Pacjent" />
               </Tab>
             </Tabs>

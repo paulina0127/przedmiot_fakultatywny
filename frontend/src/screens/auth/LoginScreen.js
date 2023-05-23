@@ -36,7 +36,7 @@ const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
             login(email, password);
           }}
         >
-          {({ values }) => (
+          {({ values, isValid }) => (
             <>
               <Form className={styles.form}>
                 <TextField label="Email" name="email" type="email" />
@@ -48,7 +48,7 @@ const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
                   <button
                     type="submit"
                     className="btnSquare bg-blue clr-white"
-                    disabled={loading}
+                    disabled={loading || !isValid}
                   >
                     Zaloguj
                   </button>

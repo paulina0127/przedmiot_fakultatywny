@@ -58,7 +58,7 @@ const ResetPasswordConfirm = ({ reset_password_confirm }) => {
                   resetForm({ values: "" });
                 }}
               >
-                {({ values }) => (
+                {({ values, isValid }) => (
                   <Form id="form">
                     <TextField
                       label="Hasło"

@@ -39,7 +39,7 @@ const SignUpScreen = ({ signup, isAuthenticated, onClick }) => {
             signup(email, password, re_password);
           }}
         >
-          {({ values }) => (
+          {({ values, isValid }) => (
             <>
               <Modal
                 show={success}
@@ -81,7 +81,7 @@ const SignUpScreen = ({ signup, isAuthenticated, onClick }) => {
                   type="submit"
                   className="btnSquare bg-blue clr-white"
                   style={{ justifySelf: "center" }}
-                  disabled={loading}
+                  disabled={loading || !isValid}
                 >
                   Zarejestruj
                 </button>

@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+import { format } from "date-fns";
+
 import { listDoctors } from "../../actions/doctorActions";
 import { listPatients } from "../../actions/patientActions";
 import { DOCTOR_LIST_RESET } from "../../constants/doctorConsts";
@@ -14,7 +16,7 @@ export const AppointmentCreateForPatient = ({ user }) => {
   const doctor_id = useParams().id;
 
   const initialValues = {
-    date: new Date(),
+    date: format(new Date(), "yyyy-MM-dd"),
     time: "",
     symptoms: [],
     medicine: [],
@@ -35,7 +37,7 @@ export const AppointmentCreate = ({ user }) => {
   const dispatch = useDispatch();
 
   const initialValues = {
-    date: new Date(),
+    date: format(new Date(), "yyyy-MM-dd"),
     time: "",
     symptoms: [],
     medicine: [],

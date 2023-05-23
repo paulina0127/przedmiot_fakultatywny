@@ -306,18 +306,29 @@ body {
 }
 
 .btnSquare.bg-dark-blue:hover,
-.btnRound.bg-dark-blue:hover {
+.btnRound.bg-dark-blue:hover,
+.btnSquare.bg-dark-blue:disabled,
+.btnRound.bg-dark-blue:disabled {
   background: var(--clr-dark-blue-hover);
 }
 
 .btnSquare.bg-blue:hover,
-.btnRound.bg-blue:hover {
+.btnRound.bg-blue:hover,
+.btnSquare.bg-blue:disabled,
+.btnRound.bg-blue:disabled {
   background: var(--clr-blue-hover);
 }
 
 .btnSquare.bg-white:hover,
-.btnRound.bg-white:hover {
+.btnRound.bg-white:hover,
+.btnSquare.bg-white:disabled,
+.btnRound.bg-white:disabled {
   background: var(--clr-white-hover) !important;
+}
+
+.btnSquare:disabled,
+.btnRound:disabled {
+  cursor: not-allowed;
 }
 
 /* ----------- FORMS ----------- */

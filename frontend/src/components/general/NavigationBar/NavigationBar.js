@@ -55,7 +55,7 @@ const NavigationBar = ({ logout, user }) => {
                   Dodaj pacjenta
                 </Dropdown.Item>
                 <Dropdown.Item
-                  href="#pacjenci"
+                  href="/pacjenci"
                   bsPrefix="navLinksItem"
                   className="dropdown-item"
                 >
@@ -79,21 +79,21 @@ const NavigationBar = ({ logout, user }) => {
                   Dodaj wizytę
                 </Dropdown.Item>
                 <Dropdown.Item
-                  href="#dzisiejsze-wizyty"
+                  href="/wizyty"
                   bsPrefix="navLinksItem"
                   className="dropdown-item"
                 >
                   Dzisiejsze wizyty
                 </Dropdown.Item>
                 <Dropdown.Item
-                  href="#zgloszone-wizyty"
+                  href="/wizyty"
                   bsPrefix="navLinksItem"
                   className="dropdown-item"
                 >
                   Zgłoszone wizyty
                 </Dropdown.Item>
                 <Dropdown.Item
-                  href="#wizyty"
+                  href="/wizyty"
                   bsPrefix="navLinksItem"
                   className="dropdown-item"
                 >
@@ -102,10 +102,10 @@ const NavigationBar = ({ logout, user }) => {
               </Dropdown.Menu>
             </Dropdown>
 
-            <Nav.Link as={Link} to="#lekarze">
+            <Nav.Link as={Link} to="/lekarze">
               <button className="btnSimple btnNav">Lekarze</button>
             </Nav.Link>
-            <Nav.Link as={Link} to="#statystyki">
+            <Nav.Link as={Link} to="/statystyki">
               <button className="btnSimple btnNav">Statystyki</button>
             </Nav.Link>
           </div>

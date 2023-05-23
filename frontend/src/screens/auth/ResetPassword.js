@@ -50,7 +50,7 @@ const ResetPassword = ({ reset_password }) => {
                   success && resetForm({ values: "" });
                 }}
               >
-                {({ values }) => (
+                {({ values, isValid }) => (
                   <Form id="form">
                     <TextField label="" name="email" type="email" />
                   </Form>

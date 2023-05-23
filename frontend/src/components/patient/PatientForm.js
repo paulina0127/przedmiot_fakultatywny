@@ -77,7 +77,7 @@ const PatientForm = ({
             }
           }}
         >
-          {({ values }) => (
+          {({ values, isValid }) => (
             <>
               <Modal
                 show={showModal}
@@ -112,7 +112,7 @@ const PatientForm = ({
                       successLink && resetForm({ values: "" });
                     }}
                   >
-                    {({ values }) => (
+                    {({ values, isValid }) => (
                       <Form id="modal-form">
                         <TextField label="Pesel" name="pesel" type="text" />
                         <TextField
@@ -136,6 +136,7 @@ const PatientForm = ({
                       type="submit"
                       form="modal-form"
                       className="btnSquare bg-blue clr-white"
+                      disabled={loadingLink}
                     >
                       Połącz
                     </button>
@@ -406,6 +407,7 @@ const PatientForm = ({
               className="btnSquare bg-blue clr-white mx-4 mt-3"
               style={{ justifySelf: "end" }}
               form="form"
+              disabled={loadingCreate}
             >
               {label}
             </button>
@@ -416,6 +418,7 @@ const PatientForm = ({
             className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
             style={{ justifySelf: "end" }}
             form="form"
+            disabled={loadingUpdate}
           >
             {label}
           </button>

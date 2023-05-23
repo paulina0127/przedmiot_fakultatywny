@@ -87,10 +87,11 @@ const AppointmentForm = ({
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
+            console.log(values);
             dispatch(createAppointment(values));
           }}
         >
-          {({ values, setFieldValue }) => (
+          {({ values, isValid, setFieldValue }) => (
             <Form id="form" encType="multipart/form-data">
               <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
                 <Tab eventKey="date" title="Termin" tabClassName="tab firstTab">
@@ -343,12 +344,13 @@ const AppointmentForm = ({
           className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
           style={{ justifySelf: "end", alignSelf: "end" }}
           form="form"
+          disabled={loadingAppointmentCreate}
         >
           Zatwierdź
         </button>
       )}
     </div>
   );
-}
+};
 
 export default AppointmentForm;
