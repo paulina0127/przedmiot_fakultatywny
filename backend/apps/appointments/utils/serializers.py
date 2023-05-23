@@ -102,6 +102,8 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 
 class PatientCreateAppointmentSerializer(AppointmentSerializer):
+    doctor = serializers.PrimaryKeyRelatedField(queryset=Doctor.objects.all())
+
     class Meta:
         model = Appointment
         exclude = ["status", "recommendations"]

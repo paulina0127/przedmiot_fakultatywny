@@ -80,29 +80,33 @@ class AppointmentList(generics.ListCreateAPIView):
             serializer.validated_data["status"] = AppointmentStatus.TO_BE_CONFIRMED
             serializer.fields["patient"].read_only = False
             serializer.validated_data["patient"] = user.patient
-            doctor = Doctor.objects.get(id=self.request.data["doctor"])
+            doctor = serializer.validated_data["doctor"]
             date = serializer.validated_data["date"]
             time = serializer.validated_data["time"]
             serializer.save()
             # Email user
             email = APPOINTMENT_TO_BE_CONFIRMED
-            email["body"] += f"\nLekarz: {doctor.first_name} {doctor.last_name} \n" \
-                             f"Data: {date} \n" \
-                             f"Godzina: {time}"
+            email["body"] += (
+                f"\nLekarz: {doctor.first_name} {doctor.last_name} \n"
+                f"Data: {date} \n"
+                f"Godzina: {time}"
+            )
             user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST:
             serializer.validated_data["status"] = AppointmentStatus.CONFIRMED
-            doctor = Doctor.objects.get(id=self.request.data["doctor"])
+            doctor = serializer.validated_data["doctor"]
             date = serializer.validated_data["date"]
             time = serializer.validated_data["time"]
             serializer.save()
             # Email patient user
             if serializer.validated_data["patient"].user:
                 email = APPOINTMENT_CONFIRMED
-                email["body"] += f"\nLekarz: {doctor.first_name} {doctor.last_name} \n" \
-                                 f"Data: {date} \n" \
-                                 f"Godzina: {time}"
+                email["body"] += (
+                    f"\nLekarz: {doctor.first_name} {doctor.last_name} \n"
+                    f"Data: {date} \n"
+                    f"Godzina: {time}"
+                )
                 serializer.validated_data["patient"].user.email_user(
                     email["subject"], email["body"]
                 )
@@ -144,12 +148,17 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
         response = super().partial_update(request, *args, **kwargs)
 
         # Send email if any value got changed
-        if patient.user and (obj.status != status or obj.doctor != doctor
-                             or obj.date != date or obj.time != time or obj.patient != patient):
+        if patient.user and (
+            obj.status != status
+            or obj.doctor != doctor
+            or obj.date != date
+            or obj.time != time
+            or obj.patient != patient
+        ):
             email = appointment_email_template(status)
-            email["body"] += f"\nLekarz: {doctor} \n" \
-                                f"Data: {date} \n" \
-                                f"Godzina: {time}"
+            email["body"] += (
+                f"\nLekarz: {doctor} \n" f"Data: {date} \n" f"Godzina: {time}"
+            )
             patient.user.email_user(email["subject"], email["body"])
 
         return response
@@ -166,24 +175,30 @@ class PrescriptionList(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.type in [UserType.PATIENT, UserType.DOCTOR]:
-            return Prescription.objects.filter(appointment_id=self.kwargs['pk'])
+            return Prescription.objects.filter(appointment_id=self.kwargs["pk"])
 
     def perform_create(self, serializer):
         # Generate 4-digit PIN for prescription
-        pesel = Appointment(id=self.request.data.get('appointment')).patient.pesel
+        pesel = Appointment(id=self.request.data.get("appointment")).patient.pesel
         code = str(secrets.randbelow(10000)).zfill(4)
-        while Prescription.objects.filter(access_code=code, appointment__patient__pesel=pesel).exists():
+        while Prescription.objects.filter(
+            access_code=code, appointment__patient__pesel=pesel
+        ).exists():
             code = str(secrets.randbelow(10000)).zfill(4)
         serializer.fields["access_code"].read_only = False
         serializer.validated_data["access_code"] = code
         # Assign appointment, save
         serializer.fields["appointment"].read_only = False
-        serializer.validated_data["appointment"] = Appointment.objects.get(pk=self.kwargs['pk'])
+        serializer.validated_data["appointment"] = Appointment.objects.get(
+            pk=self.kwargs["pk"]
+        )
         serializer.save()
         # Email patient
         if serializer.validated_data["patient"].user:
             email = PRESCRIPTION_ADDED
-            serializer.validated_data["patient"].user.email_user(email["subject"], email["body"])
+            serializer.validated_data["patient"].user.email_user(
+                email["subject"], email["body"]
+            )
 
 
 # Display, update single prescription
@@ -198,7 +213,7 @@ class PrescriptionDetail(generics.RetrieveUpdateAPIView):
 
     def get_serializer(self, *args, **kwargs):
         serializer = super().get_serializer(*args, **kwargs)
-        serializer.fields['status'].read_only = False
+        serializer.fields["status"].read_only = False
         return serializer
 
     def get_queryset(self):
