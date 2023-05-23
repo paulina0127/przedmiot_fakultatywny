@@ -9,7 +9,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from apps.employees.models import Schedule
+from apps.employees.models import Schedule, Doctor
 from apps.users.utils.choices import UserType
 from .models import Appointment, Prescription
 from .utils.choices import AppointmentStatus
@@ -76,30 +76,33 @@ class AppointmentList(generics.ListCreateAPIView):
     # handle status and patient fields
     def perform_create(self, serializer):
         user = self.request.user
-        data = self.request.data
         if user.type == UserType.PATIENT:
             serializer.validated_data["status"] = AppointmentStatus.TO_BE_CONFIRMED
             serializer.fields["patient"].read_only = False
             serializer.validated_data["patient"] = user.patient
-            doctor = serializer.validated_data["doctor"]
+            doctor = Doctor.objects.get(id=self.request.data["doctor"])
+            date = serializer.validated_data["date"]
+            time = serializer.validated_data["time"]
             serializer.save()
             # Email user
             email = APPOINTMENT_TO_BE_CONFIRMED
             email["body"] += f"\nLekarz: {doctor.first_name} {doctor.last_name} \n" \
-                             f"Data: {data['date']} \n" \
-                             f"Godzina: {data['time']}"
+                             f"Data: {date} \n" \
+                             f"Godzina: {time}"
             user.email_user(email["subject"], email["body"])
 
         elif user.type == UserType.RECEPTIONIST:
             serializer.validated_data["status"] = AppointmentStatus.CONFIRMED
-            doctor = serializer.validated_data["doctor"]
+            doctor = Doctor.objects.get(id=self.request.data["doctor"])
+            date = serializer.validated_data["date"]
+            time = serializer.validated_data["time"]
             serializer.save()
             # Email patient user
             if serializer.validated_data["patient"].user:
                 email = APPOINTMENT_CONFIRMED
                 email["body"] += f"\nLekarz: {doctor.first_name} {doctor.last_name} \n" \
-                                 f"Data: {data['date']} \n" \
-                                 f"Godzina: {data['time']}"
+                                 f"Data: {date} \n" \
+                                 f"Godzina: {time}"
                 serializer.validated_data["patient"].user.email_user(
                     email["subject"], email["body"]
                 )
@@ -162,15 +165,8 @@ class PrescriptionList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        # Return patient's prescriptions
-        if user.type == UserType.PATIENT:
-            return Prescription.objects.filter(appointment__patient=user.patient)
-        # Return doctor's prescriptions
-        elif user.type == UserType.DOCTOR:
-            return Prescription.objects.filter(appointment__doctor=user.doctor)
-        # Return all prescriptions if the user is admin
-        else:
-            return Prescription.objects.all()
+        if user.type in [UserType.PATIENT, UserType.DOCTOR]:
+            return Prescription.objects.filter(appointment_id=self.kwargs['pk'])
 
     def perform_create(self, serializer):
         # Generate 4-digit PIN for prescription
