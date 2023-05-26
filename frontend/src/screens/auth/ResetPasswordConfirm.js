@@ -15,8 +15,7 @@ const ResetPasswordConfirm = ({ reset_password_confirm }) => {
   const uid = useParams().uid;
   const token = useParams().token;
 
-  const auth = useSelector((state) => state.auth);
-  const { error, loading, success } = auth;
+  const { error, loading, success } = useSelector((state) => state.auth);
 
   return (
     <>

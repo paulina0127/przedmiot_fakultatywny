@@ -17,8 +17,9 @@ export const DoctorRead = ({ doctorId }) => {
     };
   }, []);
 
-  const doctorDetails = useSelector((state) => state.doctorDetails);
-  const { doctor, loadingDoctor, errorDoctor } = doctorDetails;
+  const { doctor, loadingDoctor, errorDoctor } = useSelector(
+    (state) => state.doctorDetails
+  );
 
   const initialValues = doctor
     ? {

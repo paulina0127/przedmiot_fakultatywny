@@ -46,8 +46,9 @@ export const PatientUpdate = ({ user, patientId }) => {
     };
   }, []);
 
-  const patientDetails = useSelector((state) => state.patientDetails);
-  const { patient, loadingPatient, errorPatient } = patientDetails;
+  const { patient, loadingPatient, errorPatient } = useSelector(
+    (state) => state.patientDetails
+  );
 
   const initialValues = patient
     ? {

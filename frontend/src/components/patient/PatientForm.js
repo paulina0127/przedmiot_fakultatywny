@@ -32,14 +32,15 @@ const PatientForm = ({
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
 
-  const patientCreate = useSelector((state) => state.patientCreate);
-  const { errorCreate, successCreate, loadingCreate } = patientCreate;
-
-  const patientUpdate = useSelector((state) => state.patientUpdate);
-  const { errorUpdate, successUpdate, loadingUpdate } = patientUpdate;
-
-  const patientLink = useSelector((state) => state.patientLink);
-  const { errorLink, successLink, loadingLink } = patientLink;
+  const { errorCreate, successCreate, loadingCreate } = useSelector(
+    (state) => state.patientCreate
+  );
+  const { errorUpdate, successUpdate, loadingUpdate } = useSelector(
+    (state) => state.patientUpdate
+  );
+  const { errorLink, successLink, loadingLink } = useSelector(
+    (state) => state.patientLink
+  );
 
   const handleClick = () => {
     setShowModal(!showModal);

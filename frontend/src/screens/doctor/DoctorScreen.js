@@ -11,8 +11,7 @@ import { PatientList } from "../../components/patient";
 const DoctorScreen = () => {
   const [key, setKey] = useState("profile");
 
-  const auth = useSelector((state) => state.auth);
-  const { user } = auth;
+  const { user } = useSelector((state) => state.auth);
 
   const location = useLocation();
   const doctor_id = useParams().id;

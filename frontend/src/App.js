@@ -50,8 +50,19 @@ const App = () => {
             <Route path="/pacjenci/:id" element={<PatientScreen />} />
 
             {/* Appointments */}
-            <Route path="/nowa-wizyta" element={<AppointmentScreen />} />
-            <Route path="/nowa-wizyta/:id" element={<AppointmentScreen />} />
+            <Route
+              path="/nowa-wizyta"
+              element={<AppointmentScreen type="create" />}
+            />
+            <Route
+              path="/nowa-wizyta/:id"
+              element={<AppointmentScreen type="create" />}
+            />
+
+            <Route
+              path="/wizyty/:id"
+              element={<AppointmentScreen type="update" />}
+            />
           </Routes>
         </Layout>
       </BrowserRouter>

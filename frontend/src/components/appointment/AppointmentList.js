@@ -12,13 +12,12 @@ const AppointmentList = ({ doctorId, patientId, type }) => {
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  const appointmentList = useSelector((state) => state.appointmentList);
   const {
     appointments,
     loadingAppointments,
     countAppointments,
     errorAppointments,
-  } = appointmentList;
+  } = useSelector((state) => state.appointmentList);
 
   const dispatch = useDispatch();
 

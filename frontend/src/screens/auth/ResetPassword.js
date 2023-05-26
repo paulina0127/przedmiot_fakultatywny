@@ -12,8 +12,7 @@ import { validateResetPassword } from "../../validators";
 import LoginScreen from "./LoginScreen";
 
 const ResetPassword = ({ reset_password }) => {
-  const auth = useSelector((state) => state.auth);
-  const { error, loading, success } = auth;
+  const { error, loading, success } = useSelector((state) => state.auth);
 
   return (
     <>

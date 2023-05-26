@@ -3,7 +3,9 @@ import thunk from "redux-thunk";
 
 import {
   appointmentCreateReducer,
+  appointmentDetailsReducer,
   appointmentListReducer,
+  appointmentUpdateReducer,
 } from "./reducers/appointmentReducer";
 import { authReducer } from "./reducers/authReducer";
 import {
@@ -17,6 +19,12 @@ import {
   patientListReducer,
   patientUpdateReducer,
 } from "./reducers/patientReducer";
+import {
+  prescriptionCreateReducer,
+  prescriptionDetailsReducer,
+  prescriptionListReducer,
+  prescriptionUpdateReducer,
+} from "./reducers/prescriptionReducer";
 import { slotsListReducer } from "./reducers/statsAndSlotsReducer";
 
 const reducer = combineReducers({
@@ -34,7 +42,14 @@ const reducer = combineReducers({
   slotsList: slotsListReducer,
 
   appointmentList: appointmentListReducer,
+  appointmentDetails: appointmentDetailsReducer,
   appointmentCreate: appointmentCreateReducer,
+  appointmentUpdate: appointmentUpdateReducer,
+
+  prescriptionList: prescriptionListReducer,
+  prescriptionDetails: prescriptionDetailsReducer,
+  prescriptionCreate: prescriptionCreateReducer,
+  prescriptionUpdate: prescriptionUpdateReducer,
 });
 
 const userTokensFromStorage = localStorage.getItem("userTokens")

@@ -4,13 +4,17 @@ import { useParams } from "react-router-dom";
 
 import { format } from "date-fns";
 
+import { AppointmentForm, AppointmentUpdateForm } from ".";
+import { getAppointment } from "../../actions/appointmentActions";
 import { listDoctors } from "../../actions/doctorActions";
 import { listPatients } from "../../actions/patientActions";
+import { listPrescriptions } from "../../actions/prescriptionActions";
+import { APPOINTMENT_DETAILS_RESET } from "../../constants/appointmentConsts";
 import { DOCTOR_LIST_RESET } from "../../constants/doctorConsts";
 import { PATIENT_LIST_RESET } from "../../constants/patientConsts";
+import { PRESCRIPTION_LIST_RESET } from "../../constants/prescriptionConsts";
 import { validateAppointment } from "../../validators";
 import { Loader, Message } from "../general";
-import AppointmentForm from "./AppointmentForm";
 
 export const AppointmentCreateForPatient = ({ user }) => {
   const doctor_id = useParams().id;
@@ -45,12 +49,12 @@ export const AppointmentCreate = ({ user }) => {
     patient: "",
   };
 
-  const patientList = useSelector((state) => state.patientList);
   const { patients, loadingPatients, countPatients, errorPatients } =
-    patientList;
+    useSelector((state) => state.patientList);
 
-  const doctorList = useSelector((state) => state.doctorList);
-  const { doctors, loadingDoctors, countDoctors, errorDoctors } = doctorList;
+  const { doctors, loadingDoctors, countDoctors, errorDoctors } = useSelector(
+    (state) => state.doctorList
+  );
 
   useEffect(() => {
     dispatch(listPatients({}));
@@ -77,53 +81,66 @@ export const AppointmentCreate = ({ user }) => {
   );
 };
 
-// export const AppointmentUpdate = ({ user, patientId }) => {
-//   const dispatch = useDispatch();
-//   useEffect(() => {
-//     dispatch(getPatient(patientId));
-//     return () => {
-//       dispatch({ type: PATIENT_DETAILS_RESET });
-//     };
-//   }, []);
+export const AppointmentUpdate = ({ user, appointmentId }) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAppointment(appointmentId));
+    return () => {
+      dispatch({ type: APPOINTMENT_DETAILS_RESET });
+    };
+  }, []);
 
-//   const patientDetails = useSelector((state) => state.patientDetails);
-//   const { error, loading, patient } = patientDetails;
+  useEffect(() => {
+    dispatch(listPrescriptions(appointmentId));
+    return () => {
+      dispatch({ type: PRESCRIPTION_LIST_RESET });
+    };
+  }, []);
 
-//   const initialValues = patient
-//     ? {
-//         first_name: patient.first_name,
-//         last_name: patient.last_name,
-//         pesel: patient.pesel,
-//         birthdate: patient.birthdate,
-//         email: patient.email,
-//         phone_number: patient.phone_number,
-//         street: patient.street,
-//         postal_code: patient.postal_code,
-//         city: patient.city,
-//         medicine: patient.medicine,
-//         allergies: patient.allergies,
-//         diseases: patient.diseases,
-//         link_key: patient.link_key,
-//         image: patient.image,
-//       }
-//     : {};
+  const { errorAppointment, loadingAppointment, appointment } = useSelector(
+    (state) => state.appointmentDetails
+  );
 
-//   return (
-//     <>
-//       {loading ? (
-//         <Loader />
-//       ) : error ? (
-//         <Message variant="danger">{error}</Message>
-//       ) : patient && Object.keys(patient).count === 0 ? null : (
-//         <PatientForm
-//           patientExists={true}
-//           patientId={patientId}
-//           user={user}
-//           initialValues={initialValues}
-//           validate={validatePatient}
-//           label="Zapisz zmiany"
-//         />
-//       )}
-//     </>
-//   );
-// };
+  const {
+    errorPrescriptions,
+    loadingPrescriptions,
+    countPrescriptions,
+    prescriptions,
+  } = useSelector((state) => state.prescriptionList);
+
+  const timeUntilApt =
+    appointment &&
+    (new Date(`${appointment.date} ${appointment.time}:00`) - new Date()) /
+      (1000 * 60 * 60);
+
+  const initialValues = appointment
+    ? {
+        date: appointment.date,
+        time: appointment.time,
+        symptoms: appointment.symptoms,
+        medicine: appointment.medicine,
+        doctor: appointment.doctor,
+        patient: appointment.patient,
+        status: appointment.status,
+        recommendations: appointment.recommendations,
+      }
+    : {};
+
+  return (
+    <>
+      {loadingAppointment ? (
+        <Loader />
+      ) : errorAppointment ? (
+        <Message variant="danger">{errorAppointment}</Message>
+      ) : appointment && Object.keys(appointment).count === 0 ? null : (
+        <AppointmentUpdateForm
+          user={user}
+          prescriptions={prescriptions}
+          initialValues={initialValues}
+          validate={validateAppointment}
+          cancellable={timeUntilApt > 24}
+        />
+      )}
+    </>
+  );
+};

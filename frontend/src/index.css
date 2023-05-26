@@ -302,32 +302,41 @@ body {
   align-items: center;
   height: 40px;
   width: 40px;
+  border: 0;
   border-radius: 50%;
+  transition: var(--transition);
 }
 
 .btnSquare.bg-dark-blue:hover,
 .btnRound.bg-dark-blue:hover,
+.btnCircle.bg-dark-blue:hover,
 .btnSquare.bg-dark-blue:disabled,
-.btnRound.bg-dark-blue:disabled {
+.btnRound.bg-dark-blue:disabled,
+.btnCircle.bg-dark-blue:disabled {
   background: var(--clr-dark-blue-hover);
 }
 
 .btnSquare.bg-blue:hover,
 .btnRound.bg-blue:hover,
+.btnCircle.bg-blue:hover,
 .btnSquare.bg-blue:disabled,
-.btnRound.bg-blue:disabled {
+.btnRound.bg-blue:disabled,
+.btnCircle.bg-blue:disabled {
   background: var(--clr-blue-hover);
 }
 
 .btnSquare.bg-white:hover,
 .btnRound.bg-white:hover,
+.btnCircle.bg-white:hover,
 .btnSquare.bg-white:disabled,
-.btnRound.bg-white:disabled {
+.btnRound.bg-white:disabled,
+.btnCircle.bg-white:disabled {
   background: var(--clr-white-hover) !important;
 }
 
 .btnSquare:disabled,
-.btnRound:disabled {
+.btnRound:disabled,
+.btnCircle:disabled {
   cursor: not-allowed;
 }
 
@@ -395,6 +404,11 @@ body {
 
 .tab:hover {
   color: var(--clr-dark-blue-hover) !important;
+}
+
+.tab:disabled {
+  color: #aab5c6 !important;
+  cursor: not-allowed;
 }
 
 .tab.active {

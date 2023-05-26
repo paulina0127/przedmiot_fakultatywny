@@ -34,8 +34,9 @@ const AppointmentForm = ({
   const [key, setKey] = useState("date");
 
   // Slots
-  const slotsList = useSelector((state) => state.slotsList);
-  const { slots, loadingSlots, errorSlots } = slotsList;
+  const { slots, loadingSlots, errorSlots } = useSelector(
+    (state) => state.slotsList
+  );
 
   // Patients and doctors for receptionist
   const patients = patientsList?.map((patient) => ({
@@ -65,12 +66,11 @@ const AppointmentForm = ({
     date: date,
   };
 
-  const appointmentCreate = useSelector((state) => state.appointmentCreate);
   const {
     errorAppointmentCreate,
     successAppointmentCreate,
     loadingAppointmentCreate,
-  } = appointmentCreate;
+  } = useSelector((state) => state.appointmentCreate);
 
   useEffect(() => {
     if (doctor || doctorId) {

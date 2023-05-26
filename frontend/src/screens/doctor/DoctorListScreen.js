@@ -12,8 +12,9 @@ const DoctorListScreen = () => {
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  const doctorList = useSelector((state) => state.doctorList);
-  const { doctors, loadingDoctors, countDoctors, errorDoctors } = doctorList;
+  const { doctors, loadingDoctors, countDoctors, errorDoctors } = useSelector(
+    (state) => state.doctorList
+  );
 
   const dispatch = useDispatch();
   useEffect(() => {

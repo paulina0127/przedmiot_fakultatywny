@@ -12,8 +12,7 @@ import { validateLogin } from "../../validators";
 import styles from "./Auth.module.css";
 
 const LoginScreen = ({ login, isAuthenticated, disabled = false }) => {
-  const auth = useSelector((state) => state.auth);
-  let { error, loading, success } = auth;
+  let { error, loading, success } = useSelector((state) => state.auth);
 
   if (isAuthenticated) {
     return <Navigate replace to="/" />;

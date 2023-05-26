@@ -9,8 +9,9 @@ import panel from "../../UserPanel.module.css";
 import DoctorInfo from "../DoctorInfo/DoctorInfo";
 
 const ChooseDoctor = () => {
-  const doctorList = useSelector((state) => state.doctorList);
-  const { doctors, loadingDoctors, countDoctors, errorDoctors } = doctorList;
+  const { doctors, loadingDoctors, countDoctors, errorDoctors } = useSelector(
+    (state) => state.doctorList
+  );
 
   const dispatch = useDispatch();
   useEffect(() => {

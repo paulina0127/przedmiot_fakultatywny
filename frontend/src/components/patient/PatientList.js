@@ -12,9 +12,8 @@ const PatientList = ({ doctorId }) => {
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  const patientList = useSelector((state) => state.patientList);
   const { patients, loadingPatients, countPatients, errorPatients } =
-    patientList;
+    useSelector((state) => state.patientList);
 
   const dispatch = useDispatch();
 

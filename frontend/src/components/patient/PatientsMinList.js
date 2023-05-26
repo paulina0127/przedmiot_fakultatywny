@@ -9,9 +9,8 @@ import { PATIENT_LIST_RESET } from "../../constants/patientConsts";
 import panel from "../UserPanel.module.css";
 
 const PatientsMinList = () => {
-  const patientList = useSelector((state) => state.patientList);
   const { patients, loadingPatients, countPatients, errorPatients } =
-    patientList;
+    useSelector((state) => state.patientList);
 
   const dispatch = useDispatch();
   useEffect(() => {

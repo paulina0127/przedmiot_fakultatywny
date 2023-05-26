@@ -22,7 +22,7 @@
   padding: 16px 32px;
   display: flex;
   gap: 32px;
-  justify-content: center;
+  justify-content: space-between;
   background: var(--clr-light-blue);
   border-radius: var(--radius-secondary);
 }

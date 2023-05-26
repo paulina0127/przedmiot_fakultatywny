@@ -11,8 +11,7 @@ const ActivateAccountScreen = ({ verify }) => {
   const uid = useParams().uid;
   const token = useParams().token;
 
-  const auth = useSelector((state) => state.auth);
-  let { error, loading, success } = auth;
+  let { error, loading, success } = useSelector((state) => state.auth);
 
   const verify_account = () => {
     verify(uid, token);

@@ -4,18 +4,12 @@ import Tabs from "react-bootstrap/Tabs";
 import { useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
 
-import {
-  AppointmentCreate,
-  AppointmentList,
-} from "../../components/appointment";
+import { AppointmentList } from "../../components/appointment";
 import { PatientCreate, PatientUpdate } from "../../components/patient";
 
 const PatientScreen = () => {
   const [key, setKey] = useState("profile");
-
-  const auth = useSelector((state) => state.auth);
-  const { user } = auth;
-
+  const { user } = useSelector((state) => state.auth);
   const location = useLocation();
   const patient_id = useParams().id;
 

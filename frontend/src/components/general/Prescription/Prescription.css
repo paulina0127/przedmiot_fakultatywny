@@ -1,0 +1,49 @@
+.prescriptionInfo {
+  width: -webkit-fill-available;
+  margin-bottom: 32px;
+}
+
+.prescriptionHeader {
+  padding: 10px 30px;
+  width: -webkit-fill-available;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--clr-dark-blue);
+  border-radius: 30px;
+  background: none;
+  color: var(--clr-dark-blue);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  transition: var(--transition);
+}
+
+.prescriptionHeader:hover {
+  border-color: var(--clr-blue);
+}
+
+.prescriptionHeader.collapsed {
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
+.prescriptionHeader:after {
+  content: "⌵";
+  font-size: 30px;
+  transition: var(--transition);
+}
+
+.prescriptionHeader.collapsed:after {
+  transform: rotate(-180deg);
+}
+
+.prescriptionBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--clr-dark-blue);
+  border-top: 0;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  transition: var(--transition);
+}

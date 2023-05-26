@@ -5,6 +5,7 @@ import Loader from "./Loader";
 import Message from "./Message";
 import NavigationBar from "./NavigationBar/NavigationBar";
 import Pagination from "./Pagination";
+import Prescription from "./Prescription/Prescription";
 import Row from "./Table/Row";
 import Table from "./Table/Table";
 
@@ -18,4 +19,5 @@ export {
   NavigationBar,
   ChooseDoctor,
   Pagination,
+  Prescription,
 };

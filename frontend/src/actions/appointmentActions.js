@@ -5,10 +5,18 @@ import {
   APPOINTMENT_CREATE_REQUEST,
   APPOINTMENT_CREATE_RESET,
   APPOINTMENT_CREATE_SUCCESS,
+  APPOINTMENT_DETAILS_FAIL,
+  APPOINTMENT_DETAILS_REQUEST,
+  APPOINTMENT_DETAILS_RESET,
+  APPOINTMENT_DETAILS_SUCCESS,
   APPOINTMENT_LIST_FAIL,
   APPOINTMENT_LIST_REQUEST,
   APPOINTMENT_LIST_RESET,
   APPOINTMENT_LIST_SUCCESS,
+  APPOINTMENT_UPDATE_FAIL,
+  APPOINTMENT_UPDATE_REQUEST,
+  APPOINTMENT_UPDATE_RESET,
+  APPOINTMENT_UPDATE_SUCCESS,
 } from "../constants/appointmentConsts";
 
 const getAuthHeaders = () => {
@@ -59,6 +67,28 @@ export const listAppointments = (filters) => async (dispatch) => {
   }
 };
 
+export const getAppointment = (id) => async (dispatch) => {
+  const config = { headers: getAuthHeaders() };
+
+  try {
+    dispatch({ type: APPOINTMENT_DETAILS_REQUEST });
+
+    const { data } = await axios.get(`/appointments/${id}`, config);
+
+    dispatch({
+      type: APPOINTMENT_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const errorKey = Object.keys(error?.response?.data || {})[0];
+
+    dispatch({
+      type: APPOINTMENT_DETAILS_FAIL,
+      payload: errorKey ? error.response.data[errorKey] : error.message,
+    });
+  }
+};
+
 export const createAppointment = (values) => async (dispatch) => {
   const config = { headers: getAuthHeaders() };
 
@@ -83,13 +113,39 @@ export const createAppointment = (values) => async (dispatch) => {
       payload: data,
     });
   } catch (error) {
-    console.log(error.response.data);
     const errorKey = Object.keys(error?.response?.data || {})[0];
-    console.log(error.response.data);
+
     dispatch({
       type: APPOINTMENT_CREATE_FAIL,
       payload: errorKey ? error.response.data[errorKey] : error.message,
     });
-    console.log(error.response.data);
+  }
+};
+
+export const updateAppointment = (id, values) => async (dispatch) => {
+  const config = { headers: getAuthHeaders() };
+
+  const body = JSON.stringify({
+    status: values.status,
+  });
+
+  try {
+    dispatch({
+      type: APPOINTMENT_UPDATE_REQUEST,
+    });
+
+    const { data } = await axios.patch(`/appointments/${id}`, body, config);
+
+    dispatch({
+      type: APPOINTMENT_UPDATE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const errorKey = Object.keys(error?.response?.data || {})[0];
+
+    dispatch({
+      type: APPOINTMENT_UPDATE_FAIL,
+      payload: errorKey ? error.response.data[errorKey] : error.message,
+    });
   }
 };

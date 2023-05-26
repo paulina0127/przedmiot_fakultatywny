@@ -14,8 +14,7 @@ import { validateSignUp } from "../../validators";
 import styles from "./Auth.module.css";
 
 const SignUpScreen = ({ signup, isAuthenticated, onClick }) => {
-  const auth = useSelector((state) => state.auth);
-  let { error, loading, success } = auth;
+  let { error, loading, success } = useSelector((state) => state.auth);
 
   if (isAuthenticated) {
     return <Navigate replace to="/" />;
