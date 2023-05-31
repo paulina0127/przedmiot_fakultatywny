@@ -1,4 +1,5 @@
 import AppointmentScreen from "./appointment/AppointmentScreen";
+import AccountScreen from "./auth/AccountScreen";
 import ActivateAccountScreen from "./auth/ActivateAccountScreen";
 import LoginScreen from "./auth/LoginScreen";
 import ResetPassword from "./auth/ResetPassword";
@@ -32,4 +33,5 @@ export {
   DoctorScreen,
   LoginScreen,
   AppointmentScreen,
+  AccountScreen,
 };

@@ -1,10 +1,14 @@
+import validateChangeEmail from "./auth/validateChangeEmail";
+import validateChangePassword from "./auth/validateChangePassword";
+import validateDeleteAccount from "./auth/validateDeleteAccount";
 import validateLogin from "./auth/validateLogin";
 import validateResetPassword from "./auth/validateResetPassword";
 import validateResetPasswordConfirm from "./auth/validateResetPasswordConfirm";
 import validateSignUp from "./auth/validateSignUp";
+import validateAppointment from "./validateAppointment";
 import validatePatient from "./validatePatient";
 import validatePatientLink from "./validatePatientLink";
-import validateAppointment from "./validateAppointment";
+
 export {
   validatePatient,
   validateResetPassword,
@@ -12,5 +16,8 @@ export {
   validateLogin,
   validateResetPasswordConfirm,
   validateSignUp,
-  validateAppointment
+  validateAppointment,
+  validateChangeEmail,
+  validateDeleteAccount,
+  validateChangePassword,
 };

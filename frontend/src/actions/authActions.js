@@ -6,10 +6,19 @@ import {
   ACTIVATION_SUCCESS,
   AUTHENTICATED_FAIL,
   AUTHENTICATED_SUCCESS,
+  DELETE_ACCOUNT_FAIL,
+  DELETE_ACCOUNT_REQUEST,
+  DELETE_ACCOUNT_SUCCESS,
+  EMAIL_CHANGE_FAIL,
+  EMAIL_CHANGE_REQUEST,
+  EMAIL_CHANGE_SUCCESS,
   LOGIN_FAIL,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGOUT,
+  PASSWORD_CHANGE_FAIL,
+  PASSWORD_CHANGE_REQUEST,
+  PASSWORD_CHANGE_SUCCESS,
   PASSWORD_RESET_CONFIRM_FAIL,
   PASSWORD_RESET_CONFIRM_REQUEST,
   PASSWORD_RESET_CONFIRM_SUCCESS,
@@ -29,33 +38,27 @@ const defaultConfig = {
   },
 };
 
+const getAuthHeaders = () => {
+  const userTokens = JSON.parse(localStorage.getItem("userTokens"));
+  const token = userTokens ? userTokens.access : null;
+  return {
+    "Content-Type": "application/json",
+    Authorization: `JWT ${token}`,
+  };
+};
+
 export const load_user = () => async (dispatch) => {
-  if (localStorage.getItem("userTokens")) {
-    const userTokens = JSON.parse(localStorage.getItem("userTokens"));
-    const token = userTokens.access;
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${token}`,
-        Accept: "application/json",
-      },
-    };
+  const config = { headers: getAuthHeaders() };
+  try {
+    const { data } = await axios.get("/auth/users/me/", config);
 
-    try {
-      const { data } = await axios.get("/auth/users/me/", config);
+    dispatch({
+      type: USER_LOADED_SUCCESS,
+      payload: data,
+    });
 
-      dispatch({
-        type: USER_LOADED_SUCCESS,
-        payload: data,
-      });
-
-      localStorage.setItem("user", JSON.stringify(data));
-    } catch (error) {
-      dispatch({
-        type: USER_LOADED_FAIL,
-      });
-    }
-  } else {
+    localStorage.setItem("user", JSON.stringify(data));
+  } catch (error) {
     dispatch({
       type: USER_LOADED_FAIL,
     });
@@ -88,10 +91,12 @@ export const checkAuthenticated = () => async (dispatch) => {
         });
       }
     } catch (error) {
-      const errorKey = Object.keys(error?.response?.data || {})[0];
       dispatch({
         type: AUTHENTICATED_FAIL,
-        payload: errorKey ? error.response.data[errorKey] : error.message,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
       });
     }
   } else {
@@ -120,36 +125,41 @@ export const login = (email, password) => async (dispatch) => {
 
     dispatch(load_user());
   } catch (error) {
-    const errorKey = Object.keys(error?.response?.data || {})[0];
     dispatch({
       type: LOGIN_FAIL,
-      payload: errorKey ? error.response.data[errorKey] : error.message,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
     });
   }
 };
 
-export const signup = (email, password, re_password) => async (dispatch) => {
-  try {
-    dispatch({
-      type: SIGNUP_REQUEST,
-    });
+export const signup =
+  (type, email, password, re_password) => async (dispatch) => {
+    try {
+      dispatch({
+        type: SIGNUP_REQUEST,
+      });
 
-    const body = JSON.stringify({ email, password, re_password });
+      const body = JSON.stringify({ type, email, password, re_password });
 
-    const { data } = await axios.post("/auth/users/", body, defaultConfig);
+      const { data } = await axios.post("/auth/users/", body, defaultConfig);
 
-    dispatch({
-      type: SIGNUP_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    const errorKey = Object.keys(error?.response?.data || {})[0];
-    dispatch({
-      type: SIGNUP_FAIL,
-      payload: errorKey ? error.response.data[errorKey] : error.message,
-    });
-  }
-};
+      dispatch({
+        type: SIGNUP_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: SIGNUP_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };
 
 export const verify = (uid, token) => async (dispatch) => {
   try {
@@ -165,13 +175,71 @@ export const verify = (uid, token) => async (dispatch) => {
       type: ACTIVATION_SUCCESS,
     });
   } catch (error) {
-    const errorKey = Object.keys(error?.response?.data || {})[0];
     dispatch({
       type: ACTIVATION_FAIL,
-      payload: errorKey ? error.response.data[errorKey] : error.message,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
     });
   }
 };
+
+export const change_password =
+  (new_password, re_new_password, current_password) => async (dispatch) => {
+    const config = { headers: getAuthHeaders() };
+    try {
+      dispatch({
+        type: PASSWORD_CHANGE_REQUEST,
+      });
+
+      const body = JSON.stringify({
+        new_password,
+        re_new_password,
+        current_password,
+      });
+
+      await axios.post("/auth/users/set_password/", body, config);
+
+      dispatch({
+        type: PASSWORD_CHANGE_SUCCESS,
+      });
+    } catch (error) {
+      const errorKey = Object.keys(error?.response?.data || {})[0];
+      dispatch({
+        type: PASSWORD_CHANGE_FAIL,
+        payload: errorKey ? error.response.data[errorKey] : error.message,
+      });
+    }
+  };
+
+export const change_email =
+  (new_email, re_new_email, current_password) => async (dispatch) => {
+    const config = { headers: getAuthHeaders() };
+    try {
+      dispatch({
+        type: EMAIL_CHANGE_REQUEST,
+      });
+
+      const body = JSON.stringify({
+        new_email,
+        re_new_email,
+        current_password,
+      });
+
+      await axios.post("/auth/users/set_email/", body, config);
+
+      dispatch({
+        type: EMAIL_CHANGE_SUCCESS,
+      });
+    } catch (error) {
+      const errorKey = Object.keys(error?.response?.data || {})[0];
+      dispatch({
+        type: EMAIL_CHANGE_FAIL,
+        payload: errorKey ? error.response.data[errorKey] : error.message,
+      });
+    }
+  };
 
 export const reset_password = (email) => async (dispatch) => {
   try {
@@ -187,10 +255,12 @@ export const reset_password = (email) => async (dispatch) => {
       type: PASSWORD_RESET_SUCCESS,
     });
   } catch (error) {
-    const errorKey = Object.keys(error?.response?.data || {})[0];
     dispatch({
       type: PASSWORD_RESET_FAIL,
-      payload: errorKey ? error.response.data[errorKey] : error.message,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
     });
   }
 };
@@ -219,13 +289,42 @@ export const reset_password_confirm =
         type: PASSWORD_RESET_CONFIRM_SUCCESS,
       });
     } catch (error) {
-      const errorKey = Object.keys(error?.response?.data || {})[0];
       dispatch({
         type: PASSWORD_RESET_CONFIRM_FAIL,
-        payload: errorKey ? error.response.data[errorKey] : error.message,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
       });
     }
   };
+
+export const delete_account = (current_password) => async (dispatch) => {
+  const config = { headers: getAuthHeaders() };
+  try {
+    dispatch({
+      type: DELETE_ACCOUNT_REQUEST,
+    });
+
+    const body = JSON.stringify({ current_password });
+
+    await axios.delete("/auth/users/me/", body, config);
+
+    dispatch({
+      type: DELETE_ACCOUNT_SUCCESS,
+    });
+
+    window.location.href = "/";
+    localStorage.removeItem("userTokens");
+    localStorage.removeItem("user");
+  } catch (error) {
+    const errorKey = Object.keys(error?.response?.data || {})[0];
+    dispatch({
+      type: DELETE_ACCOUNT_FAIL,
+      payload: errorKey ? error.response.data[errorKey] : error.message,
+    });
+  }
+};
 
 export const logout = () => (dispatch) => {
   window.location.href = "/";

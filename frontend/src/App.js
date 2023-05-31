@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import AppointmentForm from "./components/appointment/AppointmentForm";
 import Layout from "./hocs/Layout";
 import {
+  AccountScreen,
   ActivateAccountScreen,
   AppointmentScreen,
   DoctorListScreen,
@@ -38,7 +38,7 @@ const App = () => {
 
             {/* Profile & account */}
             <Route path="/profil" element={<PatientScreen />} />
-            {/* <Route path="/konto" element={<AccountScreen />} /> */}
+            <Route path="/konto" element={<AccountScreen />} />
 
             {/* Doctors */}
             <Route path="/lekarze" element={<DoctorListScreen />} />
