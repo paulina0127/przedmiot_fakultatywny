@@ -86,6 +86,7 @@ const AppointmentForm = ({
       <div className="container-bg-content">
         <Formik
           initialValues={initialValues}
+          validationSchema={validate}
           onSubmit={(values) => {
             console.log(values);
             dispatch(createAppointment(values));
@@ -170,7 +171,7 @@ const AppointmentForm = ({
                     ) : (
                       <DoctorReadMin doctorId={doctorId} />
                     )}
-
+                    {values.date !== '' && values.time !== '' && values.doctor !== '' && values.patient !== '' ? 
                     <button
                       type="button"
                       className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
@@ -179,8 +180,10 @@ const AppointmentForm = ({
                     >
                       Dalej
                     </button>
+                    : null}             
                   </div>
                 </Tab>
+                {values.date !== '' && values.time !== '' && values.doctor !== '' && values.patient !== '' ? 
                 <Tab eventKey="details" title="Podsumowanie" tabClassName="tab">
                   {loadingAppointmentCreate && <Loader />}
                   {successAppointmentCreate && (
@@ -333,6 +336,8 @@ const AppointmentForm = ({
                     </div>
                   </div>
                 </Tab>
+                : 
+                <Tab eventKey="disabled" title="Podsumowanie" tabClassName="tab" disabled/>}
               </Tabs>
             </Form>
           )}
