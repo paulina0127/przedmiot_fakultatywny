@@ -1,4 +1,4 @@
-import { array, date, object, string } from "yup";
+import { array, date, object, string, ref } from "yup";
 
 const validatePatient = object({
   first_name: string()
@@ -8,8 +8,47 @@ const validatePatient = object({
     .required("Pole nazwisko jest obowiązkowe")
     .max(255, "Nazwisko może mieć maksymalnie 255 znaków."),
   pesel: string()
-    .matches(/^[0-9]{11}$/, "PESEL powinien składać się z 11 cyfr.")
-    .required("Pole PESEL jest obowiązkowe"),
+  .matches(/^[0-9]{11}$/, "PESEL powinien składać się z 11 cyfr.")
+  .required("Pole PESEL jest obowiązkowe")
+  .test('birthdate', 'Nieprawidłowa data urodzenia w numerze PESEL', function(value) {
+    const pesel = value || '';
+    const rr = pesel.slice(0, 2);
+    const mm = pesel.slice(2, 4);
+    const dd = pesel.slice(4, 6);
+    
+    const checkDate = this.resolve(ref('birthdate'));
+    const checkYear = checkDate.getFullYear().toString();
+    const checkMonth = (checkDate.getMonth() + 1).toString().padStart(2, '0');
+    const checkDay = checkDate.getDate().toString().padStart(2, '0');
+    
+    let correctYear = '';
+    let correctMonth = '';
+    
+    switch (true) {
+      case (1 <= parseInt(mm) && parseInt(mm) <= 12):
+        correctYear = '19' + rr;
+        correctMonth = mm;
+        break;
+      case (21 <= parseInt(mm) && parseInt(mm) <= 32):
+        correctYear = '20' + rr;
+        correctMonth = (parseInt(mm) - 20).toString();
+        break;
+      case (41 <= parseInt(mm) && parseInt(mm) <= 52):
+        correctYear = '21' + rr;
+        correctMonth = (parseInt(mm) - 40).toString();
+        break;
+      case (61 <= parseInt(mm) && parseInt(mm) <= 72):
+        correctYear = '22' + rr;
+        correctMonth = (parseInt(mm) - 60).toString();
+        break;
+    }
+    
+    if (correctMonth.length === 1) {
+      correctMonth = '0' + correctMonth;
+    }
+    
+    return correctYear === checkYear && correctMonth === checkMonth && dd === checkDay;
+  }),
   birthdate: date()
     .max(
       new Date(),
