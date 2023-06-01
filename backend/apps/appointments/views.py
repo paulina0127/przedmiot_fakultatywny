@@ -40,7 +40,7 @@ from backend.utils.pagination import CustomPagination
 class AppointmentList(generics.ListCreateAPIView):
     serializer_class = AppointmentSerializer
     name = "appointments"
-    filterset_fields = ["status", "doctor", "patient"]
+    filterset_fields = ["status", "doctor", "patient", "date"]
     search_fields = ["patient__first_name", "patient__last_name", "patient__pesel"]
     ordering_fields = ["id", "date"]
     permission_classes = [IsAuthenticated, AppointmentBaseAccess]

@@ -1,10 +1,11 @@
 import React from "react";
 import { BiDetail } from "react-icons/bi";
+import { BsXSquare, BsCheckSquare} from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 import { Row, Table } from "../general";
 
-const AppointmentsTable = ({ appointments, min, type }) => {
+const AppointmentsTable = ({ appointments, min, type, to_approve }) => {
   const headers =
     type === "Pacjent"
       ? min
@@ -31,15 +32,24 @@ const AppointmentsTable = ({ appointments, min, type }) => {
       ? ["date", "time", "doctor", "patient"]
       : ["date", "time", "doctor", "patient", "status"];
 
-  console.log(headers, values);
   return (
     <Table headers={headers}>
       {appointments?.map((appointment, index) => (
         <Row key={index} number={index} object={appointment} values={values}>
-          {
+          {!to_approve ? 
             <Link to={`/wizyty/${appointment?.id}`}>
               <BiDetail size="2rem" />
             </Link>
+          : 
+            <>
+               {/* DODAĆ MODALE DO ZMIANY STATUSU */}
+              <Link >
+                <BsCheckSquare size="2rem" style={{marginRight: '10px'}}/> 
+              </Link>
+              <Link>
+                <BsXSquare size="2rem" /> 
+              </Link>
+            </>
           }
         </Row>
       ))}
