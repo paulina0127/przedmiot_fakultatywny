@@ -1,3 +1,4 @@
+import AppointmentListScreen from "./appointment/AppointmentListScreen";
 import AppointmentScreen from "./appointment/AppointmentScreen";
 import AccountScreen from "./auth/AccountScreen";
 import ActivateAccountScreen from "./auth/ActivateAccountScreen";
@@ -34,4 +35,5 @@ export {
   LoginScreen,
   AppointmentScreen,
   AccountScreen,
+  AppointmentListScreen,
 };

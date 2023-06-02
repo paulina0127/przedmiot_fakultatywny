@@ -4,6 +4,7 @@ import Layout from "./hocs/Layout";
 import {
   AccountScreen,
   ActivateAccountScreen,
+  AppointmentListScreen,
   AppointmentScreen,
   DoctorListScreen,
   DoctorScreen,
@@ -59,6 +60,34 @@ const App = () => {
               element={<AppointmentScreen type="create" />}
             />
 
+            <Route
+              path="/wizyty"
+              element={<AppointmentListScreen name="Wizyty" />}
+            />
+            <Route
+              path="/dzisiejsze-wizyty"
+              element={
+                <AppointmentListScreen name="Dzisiejsze wizyty" type="today" />
+              }
+            />
+            <Route
+              path="/zgloszone-wizyty"
+              element={
+                <AppointmentListScreen
+                  name="Zgłoszone wizyty"
+                  type="not_approved"
+                />
+              }
+            />
+            <Route
+              path="/nadchodzace-wizyty"
+              element={
+                <AppointmentListScreen
+                  name="Nadchodzące wizyty"
+                  type="upcoming"
+                />
+              }
+            />
             <Route
               path="/wizyty/:id"
               element={<AppointmentScreen type="update" />}

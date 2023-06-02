@@ -1,3 +1,4 @@
+import CalendarTab from "./CalendarTab/CalendarTab";
 import ChooseDoctor from "./ChooseDoctor/ChooseDoctor";
 import DoctorInfo from "./DoctorInfo/DoctorInfo";
 import Footer from "./Footer/Footer";
@@ -22,4 +23,5 @@ export {
   ChooseDoctor,
   Pagination,
   Prescription,
+  CalendarTab,
 };

@@ -79,14 +79,14 @@ const NavigationBar = ({ logout, user }) => {
                   Dodaj wizytę
                 </Dropdown.Item>
                 <Dropdown.Item
-                  href="/wizyty"
+                  href="/dzisiejsze-wizyty"
                   bsPrefix="navLinksItem"
                   className="dropdown-item"
                 >
                   Dzisiejsze wizyty
                 </Dropdown.Item>
                 <Dropdown.Item
-                  href="/wizyty"
+                  href="/zgloszone-wizyty"
                   bsPrefix="navLinksItem"
                   className="dropdown-item"
                 >

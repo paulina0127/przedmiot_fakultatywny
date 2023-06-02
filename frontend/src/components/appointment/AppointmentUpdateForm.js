@@ -164,7 +164,7 @@ const AppointmentUpdateForm = ({
                           <h4 className={panel.h4}>Termin</h4>
                           <p className={styles.p}>{`${format(
                             new Date(`${values?.date} ${values.time}:00`),
-                            "d LLL y",
+                            "d LLLL y",
                             {
                               locale: pl,
                             }

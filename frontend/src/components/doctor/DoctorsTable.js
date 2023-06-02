@@ -20,7 +20,7 @@ const DoctorsTable = ({ doctors }) => {
             )
             .join(", ")}
           {
-            <Link to={`/lekarze/${doctor?.id}`}>
+            <Link to={`/lekarze/${doctor?.id}`} className="svgLink">
               <BsFillPersonVcardFill size="2rem" />
             </Link>
           }

@@ -1,0 +1,50 @@
+.aptList {
+  display: grid;
+  grid-template-columns: max-content auto;
+  gap: 32px;
+}
+
+.calendarWithTabs {
+  height: fit-content;
+  display: flex;
+  border: 2px solid var(--clr-dark-blue);
+  border-radius: 15px;
+}
+
+.calendarContainer {
+  background: var(--clr-dark-blue);
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.calendarTabsContainer {
+  display: grid;
+  justify-content: space-evenly;
+}
+
+.calendarTab {
+  padding: 8px 16px;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid var(--clr-dark-blue);
+  font-family: var(--ff-primary);
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--clr-dark-blue);
+  text-align: center;
+  transition: var(--transition);
+}
+
+.calendarTab:first-of-type {
+  border-top-left-radius: 12px;
+}
+
+.calendarTab:last-of-type {
+  border-bottom: 0;
+  border-bottom-left-radius: 12px;
+}
+
+.calendarTab:hover {
+  background: var(--clr-dark-blue-hover);
+  color: var(--clr-white);
+}

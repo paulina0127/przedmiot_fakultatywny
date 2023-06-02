@@ -1,25 +1,26 @@
 import { useState } from "react";
+import { AiFillProfile } from "react-icons/ai";
+import { BsCheckSquareFill, BsXSquareFill } from "react-icons/bs";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+
 import { AppointmentModalInfo } from ".";
 import { updateAppointment } from "../../actions/appointmentActions";
-import { BiDetail } from "react-icons/bi";
-import { BsXSquare, BsCheckSquare} from "react-icons/bs";
-import { Link } from "react-router-dom";
-import { Row, Table, MyModal } from "../general";
+import { MyModal, Row, Table } from "../general";
 
-const AppointmentsTable = ({ appointments, min, type, to_approve }) => {
+const AppointmentsTable = ({ appointments, min, type }) => {
   const headers =
     type === "Pacjent"
       ? min
-        ? ["Data", "Godzina", "Lekarz", "Szczegóły"]
-        : ["Data", "Godzina", "Lekarz", "Status", "Szczegóły"]
+        ? ["Data", "Godzina", "Lekarz", "Akcje"]
+        : ["Data", "Godzina", "Lekarz", "Status", "Akcje"]
       : type === "Lekarz"
       ? min
         ? ["Data", "Godzina", "Pacjent", "Szczegóły"]
         : ["Data", "Godzina", "Pacjent", "Status", "Szczegóły"]
       : min
-      ? ["Data", "Godzina", "Lekarz", "Pacjent", "Szczegóły"]
-      : ["Data", "Godzina", "Lekarz", "Pacjent", "Status", "Szczegóły"];
+      ? ["Data", "Godzina", "Lekarz", "Pacjent", "Akcje"]
+      : ["Data", "Godzina", "Lekarz", "Pacjent", "Status", "Akcje"];
 
   const values =
     type === "Pacjent"
@@ -34,62 +35,65 @@ const AppointmentsTable = ({ appointments, min, type, to_approve }) => {
       ? ["date", "time", "doctor", "patient"]
       : ["date", "time", "doctor", "patient", "status"];
 
-      
   // appointments to approve modal and action
-  const [changeAppointStatus, setAppointStatus] = useState(false)
-  const [statusType, setStatusType] = useState('')
+  const [changeAppointStatus, setAppointStatus] = useState(false);
+  const [statusType, setStatusType] = useState("");
 
   const handleShowModal = (type) => {
-    setAppointStatus(true)
-    setStatusType(type)
-  }
-  const handleCloseModal = () => setAppointStatus(false)
+    setAppointStatus(true);
+    setStatusType(type);
+  };
+  const handleCloseModal = () => setAppointStatus(false);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const changeStatusAppointmentHandler = (id, type) => {
-    const value = { status: '' }
-    if (type === 'accept') {
-      value.status = 'Potwierdzona'
-    } else if (type === 'reject') {
-      value.status = 'Anulowana'
+    const value = { status: "" };
+    if (type === "accept") {
+      value.status = "Potwierdzona";
+    } else if (type === "reject") {
+      value.status = "Anulowana";
     }
-    dispatch(updateAppointment(id, value))
+    dispatch(updateAppointment(id, value));
     window.location.reload();
-    setAppointStatus(false)
-  }
+    setAppointStatus(false);
+  };
 
   return (
     <Table headers={headers}>
       {appointments?.map((appointment, index) => (
         <Row key={index} number={index} object={appointment} values={values}>
-          {!to_approve ? 
-            <Link to={`/wizyty/${appointment?.id}`}>
-              <BiDetail size="2rem" />
+          {appointment.status !== "Oczekuje na potwierdzenie" ? (
+            <Link to={`/wizyty/${appointment?.id}`} className="svgLink">
+              <AiFillProfile size="2.5rem" />
             </Link>
-          : 
+          ) : (
             <>
-              <Link>
-                <BsCheckSquare 
-                  size="2rem" 
-                  style={{marginRight: '10px'}}
-                  onClick={() => handleShowModal('accept')}
-                /> 
+              <Link className="svgLink">
+                <BsCheckSquareFill
+                  size="2rem"
+                  style={{ marginRight: "10px" }}
+                  onClick={() => handleShowModal("accept")}
+                />
               </Link>
-              <Link>
-                <BsXSquare 
-                  size="2rem" 
-                  onClick={() => handleShowModal('reject')}
-                /> 
+              <Link className="svgLink">
+                <BsXSquareFill
+                  size="2rem"
+                  style={{ marginRight: "10px" }}
+                  onClick={() => handleShowModal("reject")}
+                />
+              </Link>
+              <Link to={`/wizyty/${appointment?.id}`} className="svgLink">
+                <AiFillProfile size="2.5rem" />
               </Link>
               {changeAppointStatus && (
                 <MyModal
                   showModal={true}
                   title={
-                    statusType === 'accept'
-                      ? 'Akceptowanie wizyty'
-                      : 'Odrzucanie wizyty'
-                  } 
-                  danger={statusType === 'reject' ? true : 'accept'}
+                    statusType === "accept"
+                      ? "Akceptowanie wizyty"
+                      : "Odrzucanie wizyty"
+                  }
+                  danger={statusType === "reject" ? true : "accept"}
                 >
                   <AppointmentModalInfo
                     type={statusType}
@@ -100,7 +104,7 @@ const AppointmentsTable = ({ appointments, min, type, to_approve }) => {
                 </MyModal>
               )}
             </>
-          }
+          )}
         </Row>
       ))}
     </Table>

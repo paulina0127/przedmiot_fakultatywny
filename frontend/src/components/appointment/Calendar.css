@@ -118,6 +118,10 @@ abbr {
   transition: var(--transition);
 }
 
+.react-calendar__tile:last-of-type {
+  border-bottom-right-radius: var(--radius-secondary);
+}
+
 .react-calendar__tile:enabled:hover,
 .react-calendar__tile:enabled:focus {
   background-color: var(--clr-dark-blue-hover);
@@ -167,4 +171,19 @@ abbr {
 
 .react-calendar__navigation__next2-button:hover {
   border-top-right-radius: var(--radius-secondary);
+}
+
+/* Select Range */
+.react-calendar--selectRange .react-calendar__tile--hover {
+  background-color: var(--clr-blue-hover);
+}
+
+.react-calendar__tile--rangeStart,
+.react-calendar__tile--hoverStart {
+  background: var(--clr-blue);
+}
+
+.react-calendar__tile--rangeEnd,
+.react-calendar__tile--hoverEnd {
+  background: var(--clr-blue-hover);
 }
