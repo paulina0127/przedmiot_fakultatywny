@@ -209,30 +209,19 @@ class PatientStatisticsList(generics.ListAPIView):
     permission_classes = [IsAuthenticated, ~IsPatient]
 
     def get_queryset(self):
-        today = timezone.now().date()
-
         # Query params
-        period = self.request.query_params.get("period", "")
         start_date = self.request.query_params.get("start_date", "")
         end_date = self.request.query_params.get("end_date", "")
 
         # Filters
-        # Today, this month, this year
-        if period == "day":
-            queryset = Patient.objects.filter(user__date_joined__date=today)
-        elif period == "month":
-            queryset = Patient.objects.filter(user__date_joined__month=today.month)
-        elif period == "year":
-            queryset = Patient.objects.filter(user__date_joined__year=today.year)
-        # Date range
+        if start_date and end_date:
+            queryset = Patient.objects.filter(
+                user__date_joined__date__range=[start_date, end_date]
+            )
         elif start_date:
             queryset = Patient.objects.filter(user__date_joined__date__gte=start_date)
         elif end_date:
             queryset = Patient.objects.filter(user__date_joined__date__lte=end_date)
-        elif start_date and end_date:
-            queryset = Patient.objects.filter(
-                user__date_joined__date__range=[start_date, end_date]
-            )
         else:
             queryset = Patient.objects.all()
         return queryset

@@ -34,13 +34,14 @@ from .utils.serializers import (
     ReceptionistCreateAppointmentSerializer,
 )
 from backend.utils.pagination import CustomPagination
+from .utils.filters import AppointmentFilter
 
 
 # Display list, create appointments
 class AppointmentList(generics.ListCreateAPIView):
     serializer_class = AppointmentSerializer
     name = "appointments"
-    filterset_fields = ["status", "doctor", "patient", "date"]
+    filterset_class = AppointmentFilter
     search_fields = ["patient__first_name", "patient__last_name", "patient__pesel"]
     ordering_fields = ["id", "date"]
     permission_classes = [IsAuthenticated, AppointmentBaseAccess]
@@ -252,30 +253,17 @@ class AppointmentStatisticsList(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsReceptionistOrAdmin]
 
     def get_queryset(self):
-        today = timezone.now().date()
-
         # Query params
-        period = self.request.query_params.get("period", "")
         start_date = self.request.query_params.get("start_date", "")
         end_date = self.request.query_params.get("end_date", "")
 
         # Filters
-        # Today, this month, this year
-        if period == "day":
-            queryset = Appointment.objects.filter(date__date=today)
-        elif period == "month":
-            queryset = Appointment.objects.filter(date__month=today.month)
-        elif period == "year":
-            queryset = Appointment.objects.filter(date__year=today.year)
-        # Date range
+        if start_date and end_date:
+            queryset = Appointment.objects.filter(date__range=[start_date, end_date])
         elif start_date:
-            queryset = Appointment.objects.filter(date__date__gte=start_date)
+            queryset = Appointment.objects.filter(date__gte=start_date)
         elif end_date:
-            queryset = Appointment.objects.filter(date__date__lte=end_date)
-        elif start_date and end_date:
-            queryset = Appointment.objects.filter(
-                date__date__range=[start_date, end_date]
-            )
+            queryset = Appointment.objects.filter(date__lte=end_date)
         else:
             queryset = Appointment.objects.all()
         return queryset

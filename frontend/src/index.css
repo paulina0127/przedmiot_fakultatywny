@@ -198,6 +198,11 @@ body {
   display: grid;
 }
 
+.fiveColumnGrid {
+  display: grid;
+  gap: 16px;
+}
+
 .gridCenter {
   display: grid;
 }
@@ -224,7 +229,7 @@ body {
 }
 
 .bg-dark-blue {
-  background: var(--clr-dark-blue);
+  background: var(--clr-dark-blue) !important;
 }
 
 .bg-green {
@@ -236,7 +241,7 @@ body {
 }
 
 .clr-white {
-  color: var(--clr-white);
+  color: var(--clr-white) !important;
 }
 
 .clr-black {
@@ -471,6 +476,12 @@ body {
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
   }
+
+  .fiveColumnGrid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+  }
+
   .gridCenter {
     place-items: center;
   }

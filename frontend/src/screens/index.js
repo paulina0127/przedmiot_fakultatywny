@@ -16,6 +16,7 @@ import PatientPanelScreen from "./panel/PatientPanelScreen";
 import ReceptionistPanelScreen from "./panel/ReceptionistPanelScreen";
 import PatientListScreen from "./patient/PatientListScreen";
 import PatientScreen from "./patient/PatientScreen";
+import StatisticsScreen from "./StatisticsScreen";
 
 export {
   ActivateAccountScreen,
@@ -36,4 +37,5 @@ export {
   AppointmentScreen,
   AccountScreen,
   AppointmentListScreen,
+  StatisticsScreen,
 };

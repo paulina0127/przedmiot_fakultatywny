@@ -111,6 +111,31 @@ const NavigationBar = ({ logout, user }) => {
           </div>
         )}
 
+        {user?.type === "Pacjent" && (
+          <div className="navLinksContainer">
+            <Nav.Link as={Link} to="/nadchodzace-wizyty">
+              <button className="btnSimple btnNav">Nadchodzące wizyty</button>
+            </Nav.Link>
+            <Nav.Link as={Link} to="/wizyty">
+              <button className="btnSimple btnNav">Historia wizyt</button>
+            </Nav.Link>
+          </div>
+        )}
+
+        {user?.type === "Lekarz" && (
+          <div className="navLinksContainer">
+            <Nav.Link as={Link} to="/dzisiejsze-wizyty">
+              <button className="btnSimple btnNav">Dzisiejsze wizyty</button>
+            </Nav.Link>
+            <Nav.Link as={Link} to="/wizyty">
+              <button className="btnSimple btnNav">Lista wizyt</button>
+            </Nav.Link>
+            <Nav.Link as={Link} to="/pacjenci">
+              <button className="btnSimple btnNav">Pacjenci</button>
+            </Nav.Link>
+          </div>
+        )}
+
         <Dropdown bsPrefix="userNavDropdown">
           <Dropdown.Toggle bsPrefix="userNavToggle" className="userTitle">
             <Image

@@ -8,20 +8,20 @@ import { Loader, Message } from "../../components/general";
 import { PATIENT_LIST_RESET } from "../../constants/patientConsts";
 import panel from "../UserPanel.module.css";
 
-const PatientsMinList = () => {
+const PatientsMinList = ({ span, min = true }) => {
   const { patients, loadingPatients, countPatients, errorPatients } =
     useSelector((state) => state.patientList);
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(listPatients({ page_size: 3 }));
+    dispatch(listPatients({ page_size: 5 }));
     return () => {
       dispatch({ type: PATIENT_LIST_RESET });
     };
   }, []);
 
   return (
-    <div className="main-container-bg" id="pacjenci">
+    <div className={`main-container-bg ${span && "gridSpanCol"}`} id="pacjenci">
       <h2 className={panel.h2}>Pacjenci</h2>
       {loadingPatients ? (
         <Loader />
@@ -31,7 +31,7 @@ const PatientsMinList = () => {
         <Message variant="danger">Brak wyników</Message>
       ) : (
         <>
-          <PatientsTable patients={patients} min />
+          <PatientsTable patients={patients} min={min} />
 
           <Link to="/pacjenci" className="align-self-center">
             <button className="btnRound bg-dark-blue clr-white">

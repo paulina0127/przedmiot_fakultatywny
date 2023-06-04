@@ -15,7 +15,7 @@ const DoctorsMinList = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(listDoctors({ page_size: 3 }));
+    dispatch(listDoctors({ page_size: 5 }));
     return () => {
       dispatch({ type: DOCTOR_LIST_RESET });
     };

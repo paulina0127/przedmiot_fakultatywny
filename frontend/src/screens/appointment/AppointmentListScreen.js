@@ -11,6 +11,7 @@ import panel from "../../components/UserPanel.module.css";
 import { APPOINTMENT_LIST_RESET } from "../../constants/appointmentConsts";
 
 const AppointmentListScreen = ({ type, name }) => {
+  const { user } = useSelector((state) => state.auth);
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
@@ -21,8 +22,9 @@ const AppointmentListScreen = ({ type, name }) => {
       type === "not_approved"
         ? "Oczekuje na potwierdzenie"
         : type === "upcoming"
-        ? "Potwierdzona"
+        ? "Potwierdzona&status=" + "Oczekuje na potwierdzenie"
         : "",
+    ordering: "date",
   };
 
   const {
@@ -68,7 +70,10 @@ const AppointmentListScreen = ({ type, name }) => {
               >
                 Filtry
               </button>
-              <AppointmentsTable appointments={appointments} />
+              <AppointmentsTable
+                appointments={appointments}
+                type={user?.type}
+              />
             </>
           )}
         </div>

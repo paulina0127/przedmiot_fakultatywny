@@ -4,8 +4,8 @@ import { PatientsMinList } from "../../components/patient";
 const DoctorPanelScreen = () => {
   return (
     <section className="up-section up-section-grid">
-      <AppointmentMinList appointType="today" type="Lekarz" name="Dzisiejsze wizyty"/>
-      <PatientsMinList />
+      <AppointmentMinList type="Lekarz" />
+      <PatientsMinList min={false} span />
     </section>
   );
 };

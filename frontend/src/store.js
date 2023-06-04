@@ -25,7 +25,11 @@ import {
   prescriptionListReducer,
   prescriptionUpdateReducer,
 } from "./reducers/prescriptionReducer";
-import { slotsListReducer } from "./reducers/statsAndSlotsReducer";
+import {
+  appointmentStatsReducer,
+  patientStatsReducer,
+  slotsListReducer,
+} from "./reducers/statsAndSlotsReducer";
 
 const reducer = combineReducers({
   auth: authReducer,
@@ -40,6 +44,8 @@ const reducer = combineReducers({
   patientLink: patientLinkReducer,
 
   slotsList: slotsListReducer,
+  patientStats: patientStatsReducer,
+  appointmentStats: appointmentStatsReducer,
 
   appointmentList: appointmentListReducer,
   appointmentDetails: appointmentDetailsReducer,

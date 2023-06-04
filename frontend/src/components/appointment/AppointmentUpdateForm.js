@@ -29,6 +29,7 @@ const AppointmentUpdateForm = ({
   user,
   prescriptions,
   cancellable,
+  status,
 }) => {
   const dispatch = useDispatch();
   const [key, setKey] = useState("details");
@@ -207,10 +208,12 @@ const AppointmentUpdateForm = ({
                         <h3 className={`${styles.h3} justify-self-center`}>
                           Recepty
                         </h3>
-                        <button className="btn btn-success btnCircle mx-4">
-                          {" "}
-                          <MdOutlineAdd size="1.5rem" />
-                        </button>
+                        {user?.type === "Lekarz" && (
+                          <button className="btn btn-success btnCircle mx-4">
+                            {" "}
+                            <MdOutlineAdd size="1.5rem" />
+                          </button>
+                        )}
                       </div>
                       {prescriptions?.map((prescription) => (
                         <Prescription
@@ -247,6 +250,62 @@ const AppointmentUpdateForm = ({
           Odwołaj wizytę
         </button>
       )}
+      {key === "details" &&
+        user?.type === "Recepcjonista" &&
+        status === "Oczekuje na potwierdzenie" && (
+          <div
+            className="btnGroup"
+            style={{
+              justifySelf: "end",
+              alignSelf: "end",
+            }}
+          >
+            <button
+              type="submit"
+              className="btnSquare bg-blue clr-white mt-3"
+              form="form"
+              disabled={loadingAppointmentUpdate}
+            >
+              Potwierdź wizytę
+            </button>
+            <button
+              type="submit"
+              className="btnSquare bg-dark-blue clr-white mt-3"
+              form="form"
+              disabled={loadingAppointmentUpdate}
+            >
+              Odwołaj wizytę
+            </button>
+          </div>
+        )}
+      {key === "details" &&
+        user?.type === "Lekarz" &&
+        status === "Potwierdzona" && (
+          <div
+            className="btnGroup"
+            style={{
+              justifySelf: "end",
+              alignSelf: "end",
+            }}
+          >
+            <button
+              type="submit"
+              className="btnSquare bg-blue clr-white mt-3"
+              form="form"
+              disabled={loadingAppointmentUpdate}
+            >
+              Oznacz jako odbytą
+            </button>
+            <button
+              type="submit"
+              className="btnSquare bg-dark-blue clr-white mt-3"
+              form="form"
+              disabled={loadingAppointmentUpdate}
+            >
+              Wizyta kontrolna
+            </button>
+          </div>
+        )}
     </div>
   );
 };

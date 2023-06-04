@@ -62,7 +62,9 @@ const AppointmentsTable = ({ appointments, min, type }) => {
     <Table headers={headers}>
       {appointments?.map((appointment, index) => (
         <Row key={index} number={index} object={appointment} values={values}>
-          {appointment.status !== "Oczekuje na potwierdzenie" ? (
+          {appointment.status !== "Oczekuje na potwierdzenie" ||
+          type === "Pacjent" ||
+          type === "Lekarz" ? (
             <Link to={`/wizyty/${appointment?.id}`} className="svgLink">
               <AiFillProfile size="2.5rem" />
             </Link>

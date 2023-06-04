@@ -22,7 +22,7 @@ const ChooseDoctor = () => {
   }, []);
 
   return (
-    <div className="main-container-bg gridSpanRow">
+    <div className="main-container-bg gridSpanCol">
       <h2 className={panel.h2}>Umów się na wizytę</h2>
       {loadingDoctors ? (
         <Loader />
@@ -32,21 +32,10 @@ const ChooseDoctor = () => {
         <Message variant="danger">Brak wyników</Message>
       ) : (
         <div className="d-flex flex-column align-items-normal w-100 gap-5">
-          <div className="twoColumnGrid">
-            {doctors?.slice(0, 2)?.map((doctor) => (
-              <div className="gridCenter gap-2">
-                <DoctorInfo key={doctor.id} doctor={doctor}>
-                  <Link to={`/nowa-wizyta/${doctor?.id}`}>
-                    <button className="btnRound bg-dark-blue clr-white">
-                      Wybierz
-                    </button>
-                  </Link>
-                </DoctorInfo>
-              </div>
-            ))}
-          </div>
-          <div className="threeColumnGrid">
-            {doctors?.slice(2, 5)?.map((doctor) => (
+          <div
+            className="fiveColumnGrid"
+          >
+            {doctors?.map((doctor) => (
               <div className="gridCenter gap-2">
                 <DoctorInfo key={doctor.id} doctor={doctor}>
                   <Link to={`/nowa-wizyta/${doctor?.id}`}>

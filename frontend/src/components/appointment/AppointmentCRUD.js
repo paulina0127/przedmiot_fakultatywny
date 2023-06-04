@@ -139,6 +139,7 @@ export const AppointmentUpdate = ({ user, appointmentId }) => {
           initialValues={initialValues}
           validate={validateAppointment}
           cancellable={timeUntilApt > 24}
+          status={initialValues.status}
         />
       )}
     </>

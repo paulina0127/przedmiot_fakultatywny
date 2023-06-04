@@ -9,6 +9,8 @@ import panel from "../../components/UserPanel.module.css";
 import { APPOINTMENT_LIST_RESET } from "../../constants/appointmentConsts";
 
 const AppointmentList = ({ doctorId, patientId, type }) => {
+  const [showFilters, setShowFilters] = useState(false);
+
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
@@ -42,6 +44,10 @@ const AppointmentList = ({ doctorId, patientId, type }) => {
     setPage(page + 1);
   };
 
+  const handleShowFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
   return (
     <>
       <div className="container-bg-content">
@@ -57,9 +63,11 @@ const AppointmentList = ({ doctorId, patientId, type }) => {
             <button
               className="btnRound bg-blue clr-white justify-self-end mx-4"
               style={{ justifySelf: "end" }}
+              onClick={handleShowFilters}
             >
               Filtry
             </button>
+            {showFilters & <div className="d-flex gap-2"></div>}
             <AppointmentsTable appointments={appointments} type={type} />
           </>
         )}

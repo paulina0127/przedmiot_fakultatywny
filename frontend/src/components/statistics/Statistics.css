@@ -1,0 +1,28 @@
+.timesContainer {
+  width: 50%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  align-self: center;
+}
+
+.time {
+  padding: 8px;
+  height: fit-content;
+  max-width: 125px;
+  background: none;
+  border-radius: 50rem;
+  border: 1px solid var(--clr-dark-blue);
+  font-family: var(--ff-primary);
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--clr-dark-blue);
+  text-align: center;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.time:hover {
+  background: var(--clr-dark-blue-hover);
+  color: var(--clr-white);
+}

@@ -15,6 +15,7 @@ import {
   ResetPassword,
   ResetPasswordConfirm,
   SignUpScreen,
+  StatisticsScreen,
 } from "./screens";
 
 const App = () => {
@@ -49,6 +50,9 @@ const App = () => {
             <Route path="/rejestracja-pacjenta" element={<PatientScreen />} />
             <Route path="/pacjenci" element={<PatientListScreen />} />
             <Route path="/pacjenci/:id" element={<PatientScreen />} />
+
+            {/* Statistics */}
+            <Route path="/statystyki" element={<StatisticsScreen />} />
 
             {/* Appointments */}
             <Route
