@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import Calendar from "react-calendar";
-import { HiOutlineTrash } from "react-icons/hi";
 import { MdOutlineAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,50 +10,67 @@ import { pl } from "date-fns/locale";
 import { Field, FieldArray, Form, Formik } from "formik";
 
 import { updateAppointment } from "../../actions/appointmentActions";
-import { getDoctor } from "../../actions/doctorActions";
-import { getPatient } from "../../actions/patientActions";
-import { listSlots } from "../../actions/statsAndSlotsActions";
-import { SLOT_LIST_RESET } from "../../constants/statsAndSlotsConsts";
+import { updatePrescription } from "../../actions/prescriptionActions";
 import { DoctorReadMin } from "../doctor/DoctorCRUD";
-import { AppointmentModalInfo } from ".";
-import { RadioField, SelectField, TextField } from "../formHelpers";
+import { AppointmentModalInfo, NewPrescription } from ".";
 import { TextArea } from "../formHelpers/TextArea";
 import { Loader, Message, Prescription, MyModal } from "../general";
+import { AiOutlineClose } from 'react-icons/ai';
 import panel from "../UserPanel.module.css";
 import styles from "./AppointmentForm.module.css";
 import "./Calendar.css";
 
 const AppointmentUpdateForm = ({
   initialValues,
-  validate,
   user,
   prescriptions,
   cancellable,
-  status,
+  status
 }) => {
   const [key, setKey] = useState("details");
   const appointment_id = useParams().id;
 
   const [changeAppointStatus, setAppointStatus] = useState(false);
   const [statusType, setStatusType] = useState("");
+  const [newPrescription, setNewPrescription] = useState(false);
+  const [delPrescription, setDelPrescription] = useState(false);
+  const [prescriptionId, setPrescriptionId] = useState(null);
 
-  const handleShowModal = (type) => {
-    setAppointStatus(true);
-    setStatusType(type);
+  const handleShowModal = (type, id) => {
+    if(type === 'prescription') {
+      setNewPrescription(true);
+    } else if (type === 'update-prescription') {
+      setDelPrescription(true);
+      setPrescriptionId(id)
+    } else {
+      setAppointStatus(true);
+      setStatusType(type);
+    }
   };
-  const handleCloseModal = () => setAppointStatus(false);
-
+  const handleCloseModal = () => {
+    setAppointStatus(false);
+    setNewPrescription(false);
+    setDelPrescription(false);
+  }
+  
   const dispatch = useDispatch();
-  const changeStatusAppointmentHandler = (id, type) => {
+  const changeStatusAppointmentHandler = (type) => {
     const value = { status: "" };
     if (type === "accept") {
       value.status = "Potwierdzona";
     } else if (type === "reject") {
       value.status = "Anulowana";
     }
-    dispatch(updateAppointment(id, value));
-    window.location.reload();
+    dispatch(updateAppointment(appointment_id, value));
     setAppointStatus(false);
+    window.location.reload();
+  };
+
+  const delPrecriptionHandler = () => {
+    dispatch(updatePrescription(prescriptionId, { status: "Anulowana" }));
+    setDelPrescription(false);
+    setPrescriptionId(null);
+    window.location.reload();
   };
 
   const {
@@ -75,7 +90,6 @@ const AppointmentUpdateForm = ({
             } else {
               dispatch(updateAppointment(appointment_id, values));
             }
-
           }}
         >
           {({ values, isValid, setFieldValue }) => (
@@ -236,7 +250,11 @@ const AppointmentUpdateForm = ({
                           Recepty
                         </h3>
                         {user?.type === "Lekarz" && (
-                          <button type="button" className="btn btn-success btnCircle mx-4">
+                          <button 
+                            type="button" 
+                            className="btn btn-success btnCircle mx-4"
+                            onClick={() => handleShowModal("prescription")}
+                          >
                             {" "}
                             <MdOutlineAdd size="1.5rem" />
                           </button>
@@ -252,6 +270,7 @@ const AppointmentUpdateForm = ({
                               <button
                                 type="button"
                                 className="btnRound bg-dark-blue clr-white align-self-center"
+                                onClick={() => handleShowModal("update-prescription", prescription.id)}
                               >
                                 Anuluj receptę
                               </button>
@@ -259,6 +278,39 @@ const AppointmentUpdateForm = ({
                         </Prescription>
                       ))}
                     </div>
+                    {newPrescription && (
+                      <NewPrescription
+                        showModal={true}
+                        handleCloseModal={handleCloseModal}
+                        id={appointment_id}
+                      />
+                    )}
+                    {delPrescription && (
+                      <MyModal
+                        showModal={true}
+                        title='Anulowanie wystawionej recepty'
+                        danger={true}
+                      >
+                        <p>Potwierdź anulowanie recepty</p>
+                        <hr className='text-secondary' />
+                        <div className='d-flex justify-content-center'>
+                          <button
+                            type='button'
+                            className='btn btn-secondary rounded-pill fw-bold shadow-sm mx-2 px-5'
+                            onClick={handleCloseModal}
+                          >
+                            Wróć
+                          </button>
+                          <button
+                            type='button'
+                            className={`btn btn-danger rounded-pill fw-bold shadow-sm px-5`}
+                            onClick={() => delPrecriptionHandler()}
+                          >
+                            Anuluj receptę <AiOutlineClose />
+                          </button>
+                        </div>
+                      </MyModal>
+                    )}
                   </div>
                 </Tab>
               </Tabs>
@@ -323,7 +375,6 @@ const AppointmentUpdateForm = ({
             type={statusType}
             handleCloseModal={handleCloseModal}
             handleChangeStatus={changeStatusAppointmentHandler}
-            id={appointment_id}
             userType={user?.type}
           />
         </MyModal>

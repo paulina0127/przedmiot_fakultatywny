@@ -4,6 +4,7 @@ import AppointmentModalInfo from "./AppointmentModalInfo";
 import AppointmentList from "./AppointmentList";
 import AppointmentsTable from "./AppointmentsTable";
 import AppointmentUpdateForm from "./AppointmentUpdateForm";
+import NewPrescription from "./NewPrescription";
 
 export {
   AppointmentForm,
@@ -12,4 +13,5 @@ export {
   AppointmentList,
   AppointmentsTable,
   AppointmentUpdateForm,
+  NewPrescription
 };

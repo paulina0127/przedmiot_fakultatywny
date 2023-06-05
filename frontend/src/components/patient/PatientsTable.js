@@ -23,7 +23,7 @@ const PatientsTable = ({ patients, min }) => {
   return (
     <Table headers={headers}>
       {patients?.map((patient, index) => (
-        <Row key={index} number={index} object={patient} values={values}>
+        <Row key={patient?.id} number={index} object={patient} values={values}>
           {
             <Link to={`/pacjenci/${patient?.id}`} className="svgLink">
               <BsFillPersonVcardFill size="2rem" />

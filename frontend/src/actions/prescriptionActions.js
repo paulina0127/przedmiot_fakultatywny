@@ -3,19 +3,15 @@ import axios from "axios";
 import {
   PRESCRIPTION_CREATE_FAIL,
   PRESCRIPTION_CREATE_REQUEST,
-  PRESCRIPTION_CREATE_RESET,
   PRESCRIPTION_CREATE_SUCCESS,
   PRESCRIPTION_DETAILS_FAIL,
   PRESCRIPTION_DETAILS_REQUEST,
-  PRESCRIPTION_DETAILS_RESET,
   PRESCRIPTION_DETAILS_SUCCESS,
   PRESCRIPTION_LIST_FAIL,
   PRESCRIPTION_LIST_REQUEST,
-  PRESCRIPTION_LIST_RESET,
   PRESCRIPTION_LIST_SUCCESS,
   PRESCRIPTION_UPDATE_FAIL,
   PRESCRIPTION_UPDATE_REQUEST,
-  PRESCRIPTION_UPDATE_RESET,
   PRESCRIPTION_UPDATE_SUCCESS,
 } from "../constants/prescriptionConsts";
 
@@ -75,16 +71,11 @@ export const getPrescription = (id) => async (dispatch) => {
   }
 };
 
-export const createpPrescription = (id, values) => async (dispatch) => {
+export const createPrescription = (id, values) => async (dispatch) => {
   const config = { headers: getAuthHeaders() };
 
   const body = JSON.stringify({
-    date: values.date,
-    time: values.time,
-    symptoms: values.symptoms.filter((symptom) => symptom !== ""),
     medicine: values.medicine.filter((med) => med !== ""),
-    doctor: values.doctor,
-    patient: values.patient,
   });
 
   try {
@@ -112,7 +103,7 @@ export const createpPrescription = (id, values) => async (dispatch) => {
   }
 };
 
-export const updatepPrescription = (id, values) => async (dispatch) => {
+export const updatePrescription = (id, values) => async (dispatch) => {
   const config = { headers: getAuthHeaders() };
 
   const body = JSON.stringify({
@@ -124,7 +115,7 @@ export const updatepPrescription = (id, values) => async (dispatch) => {
       type: PRESCRIPTION_UPDATE_REQUEST,
     });
 
-    const { data } = await axios.patch(`/prescriptionss/${id}`, body, config);
+    const { data } = await axios.patch(`/prescriptions/${id}`, body, config);
 
     dispatch({
       type: PRESCRIPTION_UPDATE_SUCCESS,
