@@ -322,7 +322,7 @@ body {
 .btnSquare.bg-dark-blue:disabled,
 .btnRound.bg-dark-blue:disabled,
 .btnCircle.bg-dark-blue:disabled {
-  background: var(--clr-dark-blue-hover);
+  background: var(--clr-dark-blue-hover) !important;
 }
 
 .btnSquare.bg-blue:hover,
@@ -331,7 +331,7 @@ body {
 .btnSquare.bg-blue:disabled,
 .btnRound.bg-blue:disabled,
 .btnCircle.bg-blue:disabled {
-  background: var(--clr-blue-hover);
+  background: var(--clr-blue-hover) !important;
 }
 
 .btnSquare.bg-white:hover,

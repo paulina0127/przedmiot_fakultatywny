@@ -11,28 +11,16 @@ import { MyModal, Row, Table } from "../general";
 const AppointmentsTable = ({ appointments, min, type }) => {
   const headers =
     type === "Pacjent"
-      ? min
-        ? ["Data", "Godzina", "Lekarz", "Akcje"]
-        : ["Data", "Godzina", "Lekarz", "Status", "Akcje"]
+      ? ["Data", "Godzina", "Lekarz", "Status", "Akcje"]
       : type === "Lekarz"
-      ? min
-        ? ["Data", "Godzina", "Pacjent", "Szczegóły"]
-        : ["Data", "Godzina", "Pacjent", "Status", "Szczegóły"]
-      : min
-      ? ["Data", "Godzina", "Lekarz", "Pacjent", "Akcje"]
+      ? ["Data", "Godzina", "Pacjent", "Status", "Szczegóły"]
       : ["Data", "Godzina", "Lekarz", "Pacjent", "Status", "Akcje"];
 
   const values =
     type === "Pacjent"
-      ? min
-        ? ["date", "time", "doctor"]
-        : ["date", "time", "doctor", "status"]
+      ? ["date", "time", "doctor", "status"]
       : type === "Lekarz"
-      ? min
-        ? ["date", "time", "patient"]
-        : ["date", "time", "patient", "status"]
-      : min
-      ? ["date", "time", "doctor", "patient"]
+      ? ["date", "time", "patient", "status"]
       : ["date", "time", "doctor", "patient", "status"];
 
   // appointments to approve modal and action

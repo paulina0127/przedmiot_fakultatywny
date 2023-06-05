@@ -11,6 +11,7 @@ import {
   startOfYear,
 } from "date-fns";
 import format from "date-fns/format";
+import { Field, Form, Formik } from "formik";
 
 import { AppointmentsTable } from ".";
 import { listAppointments } from "../../actions/appointmentActions";
@@ -21,27 +22,64 @@ import {
   Pagination,
 } from "../../components/general";
 import { APPOINTMENT_LIST_RESET } from "../../constants/appointmentConsts";
+import { SelectField, TextField } from "../formHelpers";
 import panel from "../UserPanel.module.css";
 import "./Calendar.css";
 
 const AppointmentMinList = ({ type }) => {
   const dispatch = useDispatch();
-  const [page, setPage] = useState(1);
   const pageSize = 5;
 
   const [selectedDates, setSelectedDates] = useState([new Date(), new Date()]);
   const [selectedTab, setSelectedTab] = useState("Dzisiaj");
 
-  const params = {
+  const [params, setParams] = useState({
     page_size: pageSize,
-    page: page,
+    page: 1,
     status: "",
-    start_date:
-      selectedDates[0] && format(new Date(selectedDates[0]), "yyyy-MM-dd"),
-    end_date:
-      selectedDates[1] && format(new Date(selectedDates[1]), "yyyy-MM-dd"),
+    search: "",
+    start_date: selectedDates[0]
+      ? format(new Date(selectedDates[0]), "yyyy-MM-dd")
+      : "",
+    end_date: selectedDates[1]
+      ? format(new Date(selectedDates[1]), "yyyy-MM-dd")
+      : "",
     ordering: "date",
+  });
+
+  const updateParams = (newParams) => {
+    setParams((prevParams) => ({
+      ...prevParams,
+      ...newParams,
+    }));
   };
+
+  const {
+    appointments,
+    loadingAppointments,
+    countAppointments,
+    errorAppointments,
+  } = useSelector((state) => state.appointmentList);
+
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const status = [
+    {
+      value: "Oczekuje na potwierdzenie",
+      label: "Oczekuje na potwierdzenie",
+    },
+    {
+      value: "Potwierdzona",
+      label: "Potwierdzona",
+    },
+    {
+      value: "Odbyta",
+      label: "Odbyta",
+    },
+    {
+      value: "Anulowana",
+      label: "Anulowana",
+    },
+  ];
 
   const handleSelect = (value) => {
     if (value[0] === null) value[0] = "";
@@ -62,31 +100,38 @@ const AppointmentMinList = ({ type }) => {
     else if (name === "Wszystkie") setSelectedDates(["", ""]);
   };
 
-  const {
-    appointments,
-    loadingAppointments,
-    countAppointments,
-    errorAppointments,
-  } = useSelector((state) => state.appointmentList);
+  const handleClickBack = () => {
+    updateParams({ page: params.page - 1 });
+  };
+
+  const handleClickForward = () => {
+    updateParams({ page: params.page + 1 });
+  };
 
   useEffect(() => {
     dispatch(listAppointments(params));
     return () => {
       dispatch({ type: APPOINTMENT_LIST_RESET });
     };
-  }, [page, selectedDates]);
+  }, [params]);
 
   useEffect(() => {
-    setPage(1);
+    updateParams({
+      page: 1,
+      start_date: selectedDates[0]
+        ? format(new Date(selectedDates[0]), "yyyy-MM-dd")
+        : "",
+      end_date: selectedDates[1]
+        ? format(new Date(selectedDates[1]), "yyyy-MM-dd")
+        : "",
+    });
   }, [selectedDates]);
 
-  const handleClickBack = () => {
-    setPage(page - 1);
-  };
-
-  const handleClickForward = () => {
-    setPage(page + 1);
-  };
+  useEffect(() => {
+    updateParams({
+      page: 1,
+    });
+  }, [params.status, params.search]);
 
   return (
     <div className="main-container-bg gridSpanCol">
@@ -123,7 +168,6 @@ const AppointmentMinList = ({ type }) => {
             </div>
             <div className="calendarContainer">
               <Calendar
-                activeStartDate={new Date()}
                 selectRange={true}
                 allowPartialRange={true}
                 value={selectedDates}
@@ -145,26 +189,74 @@ const AppointmentMinList = ({ type }) => {
             </div>
           )}
         </div>
-        {loadingAppointments ? (
-          <Loader />
-        ) : errorAppointments ? (
-          <Message variant="danger">{errorAppointments}</Message>
-        ) : countAppointments === 0 ? (
-          <Message variant="danger" style={{ height: "fit-content" }}>
-            Brak wyników
-          </Message>
-        ) : (
-          <AppointmentsTable
-            appointments={appointments}
-            type={type}
-            min={true}
-          />
-        )}
+        <div className="d-grid">
+          {loadingAppointments ? null : (
+            <div
+              className="d-flex align-items-center"
+              style={{ justifySelf: "end" }}
+            >
+              <Formik
+                initialValues={{ search: params.search, status: params.status }}
+                onSubmit={(values) => {
+                  updateParams({
+                    search: values.search,
+                    status: values.status,
+                  });
+                }}
+              >
+                {({ values, setFieldValue }) => (
+                  <Form id="filtersForm">
+                    <div className="d-flex gap-4">
+                      <Field
+                        name="status"
+                        component={SelectField}
+                        options={status}
+                        value={selectedStatus}
+                        placeholder="Wybierz status"
+                        onChange={(option) => {
+                          setFieldValue("status", option.value);
+                          setSelectedStatus(option);
+                        }}
+                      />
+                      <TextField
+                        name="search"
+                        type="search"
+                        placeholder="Wyszukiwarka"
+                      />
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+              <button
+                type="submit"
+                form="filtersForm"
+                className="btnRound bg-blue clr-white justify-self-end mx-4"
+              >
+                Filtruj
+              </button>
+            </div>
+          )}
+          {loadingAppointments ? (
+            <Loader />
+          ) : errorAppointments ? (
+            <Message variant="danger">{errorAppointments}</Message>
+          ) : countAppointments === 0 ? (
+            <Message variant="danger" style={{ height: "fit-content" }}>
+              Brak wyników
+            </Message>
+          ) : (
+            <AppointmentsTable
+              appointments={appointments}
+              type={type}
+              min={true}
+            />
+          )}
+        </div>
       </div>
 
       <div className="container-bg-pagination">
         <Pagination
-          page={page}
+          page={params.page}
           pageSize={pageSize}
           count={countAppointments}
           clickBack={handleClickBack}

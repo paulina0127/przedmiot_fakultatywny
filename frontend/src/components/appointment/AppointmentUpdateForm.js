@@ -183,9 +183,7 @@ const AppointmentUpdateForm = ({
                   eventKey="prescriptions"
                   title="Zalecenia i recepty"
                   tabClassName="tab"
-                  disabled={
-                    values.status !== "Odbyta" && user?.type !== "Lekarz"
-                  }
+                  disabled={values.status !== "Odbyta"}
                 >
                   <div class="twoColumnGrid gap-5">
                     <div className="d-flex flex-column">

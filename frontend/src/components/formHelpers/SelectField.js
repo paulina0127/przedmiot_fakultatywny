@@ -14,7 +14,7 @@ const SelectField = ({ label, ...props }) => {
       </label>
       <Select
         classNamePrefix="selectField"
-        className={`form-control rounded-pill border-2 shadow-sm px-4 ${
+        className={`form-control rounded-pill border-2 shadow-sm px-4 py-0 ${
           meta.touched && meta.error && "is-invalid"
         }`}
         noOptionsMessage={() => "Brak opcji"}

@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import format from "date-fns/format";
 
@@ -12,6 +12,7 @@ import { APPOINTMENT_LIST_RESET } from "../../constants/appointmentConsts";
 
 const AppointmentListScreen = ({ type, name }) => {
   const { user } = useSelector((state) => state.auth);
+  const location = useLocation();
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
@@ -40,7 +41,7 @@ const AppointmentListScreen = ({ type, name }) => {
     return () => {
       dispatch({ type: APPOINTMENT_LIST_RESET });
     };
-  }, [page]);
+  }, [page, location.pathname]);
 
   const handleClickBack = () => {
     setPage(page - 1);

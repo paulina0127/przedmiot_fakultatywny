@@ -11,6 +11,7 @@ import { authReducer } from "./reducers/authReducer";
 import {
   doctorDetailsReducer,
   doctorListReducer,
+  specializationListReducer,
 } from "./reducers/doctorReducer";
 import {
   patientCreateReducer,
@@ -36,6 +37,7 @@ const reducer = combineReducers({
 
   doctorList: doctorListReducer,
   doctorDetails: doctorDetailsReducer,
+  specializationList: specializationListReducer,
 
   patientList: patientListReducer,
   patientDetails: patientDetailsReducer,

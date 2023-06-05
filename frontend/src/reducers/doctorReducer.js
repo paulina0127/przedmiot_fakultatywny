@@ -7,6 +7,10 @@ import {
   DOCTOR_LIST_REQUEST,
   DOCTOR_LIST_RESET,
   DOCTOR_LIST_SUCCESS,
+  SPECIALIZATION_LIST_FAIL,
+  SPECIALIZATION_LIST_REQUEST,
+  SPECIALIZATION_LIST_RESET,
+  SPECIALIZATION_LIST_SUCCESS,
 } from "../constants/doctorConsts";
 
 export const doctorListReducer = (state = { doctors: [] }, action) => {
@@ -44,6 +48,34 @@ export const doctorDetailsReducer = (state = {}, action) => {
 
     case DOCTOR_DETAILS_RESET:
       return { ...state, doctor: {} };
+
+    default:
+      return state;
+  }
+};
+
+export const specializationListReducer = (
+  state = { specializations: [] },
+  action
+) => {
+  switch (action.type) {
+    case SPECIALIZATION_LIST_REQUEST:
+      return { loadingSpecializations: true, specializations: [] };
+
+    case SPECIALIZATION_LIST_SUCCESS:
+      return {
+        loadingSpecializations: false,
+        specializations: action.payload.results,
+        countSpecializations: action.payload.count,
+      };
+    case SPECIALIZATION_LIST_FAIL:
+      return {
+        loadingSpecializations: false,
+        errorSpecializations: action.payload,
+      };
+
+    case SPECIALIZATION_LIST_RESET:
+      return { specializations: [] };
 
     default:
       return state;

@@ -7,6 +7,9 @@ import {
   DOCTOR_LIST_FAIL,
   DOCTOR_LIST_REQUEST,
   DOCTOR_LIST_SUCCESS,
+  SPECIALIZATION_LIST_FAIL,
+  SPECIALIZATION_LIST_REQUEST,
+  SPECIALIZATION_LIST_SUCCESS,
 } from "../constants/doctorConsts";
 
 export const listDoctors = (filters) => async (dispatch) => {
@@ -60,6 +63,26 @@ export const getDoctor = (id) => async (dispatch) => {
 
     dispatch({
       type: DOCTOR_DETAILS_FAIL,
+      payload: errorKey ? error.response.data[errorKey] : error.message,
+    });
+  }
+};
+
+export const listSpecializations = () => async (dispatch) => {
+  try {
+    dispatch({ type: SPECIALIZATION_LIST_REQUEST });
+
+    const { data } = await axios.get(`/specializations`);
+
+    dispatch({
+      type: SPECIALIZATION_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const errorKey = Object.keys(error?.response?.data || {})[0];
+
+    dispatch({
+      type: SPECIALIZATION_LIST_FAIL,
       payload: errorKey ? error.response.data[errorKey] : error.message,
     });
   }
