@@ -6,10 +6,11 @@ const AppointmentModalInfo = ({
   handleChangeStatus,
   userType
 }) => {
-  const variant = type === 'accept' ? 'success' : 'danger';
-  const content = userType === "Pacjent" ? 
-  'Prosimy o potwierdzenie odwołania Twojej wizyty' 
-  : 'Prosimy o potwierdzenie zmiany statusu wizyty'
+  const variant = type === 'accept' || type === 'done' ? 'success' : 'danger';
+  const content = userType === "Pacjent" ?
+    'Prosimy o potwierdzenie odwołania Twojej wizyty'
+    : userType === "Recepcjonista" ? 'Prosimy o potwierdzenie zmiany statusu wizyty'
+      : 'Prosimy o potwierdzenie, że wizyta się odbyła'
   return (
     <>
       <p>{content}</p>
@@ -27,9 +28,11 @@ const AppointmentModalInfo = ({
           className={`btn btn-${variant} rounded-pill fw-bold shadow-sm px-5`}
           onClick={() => handleChangeStatus(type)}
         >
-          {type === 'accept' && userType === 'Recepcjonista' ? 'Akceptuj ' 
-          : type === 'reject' && userType === 'Recepcjonista' ? 'Odrzuć ' : 'Odwołaj '}
-          {type === 'accept' ? <AiOutlineCheck /> : <AiOutlineClose />}
+          {type === 'accept' && userType === 'Recepcjonista' ? 'Akceptuj '
+            : type === 'reject' && userType === 'Recepcjonista' ? 'Odrzuć '
+              : type === 'done' ? 'Potwierdź '
+                : 'Odwołaj '}
+          {type === 'accept' || type === 'done' ? <AiOutlineCheck /> : <AiOutlineClose />}
         </button>
       </div>
     </>

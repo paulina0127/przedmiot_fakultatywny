@@ -4,9 +4,7 @@ import {
   BsFillInfoCircleFill,
   BsReceipt,
 } from "react-icons/bs";
-import { HiSearch } from "react-icons/hi";
-import { Link } from "react-router-dom";
-
+import { GiPill } from "react-icons/gi";
 import { format } from "date-fns";
 
 import styles from "../../appointment/AppointmentForm.module.css";
@@ -50,7 +48,7 @@ const Prescription = ({ prescription, children }) => {
         <div className="d-flex flex-column align-items-start gap-2">
           <ul className="list-unstyled">
             {prescription.medicine.map((med) => {
-              return <li key={med.id}>{med}</li>;
+              return <li key={med.id} className="my-2 fw-bold fst-italic"><GiPill />{med}</li>;
             })}
           </ul>
         </div>

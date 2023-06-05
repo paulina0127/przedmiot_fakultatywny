@@ -19,7 +19,7 @@ const NewPrescription = ({
     errorPrescriptionCreate,
     successPrescriptionCreate,
     loadingPrescriptionCreate,
-  } = useSelector((state) => state.appointmentCreate);
+  } = useSelector((state) => state.prescriptionCreate);
   return (
     <Modal
     show={showModal}
@@ -45,8 +45,9 @@ const NewPrescription = ({
         {loadingPrescriptionCreate ? <Loader /> : (
         <Formik
           initialValues={{medicine: []}}
-          onSubmit={(values) => {
+          onSubmit={(values, { resetForm }) => {
             dispatch(createPrescription(id, { medicine: values.medicine }));
+            resetForm();
           }}
         >
           {({ values }) => (
