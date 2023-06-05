@@ -186,7 +186,7 @@ class PrescriptionList(generics.ListCreateAPIView):
         # Generate 4-digit PIN for prescription
         code = str(secrets.randbelow(10000)).zfill(4)
         while Prescription.objects.filter(
-            access_code=code, appointment__patient__pesel=pesel
+            access_code=code, appointment__patient__pesel=patient.pesel
         ).exists():
             code = str(secrets.randbelow(10000)).zfill(4)
         serializer.fields["access_code"].read_only = False
