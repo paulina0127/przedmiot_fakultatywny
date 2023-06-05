@@ -36,8 +36,8 @@ const ChooseDoctor = () => {
             className="fiveColumnGrid"
           >
             {doctors?.map((doctor) => (
-              <div className="gridCenter gap-2">
-                <DoctorInfo key={doctor.id} doctor={doctor}>
+              <div key={doctor.id} className="gridCenter gap-2">
+                <DoctorInfo doctor={doctor}>
                   <Link to={`/nowa-wizyta/${doctor?.id}`}>
                     <button className="btnRound bg-dark-blue clr-white">
                       Wybierz

@@ -3,19 +3,15 @@ import axios from "axios";
 import {
   APPOINTMENT_CREATE_FAIL,
   APPOINTMENT_CREATE_REQUEST,
-  APPOINTMENT_CREATE_RESET,
   APPOINTMENT_CREATE_SUCCESS,
   APPOINTMENT_DETAILS_FAIL,
   APPOINTMENT_DETAILS_REQUEST,
-  APPOINTMENT_DETAILS_RESET,
   APPOINTMENT_DETAILS_SUCCESS,
   APPOINTMENT_LIST_FAIL,
   APPOINTMENT_LIST_REQUEST,
-  APPOINTMENT_LIST_RESET,
   APPOINTMENT_LIST_SUCCESS,
   APPOINTMENT_UPDATE_FAIL,
   APPOINTMENT_UPDATE_REQUEST,
-  APPOINTMENT_UPDATE_RESET,
   APPOINTMENT_UPDATE_SUCCESS,
 } from "../constants/appointmentConsts";
 
@@ -125,10 +121,13 @@ export const createAppointment = (values) => async (dispatch) => {
 export const updateAppointment = (id, values) => async (dispatch) => {
   const config = { headers: getAuthHeaders() };
 
-  const body = JSON.stringify({
+  const body = typeof values === "object" ?
+    JSON.stringify({
     status: values.status,
-  });
-
+    }) : JSON.stringify({
+      recommendations: values,
+    }) 
+    
   try {
     dispatch({
       type: APPOINTMENT_UPDATE_REQUEST,

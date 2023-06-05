@@ -49,7 +49,7 @@ const AppointmentsTable = ({ appointments, min, type }) => {
   return (
     <Table headers={headers}>
       {appointments?.map((appointment, index) => (
-        <Row key={index} number={index} object={appointment} values={values}>
+        <Row key={appointment?.id} number={index} object={appointment} values={values}>
           {appointment.status !== "Oczekuje na potwierdzenie" ||
           type === "Pacjent" ||
           type === "Lekarz" ? (

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import Calendar from "react-calendar";
@@ -16,9 +17,10 @@ import { getPatient } from "../../actions/patientActions";
 import { listSlots } from "../../actions/statsAndSlotsActions";
 import { SLOT_LIST_RESET } from "../../constants/statsAndSlotsConsts";
 import { DoctorReadMin } from "../doctor/DoctorCRUD";
+import { AppointmentModalInfo } from ".";
 import { RadioField, SelectField, TextField } from "../formHelpers";
 import { TextArea } from "../formHelpers/TextArea";
-import { Loader, Message, Prescription } from "../general";
+import { Loader, Message, Prescription, MyModal } from "../general";
 import panel from "../UserPanel.module.css";
 import styles from "./AppointmentForm.module.css";
 import "./Calendar.css";
@@ -31,8 +33,30 @@ const AppointmentUpdateForm = ({
   cancellable,
   status,
 }) => {
-  const dispatch = useDispatch();
   const [key, setKey] = useState("details");
+  const appointment_id = useParams().id;
+
+  const [changeAppointStatus, setAppointStatus] = useState(false);
+  const [statusType, setStatusType] = useState("");
+
+  const handleShowModal = (type) => {
+    setAppointStatus(true);
+    setStatusType(type);
+  };
+  const handleCloseModal = () => setAppointStatus(false);
+
+  const dispatch = useDispatch();
+  const changeStatusAppointmentHandler = (id, type) => {
+    const value = { status: "" };
+    if (type === "accept") {
+      value.status = "Potwierdzona";
+    } else if (type === "reject") {
+      value.status = "Anulowana";
+    }
+    dispatch(updateAppointment(id, value));
+    window.location.reload();
+    setAppointStatus(false);
+  };
 
   const {
     errorAppointmentUpdate,
@@ -46,7 +70,12 @@ const AppointmentUpdateForm = ({
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            dispatch(updateAppointment(values));
+            if(user?.type === "Lekarz") {
+              dispatch(updateAppointment(appointment_id, values.recommendations));
+            } else {
+              dispatch(updateAppointment(appointment_id, values));
+            }
+
           }}
         >
           {({ values, isValid, setFieldValue }) => (
@@ -207,7 +236,7 @@ const AppointmentUpdateForm = ({
                           Recepty
                         </h3>
                         {user?.type === "Lekarz" && (
-                          <button className="btn btn-success btnCircle mx-4">
+                          <button type="button" className="btn btn-success btnCircle mx-4">
                             {" "}
                             <MdOutlineAdd size="1.5rem" />
                           </button>
@@ -237,12 +266,14 @@ const AppointmentUpdateForm = ({
           )}
         </Formik>
       </div>
-      {key === "details" && user?.type === "Pacjent" && cancellable && (
+      {key === "details" && user?.type === "Pacjent" 
+      && cancellable && status !== "Odbyta" && status !== "Anulowana" && (
         <button
-          type="submit"
+          type="button"
           className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
           style={{ justifySelf: "end", alignSelf: "end" }}
           form="form"
+          onClick={() => handleShowModal("reject")}
           disabled={loadingAppointmentUpdate}
         >
           Odwołaj wizytę
@@ -259,23 +290,44 @@ const AppointmentUpdateForm = ({
             }}
           >
             <button
-              type="submit"
+              type="button"
               className="btnSquare bg-blue clr-white mt-3"
               form="form"
+              onClick={() => handleShowModal("accept")}
               disabled={loadingAppointmentUpdate}
             >
               Potwierdź wizytę
             </button>
             <button
-              type="submit"
+              type="button"
               className="btnSquare bg-dark-blue clr-white mt-3"
               form="form"
+              onClick={() => handleShowModal("reject")}
               disabled={loadingAppointmentUpdate}
             >
               Odwołaj wizytę
             </button>
           </div>
-        )}
+      )}
+      {changeAppointStatus && (
+        <MyModal
+          showModal={true}
+          title={
+            statusType === "accept" && user?.type === "Recepcjonista" ? "Akceptowanie wizyty"
+            : statusType === "accept" && user?.type === "Recepcjonista" ? "Odrzucanie wizyty"
+            : 'Odwoływanie wizyty'
+          }
+          danger={statusType === "reject" ? true : "accept"}
+        >
+          <AppointmentModalInfo
+            type={statusType}
+            handleCloseModal={handleCloseModal}
+            handleChangeStatus={changeStatusAppointmentHandler}
+            id={appointment_id}
+            userType={user?.type}
+          />
+        </MyModal>
+      )}
       {key === "details" &&
         user?.type === "Lekarz" &&
         status === "Potwierdzona" && (
