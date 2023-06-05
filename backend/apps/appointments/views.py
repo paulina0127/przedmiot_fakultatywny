@@ -1,9 +1,9 @@
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.core.exceptions import BadRequest
+from django.db import transaction
 from django.db.models import Q
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -141,12 +141,15 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
         date = request.data.get("date", obj.date)
         time = request.data.get("time", obj.time)
         patient = request.data.get("patient", obj.patient)
-        if user.type == UserType.DOCTOR:
-            # set completed by default when doctor updates
-            request.data["status"] = AppointmentStatus.COMPLETED
         status = request.data.get("status", obj.status)
 
-        response = super().partial_update(request, *args, **kwargs)
+        with transaction.atomic():
+            if user.type == UserType.DOCTOR:
+                # set completed by default when doctor updates
+                obj.status = AppointmentStatus.COMPLETED
+                obj.save()
+
+            response = super().partial_update(request, *args, **kwargs)
 
         # Send email if any value got changed
         if patient.user and (
@@ -179,8 +182,8 @@ class PrescriptionList(generics.ListCreateAPIView):
             return Prescription.objects.filter(appointment_id=self.kwargs["pk"])
 
     def perform_create(self, serializer):
+        patient = Appointment.objects.get(id=self.kwargs["pk"]).patient
         # Generate 4-digit PIN for prescription
-        pesel = Appointment(id=self.request.data.get("appointment")).patient.pesel
         code = str(secrets.randbelow(10000)).zfill(4)
         while Prescription.objects.filter(
             access_code=code, appointment__patient__pesel=pesel
@@ -195,9 +198,9 @@ class PrescriptionList(generics.ListCreateAPIView):
         )
         serializer.save()
         # Email patient
-        if serializer.validated_data["patient"].user:
+        if patient.user:
             email = PRESCRIPTION_ADDED
-            serializer.validated_data["patient"].user.email_user(
+            patient.user.email_user(
                 email["subject"], email["body"]
             )
 
