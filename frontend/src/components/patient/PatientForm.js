@@ -32,15 +32,12 @@ const PatientForm = ({
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
 
-  const { errorCreate, successCreate, loadingCreate } = useSelector(
-    (state) => state.patientCreate
-  );
-  const { errorUpdate, successUpdate, loadingUpdate } = useSelector(
-    (state) => state.patientUpdate
-  );
-  const { errorLink, successLink, loadingLink } = useSelector(
-    (state) => state.patientLink
-  );
+  const { errorPatientCreate, successPatientCreate, loadingPatientCreate } =
+    useSelector((state) => state.patientCreate);
+  const { errorPatientUpdate, successPatientUpdate, loadingPatientUpdate } =
+    useSelector((state) => state.patientUpdate);
+  const { errorPatientLink, successPatientLink, loadingPatientLink } =
+    useSelector((state) => state.patientLink);
 
   const handleClick = () => {
     setShowModal(!showModal);
@@ -48,16 +45,20 @@ const PatientForm = ({
 
   return (
     <>
-      {loadingUpdate && <Loader />}
-      {loadingCreate && <Loader />}
-      {successUpdate && (
+      {loadingPatientUpdate && <Loader />}
+      {loadingPatientCreate && <Loader />}
+      {successPatientUpdate && (
         <Message variant="success">Pomyślnie zapisano zmiany.</Message>
       )}
-      {successCreate && (
+      {successPatientCreate && (
         <Message variant="success">Pomyślnie utworzono kartę pacjenta.</Message>
       )}
-      {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
-      {errorCreate && <Message variant="danger">{errorCreate}</Message>}
+      {errorPatientUpdate && (
+        <Message variant="danger">{errorPatientUpdate}</Message>
+      )}
+      {errorPatientCreate && (
+        <Message variant="danger">{errorPatientCreate}</Message>
+      )}
 
       <div className="container-bg-content">
         {children}
@@ -93,13 +94,15 @@ const PatientForm = ({
                 </Modal.Header>
                 <Modal.Body>
                   <h5>Uzupełnij poniższe dane</h5>
-                  {loadingLink && <Loader />}
-                  {successLink && (
+                  {loadingPatientLink && <Loader />}
+                  {successPatientLink && (
                     <Message variant="success">
                       Pomyślnie połączono konto z kartą pacjenta.
                     </Message>
                   )}
-                  {errorLink && <Message variant="danger">{errorLink}</Message>}
+                  {errorPatientLink && (
+                    <Message variant="danger">{errorPatientLink}</Message>
+                  )}
                   <Formik
                     initialValues={{
                       pesel: "",
@@ -110,7 +113,7 @@ const PatientForm = ({
                       const { pesel, link_key } = values;
                       dispatch(linkPatient(values));
 
-                      successLink && resetForm({ values: "" });
+                      successPatientLink && resetForm({ values: "" });
                     }}
                   >
                     {({ values, isValid }) => (
@@ -137,7 +140,7 @@ const PatientForm = ({
                       type="submit"
                       form="modal-form"
                       className="btnSquare bg-blue clr-white"
-                      disabled={loadingLink}
+                      disabled={loadingPatientLink}
                     >
                       Połącz
                     </button>
@@ -408,7 +411,7 @@ const PatientForm = ({
               className="btnSquare bg-blue clr-white mx-4 mt-3"
               style={{ justifySelf: "end" }}
               form="form"
-              disabled={loadingCreate}
+              disabled={loadingPatientCreate}
             >
               {label}
             </button>
@@ -419,7 +422,7 @@ const PatientForm = ({
             className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
             style={{ justifySelf: "end" }}
             form="form"
-            disabled={loadingUpdate}
+            disabled={loadingPatientUpdate}
           >
             {label}
           </button>

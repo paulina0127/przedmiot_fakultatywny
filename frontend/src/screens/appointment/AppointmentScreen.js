@@ -14,7 +14,7 @@ const AppointmentScreen = ({ type }) => {
   return (
     <section className="up-section">
       {type === "create" ? (
-        user.type === "Pacjent" ? (
+        user?.type === "Pacjent" ? (
           <AppointmentCreateForPatient user={user} />
         ) : (
           <AppointmentCreate user={user} />
