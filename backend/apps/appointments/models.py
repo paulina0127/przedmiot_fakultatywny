@@ -1,4 +1,3 @@
-from datetime import timedelta
 from apps.employees.models import Doctor
 from apps.employees.utils.choices import Slot
 from apps.patients.models import Patient
@@ -43,6 +42,12 @@ class Appointment(models.Model):
         on_delete=models.CASCADE,
         related_name="appointments",
     )
+    control_visit = models.ForeignKey(
+        verbose_name=_("Wizyta kontrolna"),
+        to='self',
+        on_delete=models.CASCADE,
+        null=True, blank=True
+    )
 
     class Meta:
         verbose_name = _("Wizyta")
@@ -51,6 +56,10 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.doctor}, {self.patient} - {self.date} {self.time}"
+
+
+def thirty_days_from_now():
+    return timezone.now() + timezone.timedelta(days=30)
 
 
 class Prescription(models.Model):
@@ -63,7 +72,7 @@ class Prescription(models.Model):
         default=PrescriptionStatus.CONFIRMED,
     )
     created_at = models.DateTimeField(verbose_name=_("Wystawiono"), auto_now_add=True)
-    expires_at = models.DateTimeField(verbose_name=_("Wygasa"), default=timezone.now() + timedelta(days=30))
+    expires_at = models.DateTimeField(verbose_name=_("Wygasa"), default=thirty_days_from_now)
     appointment = models.ForeignKey(
         verbose_name=_("Wizyta"),
         to=Appointment,

@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db.models import Q
 from rest_framework import serializers
 
+from .available_slots import available_slots_list
 from ..models import Appointment, Prescription
 from .choices import AppointmentStatus, PrescriptionStatus
 from ...employees.models import Schedule, Doctor
@@ -39,44 +40,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
         else:
             doctor = request.data.get("doctor")
             date = request.data.get("date")
-        # Get weekday name
-        if isinstance(date, str):
-            date = datetime.strptime(date, "%Y-%m-%d").date()
-        weekday = date.strftime("%A").lower()
-
-        # Slot unavailable if weekday is not on the schedule
-        if weekday not in [field.name for field in Schedule._meta.fields]:
-            return False
-
-        # Taken slots for the date
-        taken_slots = (
-            Appointment.objects.filter(doctor=doctor, date=date)
-            .exclude(status=AppointmentStatus.CANCELLED)
-            .values_list("time", flat=True)
-        )
-
-        # Doctor's availability for the date
-        temp = Schedule.objects.filter(
-            Q(start_date__isnull=False) & Q(start_date__lte=date, end_date__gte=date),
-            doctor=doctor,
-        )
-        # First check if there are schedules with start-end dates that include the date
-        if temp:
-            doctor_availability = temp.values_list(weekday, flat=True)
-        # Else return doctor's fixed schedule
-        else:
-            doctor_availability = Schedule.objects.filter(doctor=doctor).values_list(
-                weekday, flat=True
-            )
-
-        # Delete extra dimension in the list
-        if len(doctor_availability) > 0:
-            doctor_availability = doctor_availability[0]
-
-        # Slots that are in doctor's availability but aren't in taken slots
-        available_slots = [
-            slot for slot in doctor_availability if slot not in taken_slots
-        ]
+        available_slots = available_slots_list(doctor, date)
         if request.method == "POST" and request.data.get("time", "") in available_slots:
             return True
         if request.method in ["PUT", "PATCH"]:
@@ -106,7 +70,7 @@ class PatientCreateAppointmentSerializer(AppointmentSerializer):
 
     class Meta:
         model = Appointment
-        exclude = ["status", "recommendations"]
+        exclude = ["status", "recommendations", "control_visit"]
 
 
 class ReceptionistCreateAppointmentSerializer(AppointmentSerializer):

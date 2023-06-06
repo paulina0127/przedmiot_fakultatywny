@@ -8,6 +8,9 @@ from apps.users.utils.choices import UserType
 
 
 class AppointmentBaseAccess(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.type == UserType.DOCTOR:
+            return request.method != 'POST'
 
     def has_object_permission(self, request, view, obj):
         # True if user type is admin, receptionist or

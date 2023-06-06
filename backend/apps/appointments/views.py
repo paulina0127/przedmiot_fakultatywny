@@ -1,17 +1,17 @@
 import secrets
-from datetime import datetime, timedelta
 
 from django.core.exceptions import BadRequest
 from django.db import transaction
-from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import status as response_status
 from rest_framework.response import Response
 
-from apps.employees.models import Schedule, Doctor
 from apps.users.utils.choices import UserType
 from .models import Appointment, Prescription
+from .utils.available_slots import available_slots_list
 from .utils.choices import AppointmentStatus
 from .utils.email_templates import (
     appointment_email_template,
@@ -55,8 +55,8 @@ class AppointmentList(generics.ListCreateAPIView):
         ]:
             return PatientCreateAppointmentSerializer
         elif (
-            self.request.user.type == UserType.RECEPTIONIST
-            and self.request.method in ["POST", "PUT", "PATCH"]
+                self.request.user.type == UserType.RECEPTIONIST
+                and self.request.method in ["POST", "PUT", "PATCH"]
         ):
             return ReceptionistCreateAppointmentSerializer
         return self.serializer_class
@@ -142,29 +142,52 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
         time = request.data.get("time", obj.time)
         patient = request.data.get("patient", obj.patient)
         status = request.data.get("status", obj.status)
+        control = None
 
         with transaction.atomic():
+            message = "Pomyślnie zaktualizowano wizytę. "
             if user.type == UserType.DOCTOR:
-                # set completed by default when doctor updates
+                # Create a control visit if the apt is not already completed,
+                # and it doesn't have a control visit assigned
+                if obj.status != AppointmentStatus.COMPLETED and not obj.control_visit:
+                    # Max additional days to look for control visit slot (range 14 -> 14+day_range)
+                    day_range = 7
+                    for days in range(day_range + 1):
+                        control_date = date + timezone.timedelta(days=14 + days)
+                        available_slots = available_slots_list(doctor, control_date)
+                        if available_slots:
+                            if time in available_slots:  # prefer the same slot or choose first available
+                                control_time = time
+                            else:
+                                control_time = available_slots[0]
+                            control = Appointment.objects.create(doctor=doctor, patient=patient,
+                                                                 date=control_date, time=control_time,
+                                                                 control_visit=obj, status=AppointmentStatus.CONFIRMED)
+                            message += f"Utworzono wizytę kontrolną: {control_date}, {control_time}"
+                            break
+                        elif days == day_range:
+                            message += f"Nie utworzono wizyty kontrolnej (brak wolnych " \
+                                       f"slotów w przedziale 14-21 dni od wizyty)."
+                # set completed by default
                 obj.status = AppointmentStatus.COMPLETED
                 obj.save()
-
             response = super().partial_update(request, *args, **kwargs)
 
         # Send email if any value got changed
-        if patient.user and (
-            obj.status != status
-            or obj.doctor != doctor
-            or obj.date != date
-            or obj.time != time
-            or obj.patient != patient
-        ):
+        if patient.user and (obj.status != status or obj.date != date or obj.time != time
+                             or obj.doctor != doctor or obj.patient != patient):
             email = appointment_email_template(status)
             email["body"] += (
                 f"\nLekarz: {doctor} \n" f"Data: {date} \n" f"Godzina: {time}"
             )
+            if control:
+                email["body"] += (
+                    f"\nUtworzono także wizytę kontrolną: {control_date}, {control_time}"
+                )
             patient.user.email_user(email["subject"], email["body"])
 
+        if response.status_code == response_status.HTTP_200_OK:
+            response.data['message'] = message
         return response
 
 
@@ -294,49 +317,8 @@ class AvailableSlotsList(generics.ListAPIView):
         # Query params
         doctor = self.request.query_params.get("doctor", "")
         date = self.request.query_params.get("date", "")
-
-        if doctor and date:
-            # Get weekday name
-            date = datetime.strptime(date, "%Y-%m-%d").date()
-            weekday = date.strftime("%A").lower()
-
-            # Return empty list if weekday is not on the schedule
-            if weekday not in [field.name for field in Schedule._meta.fields]:
-                return Response([])
-
-            # Taken slots for the date
-            taken_slots = (
-                Appointment.objects.filter(doctor=doctor, date=date)
-                .exclude(status=AppointmentStatus.CANCELLED)
-                .values_list("time", flat=True)
-            )
-
-            # Doctor's availability for the date
-            temp = Schedule.objects.filter(
-                Q(start_date__isnull=False)
-                & Q(start_date__lte=date, end_date__gte=date),
-                doctor=doctor,
-            )
-
-            # First check if there are schedules with start-end dates that include the date
-            if temp.count() > 0:
-                doctor_availability = temp.values_list(weekday, flat=True)
-            # Else return doctor's fixed schedule
-            else:
-                doctor_availability = list(
-                    Schedule.objects.filter(doctor=doctor).values_list(
-                        weekday, flat=True
-                    )
-                )
-
-            # Delete extra dimension in the list
-            if len(doctor_availability) > 0:
-                doctor_availability = doctor_availability[0]
-
-            # Slots that are in doctor's availability but aren't in taken slots
-            slots = [slot for slot in doctor_availability if slot not in taken_slots]
-
+        try:
+            slots = available_slots_list(doctor, date)
             return Response(slots)
-        else:
-            # Raise BadRequest if there's no query params
+        except ValueError:
             raise BadRequest(_("Parametry 'doctor' i 'date' są wymagane."))
