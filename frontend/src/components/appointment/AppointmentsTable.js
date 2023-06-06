@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { AiFillProfile } from "react-icons/ai";
 import { BsCheckSquareFill, BsXSquareFill } from "react-icons/bs";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { AppointmentModalInfo } from ".";
 import { updateAppointment } from "../../actions/appointmentActions";
 import { MyModal, Row, Table } from "../general";
 
-const AppointmentsTable = ({ appointments, min, type }) => {
+const AppointmentsTable = ({ appointments, type }) => {
   const headers =
     type === "Pacjent"
       ? ["Data", "Godzina", "Lekarz", "Status", "Akcje"]
@@ -26,6 +26,7 @@ const AppointmentsTable = ({ appointments, min, type }) => {
   // appointments to approve modal and action
   const [changeAppointStatus, setAppointStatus] = useState(false);
   const [statusType, setStatusType] = useState("");
+  const { user } = useSelector((state) => state.auth);
 
   const handleShowModal = (type) => {
     setAppointStatus(true);
@@ -36,11 +37,7 @@ const AppointmentsTable = ({ appointments, min, type }) => {
   const dispatch = useDispatch();
   const changeStatusAppointmentHandler = (id, type) => {
     const value = { status: "" };
-    if (type === "accept") {
-      value.status = "Potwierdzona";
-    } else if (type === "reject") {
-      value.status = "Anulowana";
-    }
+    value.status = type === "accept" ? "Potwierdzona" : "Anulowana"
     dispatch(updateAppointment(id, value));
     window.location.reload();
     setAppointStatus(false);
@@ -89,6 +86,7 @@ const AppointmentsTable = ({ appointments, min, type }) => {
                     type={statusType}
                     handleCloseModal={handleCloseModal}
                     handleChangeStatus={changeStatusAppointmentHandler}
+                    userType={user?.type}
                     id={appointment?.id}
                   />
                 </MyModal>

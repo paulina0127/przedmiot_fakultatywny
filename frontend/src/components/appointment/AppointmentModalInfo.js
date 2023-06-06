@@ -4,7 +4,8 @@ const AppointmentModalInfo = ({
   type,
   handleCloseModal,
   handleChangeStatus,
-  userType
+  userType,
+  id
 }) => {
   const variant = type === 'accept' ? 'success' : 'danger';
   const content = userType === "Pacjent" ?
@@ -26,7 +27,7 @@ const AppointmentModalInfo = ({
         <button
           type='button'
           className={`btn btn-${variant} rounded-pill fw-bold shadow-sm px-5`}
-          onClick={() => handleChangeStatus(type)}
+          onClick={!id ? () => handleChangeStatus(type) : () => handleChangeStatus(id, type)}
         >
           {type === 'accept' && userType === 'Recepcjonista' ? 'Akceptuj '
             : type === 'reject' && userType === 'Recepcjonista' ? 'Odrzuć '
