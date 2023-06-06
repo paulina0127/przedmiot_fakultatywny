@@ -9,7 +9,7 @@ import { getAppointment } from "../../actions/appointmentActions";
 import { listDoctors } from "../../actions/doctorActions";
 import { listPatients } from "../../actions/patientActions";
 import { listPrescriptions } from "../../actions/prescriptionActions";
-import { APPOINTMENT_DETAILS_RESET } from "../../constants/appointmentConsts";
+import { APPOINTMENT_DETAILS_RESET, APPOINTMENT_UPDATE_RESET } from "../../constants/appointmentConsts";
 import { DOCTOR_LIST_RESET } from "../../constants/doctorConsts";
 import { PATIENT_LIST_RESET } from "../../constants/patientConsts";
 import { PRESCRIPTION_LIST_RESET } from "../../constants/prescriptionConsts";
@@ -87,6 +87,7 @@ export const AppointmentUpdate = ({ user, appointmentId }) => {
     dispatch(getAppointment(appointmentId));
     return () => {
       dispatch({ type: APPOINTMENT_DETAILS_RESET });
+      dispatch({ type: APPOINTMENT_UPDATE_RESET });
     };
   }, []);
 
@@ -101,12 +102,7 @@ export const AppointmentUpdate = ({ user, appointmentId }) => {
     (state) => state.appointmentDetails
   );
 
-  const {
-    errorPrescriptions,
-    loadingPrescriptions,
-    countPrescriptions,
-    prescriptions,
-  } = useSelector((state) => state.prescriptionList);
+  const { prescriptions } = useSelector((state) => state.prescriptionList);
 
   const timeUntilApt =
     appointment &&

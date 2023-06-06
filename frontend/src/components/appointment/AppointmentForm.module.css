@@ -66,3 +66,21 @@ input[type="radio"] {
   border: 0 !important;
   background: transparent !important;
 }
+
+/* -------- APPOINTMENT DETALIS ------- */
+.detail-item {
+  transition: all 400ms;
+}
+.detail-item svg{
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  color:  var(--clr-dark-blue);
+}
+.detail-item:hover {
+  font-weight: 900;
+  transform: scale(1.2);
+}
+.detail-item svg:hover {
+  transform: rotate(-20deg);
+}

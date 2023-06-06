@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import { MdOutlineAdd } from "react-icons/md";
+import { MdOutlineAdd, MdSick } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
-import { Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 
 import { updateAppointment } from "../../actions/appointmentActions";
 import { updatePrescription } from "../../actions/prescriptionActions";
@@ -17,6 +17,7 @@ import { TextArea } from "../formHelpers/TextArea";
 import { Loader, Message, Prescription, MyModal } from "../general";
 import { AiOutlineClose } from "react-icons/ai";
 import { SiZeromq } from "react-icons/si";
+import { GiMedicinePills } from "react-icons/gi"
 import { BsFileEarmarkExcelFill, BsHeartPulseFill } from "react-icons/bs"
 import panel from "../UserPanel.module.css";
 import styles from "./AppointmentForm.module.css";
@@ -57,8 +58,7 @@ const AppointmentUpdateForm = ({
   const dispatch = useDispatch();
   const changeStatusAppointmentHandler = (type) => {
     const value = { status: "" };
-    value.status = type === "accept" ? "Potwierdzona"
-      : type === "reject" ? "Anulowana" : "Odbyta"
+    value.status = type === "accept" ? "Potwierdzona" : "Anulowana"
     dispatch(updateAppointment(appointment_id, value));
     setAppointStatus(false);
   };
@@ -79,146 +79,145 @@ const AppointmentUpdateForm = ({
   return (
     <div className="container container-bg container-bg-tabs">
       <div className="container-bg-content">
-        <Formik
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            if (user?.type === "Lekarz") {
-              dispatch(updateAppointment(appointment_id, values.recommendations));
-            } else {
-              dispatch(updateAppointment(appointment_id, values));
-            }
-          }}
-        >
-          {({ values }) => (
-            <Form id="form" encType="multipart/form-data">
-              <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
-                <Tab
-                  eventKey="details"
-                  title="Szczegóły wizyty"
-                  tabClassName="tab firstTab"
-                >
-                  {loadingAppointmentUpdate && <Loader />}
-                  {successAppointmentUpdate && (
-                    <Message variant="success">Zmiany zostały zapisane</Message>
-                  )}
-
-                  {errorAppointmentUpdate && (
-                    <Message variant="danger">{errorAppointmentUpdate}</Message>
-                  )}
-                  <div
-                    className="threeColumnGrid"
-                    style={{ columnGap: "32px" }}
-                  >
-                    <h3 className={styles.h3} style={{ gridColumn: "span 2" }}>
-                      Objawy i stosowane leki
-                    </h3>
-                    <h3 className={styles.h3}>Podsumowanie wizyty</h3>
-                    <div className="formGroup">
-                      <div className="d-flex align-items-baseline gap-2 mb-2">
-                        <h4 className={styles.h4}>Objawy</h4>
-                      </div>
-                      {values.symptoms && values.symptoms.length > 0 ? (
-                        values.symptoms.map((symptom, index) => (
-                          <div key={index} className="d-flex align-items-baseline gap-2">
-                            <Field
-                              name={`symptoms[${index}]`}
-                              disabled={true}
-                              className="form-control rounded-pill border-2 shadow-sm px-4 mr-3 my-1"
-                            />
-                          </div>
-                        ))
-                      ) : (
-                        <div className="d-flex justify-content-center">
-                          <SiZeromq size="3rem" color="#AEADAD" />
-                        </div>
-                      )}
+        <Tabs activeKey={key} onSelect={(k) => setKey(k)}>
+          <Tab
+            eventKey="details"
+            title="Szczegóły wizyty"
+            tabClassName="tab firstTab"
+          >
+            {loadingAppointmentUpdate && <Loader />}
+            <div
+              className="threeColumnGrid"
+              style={{ columnGap: "32px" }}
+            >
+              <h3 className={styles.h3} style={{ gridColumn: "span 2" }}>
+                Objawy i stosowane leki
+              </h3>
+              <h3 className={styles.h3}>Podsumowanie wizyty</h3>
+              <div className="formGroup">
+                <div className="d-flex align-items-baseline gap-2 mb-2">
+                  <h4 className={styles.h4}>Objawy</h4>
+                </div>
+                {initialValues?.symptoms && initialValues?.symptoms.length > 0 ? (
+                  initialValues?.symptoms.map((symptom, index) => (
+                    <div key={index} className="d-flex align-items-baseline gap-2">
+                      <span
+                        name={`symptoms[${index}]`}
+                        disabled={true}
+                        className={`px-4 mr-3 my-2 fs-4 ${styles["detail-item"]}`}
+                      ><MdSick />{' ' + symptom}
+                      </span>
                     </div>
-                    <div className="formGroup">
-                      <div className="d-flex align-items-baseline gap-2 mb-2">
-                        <h4 className={styles.h4}>Stosowane leki</h4>
-                      </div>
-                      {values.medicine && values.medicine.length > 0 ? (
-                        values.medicine?.map((med, index) => (
-                          <div
-                            key={index}
-                            className="d-flex align-items-baseline gap-2"
-                          >
-                            <Field
-                              name={`medicine[${index}]`}
-                              disabled={true}
-                              className="form-control rounded-pill border-2 shadow-sm px-4 mr-3 my-1"
-                            />
-                          </div>
-                        ))
-                      ) : (
-                        <div className="d-flex justify-content-center">
-                          <SiZeromq size="3rem" color="#AEADAD" />
-                        </div>
-                      )}
+                  ))
+                ) : (
+                  <div className="d-flex justify-content-center">
+                    <SiZeromq size="3rem" color="#AEADAD" />
+                  </div>
+                )}
+              </div>
+              <div className="formGroup">
+                <div className="d-flex align-items-baseline gap-2 mb-2">
+                  <h3 className={styles.h4}>Stosowane leki</h3>
+                </div>
+                {initialValues?.medicine && initialValues?.medicine.length > 0 ? (
+                  initialValues?.medicine?.map((med, index) => (
+                    <div
+                      key={index}
+                      className="d-flex align-items-baseline gap-2"
+                    >
+                      <span
+                        name={`medicine[${index}]`}
+                        className={`px-4 mr-3 my-2 fs-4 ${styles["detail-item"]}`}
+                      ><GiMedicinePills /> {' ' + med}</span>
                     </div>
-                    <div className={styles.summaryContainer}>
-                      {user?.type === "Recepcjonista" ||
-                        user?.type === "Admin" ? (
-                        <div className="d-flex flex-column gap-4 justify-content-center">
-                          <div>
-                            <h4 className={panel.h4}>Lekarz</h4>
-                            <p className={styles.p}>
-                              {`${values?.doctor?.first_name} ${values?.doctor?.last_name}`}
-                            </p>
-                          </div>
-                          <div>
-                            <h4 className={panel.h4}>Pacjent</h4>
-                            <p className={styles.p}>
-                              {`${values?.patient?.first_name} ${values?.patient?.last_name}`}
-                            </p>
-                          </div>
-                        </div>
-                      ) : user?.type === "Lekarz" ? (
-                        <div className="d-flex flex-column justify-content-center">
-                          <div>
-                            <h4 className={panel.h4}>Pacjent</h4>
-                            <p className={styles.p}>
-                              {`${values?.patient?.first_name} ${values?.patient?.last_name}`}
-                            </p>
-                          </div>
-                        </div>
-                      ) : (
-                        values.doctor?.id && (
-                          <DoctorReadMin doctorId={values?.doctor?.id} />
-                        )
-                      )}
-
-                      <div className="d-flex flex-column gap-4 justify-content-center">
-                        <div>
-                          <h4 className={panel.h4}>Termin</h4>
-                          <p className={styles.p}>{`${format(
-                            new Date(`${values?.date} ${values.time}:00`),
-                            "d LLLL y",
-                            {
-                              locale: pl,
-                            }
-                          )}`}</p>
-                        </div>
-                        <div>
-                          <h4 className={panel.h4}>Godzina</h4>
-                          <p className={styles.p}>{`${values?.time}`}</p>
-                        </div>
-                      </div>
+                  ))
+                ) : (
+                  <div className="d-flex justify-content-center">
+                    <SiZeromq size="3rem" color="#AEADAD" />
+                  </div>
+                )}
+              </div>
+              <div className={styles.summaryContainer}>
+                {user?.type === "Recepcjonista" ||
+                  user?.type === "Admin" ? (
+                  <div className="d-flex flex-column gap-4 justify-content-center">
+                    <div>
+                      <h4 className={panel.h4}>Lekarz</h4>
+                      <p className={styles.p}>
+                        {`${initialValues?.doctor?.first_name} ${initialValues?.doctor?.last_name}`}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className={panel.h4}>Pacjent</h4>
+                      <p className={styles.p}>
+                        {`${initialValues?.patient?.first_name} ${initialValues?.patient?.last_name}`}
+                      </p>
                     </div>
                   </div>
-                </Tab>
-                <Tab
-                  eventKey="prescriptions"
-                  title="Zalecenia i recepty"
-                  tabClassName="tab"
-                  disabled={values.status !== "Odbyta"}
-                >
+                ) : user?.type === "Lekarz" ? (
+                  <div className="d-flex flex-column justify-content-center">
+                    <div>
+                      <h4 className={panel.h4}>Pacjent</h4>
+                      <p className={styles.p}>
+                        {`${initialValues?.patient?.first_name} ${initialValues?.patient?.last_name}`}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  initialValues.doctor?.id && (
+                    <DoctorReadMin doctorId={initialValues?.doctor?.id} />
+                  )
+                )}
+
+                <div className="d-flex flex-column gap-4 justify-content-center">
+                  <div>
+                    <h4 className={panel.h4}>Termin</h4>
+                    <p className={styles.p}>{`${format(
+                      new Date(`${initialValues?.date} ${initialValues.time}:00`),
+                      "d LLLL y",
+                      {
+                        locale: pl,
+                      }
+                    )}`}</p>
+                  </div>
+                  <div>
+                    <h4 className={panel.h4}>Godzina</h4>
+                    <p className={styles.p}>{`${initialValues?.time}`}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Tab>
+          <Tab
+            eventKey="prescriptions"
+            title="Zalecenia i recepty"
+            tabClassName="tab"
+            disabled={new Date() < new Date(`${initialValues?.date}T${initialValues?.time}:00`)}
+          >
+            {successAppointmentUpdate && (
+              <Message variant="success">Zmiany zostały zapisane</Message>
+            )}
+            {errorAppointmentUpdate && (
+              <Message variant="danger">{errorAppointmentUpdate}</Message>
+            )}
+            <Formik
+              initialValues={initialValues}
+              onSubmit={(values) => {
+                if (user?.type === "Lekarz") {
+                  dispatch(updateAppointment(appointment_id, values.recommendations));
+                } else {
+                  dispatch(updateAppointment(appointment_id, values));
+                }
+              }}
+            >
+              {({ values }) => (
+                <Form id="form" encType="multipart/form-data">
                   <div className="twoColumnGrid gap-5">
                     <div className="d-flex flex-column">
                       <h3 className={styles.h3}>Zalecenia lekarskie</h3>
                       {loadingAppointmentUpdate ? <Loader /> : (
                         <>
-                          {values.recommendations !== "" && values.recommendations !== null ?
+                          {(values.recommendations !== "" && values.recommendations !== null) || user?.type === "Lekarz" ?
                             <>
                               <TextArea name="recommendations" />
                               {user?.type === "Lekarz" && (
@@ -280,7 +279,6 @@ const AppointmentUpdateForm = ({
                         showModal={true}
                         handleCloseModal={handleCloseModal}
                         id={appointment_id}
-                        patient={initialValues.patient.id}
                       />
                     )}
                     {delPrescription && (
@@ -310,11 +308,12 @@ const AppointmentUpdateForm = ({
                       </MyModal>
                     )}
                   </div>
-                </Tab>
-              </Tabs>
-            </Form>
-          )}
-        </Formik>
+                </Form>
+              )}
+            </Formik>
+          </Tab>
+        </Tabs>
+
       </div>
       {key === "details" && user?.type === "Pacjent"
         && cancellable && status !== "Odbyta" && status !== "Anulowana" && (
@@ -359,43 +358,13 @@ const AppointmentUpdateForm = ({
             </button>
           </div>
         )}
-      {key === "details" &&
-        user?.type === "Lekarz" &&
-        status === "Potwierdzona" && (
-          <div
-            className="btnGroup"
-            style={{
-              justifySelf: "end",
-              alignSelf: "end",
-            }}
-          >
-            <button
-              type="button"
-              className="btnSquare bg-blue clr-white mt-3"
-              form="form"
-              disabled={loadingAppointmentUpdate}
-              onClick={() => handleShowModal("done")}
-            >
-              Oznacz jako odbytą
-            </button>
-            <button
-              type="submit"
-              className="btnSquare bg-dark-blue clr-white mt-3"
-              form="form"
-              disabled={loadingAppointmentUpdate}
-            >
-              Wizyta kontrolna
-            </button>
-          </div>
-        )}
-        {changeAppointStatus && (
+      {changeAppointStatus && (
         <MyModal
           showModal={true}
           title={
             statusType === "accept" && user?.type === "Recepcjonista" ? "Akceptowanie wizyty"
               : statusType === "reject" && user?.type === "Recepcjonista" ? "Odrzucanie wizyty"
-              : statusType === "reject" && user?.type === "Pacjent" ? "Odwoływanie wizyty"
-              : "Zatwierdzanie odbytej wizyty"
+                : "Odwoływanie wizyty"
           }
           danger={statusType === "reject" ? true : "accept"}
         >

@@ -6,11 +6,11 @@ const AppointmentModalInfo = ({
   handleChangeStatus,
   userType
 }) => {
-  const variant = type === 'accept' || type === 'done' ? 'success' : 'danger';
+  const variant = type === 'accept' ? 'success' : 'danger';
   const content = userType === "Pacjent" ?
     'Prosimy o potwierdzenie odwołania Twojej wizyty'
-    : userType === "Recepcjonista" ? 'Prosimy o potwierdzenie zmiany statusu wizyty'
-      : 'Prosimy o potwierdzenie, że wizyta się odbyła'
+    : 'Prosimy o potwierdzenie zmiany statusu wizyty'
+
   return (
     <>
       <p>{content}</p>
@@ -30,9 +30,8 @@ const AppointmentModalInfo = ({
         >
           {type === 'accept' && userType === 'Recepcjonista' ? 'Akceptuj '
             : type === 'reject' && userType === 'Recepcjonista' ? 'Odrzuć '
-              : type === 'done' ? 'Potwierdź '
-                : 'Odwołaj '}
-          {type === 'accept' || type === 'done' ? <AiOutlineCheck /> : <AiOutlineClose />}
+              : 'Odwołaj '}
+          {type === 'accept' ? <AiOutlineCheck /> : <AiOutlineClose />}
         </button>
       </div>
     </>
