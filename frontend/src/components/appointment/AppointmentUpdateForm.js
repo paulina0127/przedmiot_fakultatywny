@@ -219,7 +219,7 @@ const AppointmentUpdateForm = ({
                         <>
                           {(values.recommendations !== "" && values.recommendations !== null) || user?.type === "Lekarz" ?
                             <>
-                              <TextArea name="recommendations" />
+                              <TextArea name="recommendations" disabled={user?.type !== "Lekarz"}/>
                               {user?.type === "Lekarz" && (
                                 <button
                                   type="submit"
