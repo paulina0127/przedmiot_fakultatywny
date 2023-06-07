@@ -76,6 +76,14 @@ const AppointmentUpdateForm = ({
     loadingAppointmentUpdate,
   } = useSelector((state) => state.appointmentUpdate);
 
+  const getControlDate = () => {
+    const visitDate = new Date(initialValues?.date);
+    // Obliczanie daty za 14 dni
+    const controlVisitObj = new Date(visitDate.getTime() + 14 * 24 * 60 * 60 * 1000);
+    // Konwersja daty na format 'YYYY-MM-DD'
+    return controlVisitObj.toISOString().slice(0, 10);
+  }
+
   return (
     <div className="container container-bg container-bg-tabs">
       <div className="container-bg-content">
@@ -215,6 +223,15 @@ const AppointmentUpdateForm = ({
                   <div className="twoColumnGrid gap-5">
                     <div className="d-flex flex-column">
                       <h3 className={styles.h3}>Zalecenia lekarskie</h3>
+                      {initialValues.recommendations === "" && user?.type === "Lekarz" && (
+                      <span className={`${styles.h3}`}>Po dodaniu zaleceń wizyta kontrolna ustawi się za 14 dni od dnia tej wizyty</span>
+                      )}
+                      {initialValues.recommendations !== "" && initialValues.date && (
+                      <span className={`${styles.h3}`}>
+                        <strong>Wizyta kontrolna: </strong>
+                        {getControlDate() + " " + initialValues.time}
+                      </span>
+                      )}
                       {loadingAppointmentUpdate ? <Loader /> : (
                         <>
                           {(values.recommendations !== "" && values.recommendations !== null) || user?.type === "Lekarz" ?
@@ -222,6 +239,7 @@ const AppointmentUpdateForm = ({
                               <TextArea name="recommendations" disabled={user?.type !== "Lekarz"}/>
                               {user?.type === "Lekarz" && (
                                 <button
+                                  disabled={values.recommendations === ""}
                                   type="submit"
                                   className="btnRound bg-dark-blue clr-white align-self-center mt-3"
                                 >

@@ -4,13 +4,20 @@ import { MdOutlineAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Field, FieldArray, Form, Formik } from "formik";
-
+import { useEffect } from "react";
 import { createPrescription } from "../../actions/prescriptionActions";
+import { PRESCRIPTION_CREATE_RESET } from "../../constants/prescriptionConsts";
 import { Loader, Message } from "../general";
 import styles from "./AppointmentForm.module.css";
 
 const NewPrescription = ({ showModal, handleCloseModal, id }) => {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch({ type: PRESCRIPTION_CREATE_RESET });
+    };
+  }, []);
 
   const {
     errorPrescriptionCreate,
