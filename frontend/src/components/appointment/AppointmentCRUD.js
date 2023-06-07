@@ -9,7 +9,10 @@ import { getAppointment } from "../../actions/appointmentActions";
 import { listDoctors } from "../../actions/doctorActions";
 import { listPatients } from "../../actions/patientActions";
 import { listPrescriptions } from "../../actions/prescriptionActions";
-import { APPOINTMENT_DETAILS_RESET, APPOINTMENT_UPDATE_RESET } from "../../constants/appointmentConsts";
+import {
+  APPOINTMENT_DETAILS_RESET,
+  APPOINTMENT_UPDATE_RESET,
+} from "../../constants/appointmentConsts";
 import { DOCTOR_LIST_RESET } from "../../constants/doctorConsts";
 import { PATIENT_LIST_RESET } from "../../constants/patientConsts";
 import { PRESCRIPTION_LIST_RESET } from "../../constants/prescriptionConsts";
@@ -19,8 +22,14 @@ import { Loader, Message } from "../general";
 export const AppointmentCreateForPatient = ({ user }) => {
   const doctor_id = useParams().id;
 
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  const isWeekend = today.getDay() === 0 || today.getDay() === 6;
+  const minDate = isWeekend ? today : tomorrow;
+
   const initialValues = {
-    date: format(new Date(), "yyyy-MM-dd"),
+    date: format(minDate, "yyyy-MM-dd"),
     time: "",
     symptoms: [],
     medicine: [],

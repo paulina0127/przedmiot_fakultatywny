@@ -54,7 +54,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     def validate(self, values):
         if not self.is_slot_available():
-            raise serializers.ValidationError("Ten slot jest niedostępny.")
+            raise serializers.ValidationError("Ten termin jest niedostępny.")
         return values
 
     def validate_date(self, value):

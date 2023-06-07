@@ -125,7 +125,7 @@ describe('Recepta_lekarz', () => {
     cy.get('.d-grid > .btn').click({force: true})
     cy.get('.formGroup > .d-flex > .btn').click({force: true})
     cy.get('.formGroup > :nth-child(2) > .form-control').type('Rutinoscorbin 100mg')
-    cy.contains('Przepisz receptę').click({force: true})
+    cy.contains('Dodaj receptę').click({force: true})
   })
 })
 describe('Statystyki', () => {

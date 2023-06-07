@@ -64,6 +64,10 @@ const AppointmentMinList = ({ type }) => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const status = [
     {
+      value: "",
+      label: "Wszystkie",
+    },
+    {
       value: "Oczekuje na potwierdzenie",
       label: "Oczekuje na potwierdzenie",
     },
@@ -126,12 +130,6 @@ const AppointmentMinList = ({ type }) => {
         : "",
     });
   }, [selectedDates]);
-
-  useEffect(() => {
-    updateParams({
-      page: 1,
-    });
-  }, [params.status, params.search]);
 
   return (
     <div className="main-container-bg gridSpanCol">
@@ -199,6 +197,7 @@ const AppointmentMinList = ({ type }) => {
                 initialValues={{ search: params.search, status: params.status }}
                 onSubmit={(values) => {
                   updateParams({
+                    page: 1,
                     search: values.search,
                     status: values.status,
                   });

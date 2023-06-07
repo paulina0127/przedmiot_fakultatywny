@@ -154,8 +154,8 @@ export const DeleteAccountForm = () => {
           <div className="p-5 pt-2 w-100">
             <Row className="align-items-center justify-content-evenly">
               <p className="mb-4">
-                Usunięcie konta jest nieodwracalne. Prosimy o rozważenie swojej
-                decyzji.
+                Usunięcie konta nie spowoduje usunięcia karty pacjenta i
+                historii leczenia.
               </p>
             </Row>
             <Row className="align-items-center justify-content-between">

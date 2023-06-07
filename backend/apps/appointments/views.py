@@ -42,7 +42,13 @@ class AppointmentList(generics.ListCreateAPIView):
     serializer_class = AppointmentSerializer
     name = "appointments"
     filterset_class = AppointmentFilter
-    search_fields = ["patient__first_name", "patient__last_name", "patient__pesel"]
+    search_fields = [
+        "doctor__first_name",
+        "doctor__last_name",
+        "patient__first_name",
+        "patient__last_name",
+        "patient__pesel",
+    ]
     ordering_fields = ["id", "date"]
     permission_classes = [IsAuthenticated, AppointmentBaseAccess]
     pagination_class = CustomPagination
@@ -55,8 +61,8 @@ class AppointmentList(generics.ListCreateAPIView):
         ]:
             return PatientCreateAppointmentSerializer
         elif (
-                self.request.user.type == UserType.RECEPTIONIST
-                and self.request.method in ["POST", "PUT", "PATCH"]
+            self.request.user.type == UserType.RECEPTIONIST
+            and self.request.method in ["POST", "PUT", "PATCH"]
         ):
             return ReceptionistCreateAppointmentSerializer
         return self.serializer_class
@@ -156,38 +162,52 @@ class AppointmentDetail(generics.RetrieveUpdateAPIView):
                         control_date = date + timezone.timedelta(days=14 + days)
                         available_slots = available_slots_list(doctor, control_date)
                         if available_slots:
-                            if time in available_slots:  # prefer the same slot or choose first available
+                            if (
+                                time in available_slots
+                            ):  # prefer the same slot or choose first available
                                 control_time = time
                             else:
                                 control_time = available_slots[0]
-                            control = Appointment.objects.create(doctor=doctor, patient=patient,
-                                                                 date=control_date, time=control_time,
-                                                                 control_visit=obj, status=AppointmentStatus.CONFIRMED)
+                            control = Appointment.objects.create(
+                                doctor=doctor,
+                                patient=patient,
+                                date=control_date,
+                                time=control_time,
+                                control_visit=obj,
+                                status=AppointmentStatus.CONFIRMED,
+                            )
                             message += f"Utworzono wizytę kontrolną: {control_date}, {control_time}"
                             break
                         elif days == day_range:
-                            message += f"Nie utworzono wizyty kontrolnej (brak wolnych " \
-                                       f"slotów w przedziale 14-21 dni od wizyty)."
+                            message += (
+                                f"Nie utworzono wizyty kontrolnej (brak wolnych "
+                                f"slotów w przedziale 14-21 dni od wizyty)."
+                            )
                 # set completed by default
                 obj.status = AppointmentStatus.COMPLETED
                 obj.save()
             response = super().partial_update(request, *args, **kwargs)
 
         # Send email if any value got changed
-        if patient.user and (obj.status != status or obj.date != date or obj.time != time
-                             or obj.doctor != doctor or obj.patient != patient):
+        if patient.user and (
+            obj.status != status
+            or obj.date != date
+            or obj.time != time
+            or obj.doctor != doctor
+            or obj.patient != patient
+        ):
             email = appointment_email_template(status)
             email["body"] += (
                 f"\nLekarz: {doctor} \n" f"Data: {date} \n" f"Godzina: {time}"
             )
             if control:
-                email["body"] += (
-                    f"\nUtworzono także wizytę kontrolną: {control_date}, {control_time}"
-                )
+                email[
+                    "body"
+                ] += f"\nUtworzono także wizytę kontrolną: {control_date}, {control_time}"
             patient.user.email_user(email["subject"], email["body"])
 
         if response.status_code == response_status.HTTP_200_OK:
-            response.data['message'] = message
+            response.data["message"] = message
         return response
 
 
@@ -223,9 +243,7 @@ class PrescriptionList(generics.ListCreateAPIView):
         # Email patient
         if patient.user:
             email = PRESCRIPTION_ADDED
-            patient.user.email_user(
-                email["subject"], email["body"]
-            )
+            patient.user.email_user(email["subject"], email["body"])
 
 
 # Display, update single prescription

@@ -33,6 +33,12 @@ const AppointmentForm = ({
   const dispatch = useDispatch();
   const [key, setKey] = useState("date");
 
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  const isWeekend = today.getDay() === 0 || today.getDay() === 6;
+  const minDate = isWeekend ? today : tomorrow;
+
   // Slots
   const { slots, loadingSlots, errorSlots } = useSelector(
     (state) => state.slotsList
@@ -58,7 +64,7 @@ const AppointmentForm = ({
   };
 
   // Slots params
-  const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [date, setDate] = useState(format(minDate, "yyyy-MM-dd"));
   const [doctor, setDoctor] = useState();
 
   const slotsParams = {
@@ -86,7 +92,7 @@ const AppointmentForm = ({
       <div className="container-bg-content">
         <Formik
           initialValues={initialValues}
-          // validationSchema={validate}-
+          // validationSchema={validate}
           onSubmit={(values) => {
             dispatch(createAppointment(values));
           }}
@@ -100,7 +106,7 @@ const AppointmentForm = ({
                   </h3>
                   <div className="threeColumnGrid gap-5 align-items-center">
                     <Calendar
-                      minDate={new Date()}
+                      minDate={minDate}
                       value={values.date}
                       onChange={(date) => {
                         setFieldValue("date", format(date, "yyyy-MM-dd"));

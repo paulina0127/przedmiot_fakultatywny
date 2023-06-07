@@ -56,7 +56,7 @@ const PatientList = ({ doctorId }) => {
             <Formik
               initialValues={{ search: params.search }}
               onSubmit={(values) => {
-                updateParams({ search: values.search });
+                updateParams({ page: 1, search: values.search });
               }}
             >
               {({ values }) => (

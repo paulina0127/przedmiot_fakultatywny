@@ -82,6 +82,7 @@ const DoctorListScreen = () => {
                 initialValues={{ search: params.search }}
                 onSubmit={(values) => {
                   updateParams({
+                    page: 1,
                     search: values.search,
                     specializations: values.specializations
                       ? values.specializations
