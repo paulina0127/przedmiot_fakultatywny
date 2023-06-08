@@ -77,6 +77,16 @@ const AppointmentUpdateForm = ({
     loadingAppointmentUpdate,
   } = useSelector((state) => state.appointmentUpdate);
 
+  const getControlDate = () => {
+    const visitDate = new Date(initialValues?.date);
+    // Obliczanie daty za 14 dni
+    const controlVisitObj = new Date(
+      visitDate.getTime() + 14 * 24 * 60 * 60 * 1000
+    );
+    // Konwersja daty na format 'YYYY-MM-DD'
+    return controlVisitObj.toISOString().slice(0, 10);
+  };
+
   return (
     <div className="container container-bg container-bg-tabs">
       <div className="container-bg-content">
