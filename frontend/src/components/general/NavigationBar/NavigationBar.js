@@ -201,7 +201,9 @@ const NavigationBar = ({ logout, user }) => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <div className="navWrapper">{user ? authLinks() : guestLinks()}</div>
+          <div className="navWrapper">
+            {user === null ? guestLinks() : user ? authLinks() : ""}
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>

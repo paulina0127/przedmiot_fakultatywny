@@ -22,7 +22,7 @@ const AppointmentListScreen = ({ type, name }) => {
     page: 1,
     date: type === "today" ? format(new Date(), "yyyy-MM-dd") : "",
     search: "",
-    start_date: "",
+    start_date: type === "upcoming" ? format(new Date(), "yyyy-MM-dd") : "",
     end_date: "",
     status:
       type === "not_approved"
@@ -124,9 +124,13 @@ const AppointmentListScreen = ({ type, name }) => {
                 {({ values, setFieldValue }) => (
                   <Form id="filtersForm">
                     <div className="d-flex gap-4 align-items-center">
-                      <TextField type="date" name="start_date" />
-                      <p className="d-inline"> - </p>
-                      <TextField type="date" name="end_date" />
+                      {!location.pathname.startsWith("/dzisiejsze") && (
+                        <>
+                          <TextField type="date" name="start_date" />
+                          <p className="d-inline"> - </p>
+                          <TextField type="date" name="end_date" />
+                        </>
+                      )}
                       {location.pathname === "/wizyty" && (
                         <Field
                           name="status"

@@ -104,6 +104,7 @@ export const appointmentUpdateReducer = (state = {}, action) => {
       return {
         loadingAppointmentUpdate: false,
         successAppointmentUpdate: true,
+        successAppointmentUpdateMessage: action.payload,
       };
 
     case APPOINTMENT_UPDATE_FAIL:

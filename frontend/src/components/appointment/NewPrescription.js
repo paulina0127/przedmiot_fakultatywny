@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { HiOutlineTrash } from "react-icons/hi";
 import { MdOutlineAdd } from "react-icons/md";
@@ -6,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Field, FieldArray, Form, Formik } from "formik";
 
 import { createPrescription } from "../../actions/prescriptionActions";
+import { PRESCRIPTION_CREATE_RESET } from "../../constants/prescriptionConsts";
 import { Loader, Message } from "../general";
 import styles from "./AppointmentForm.module.css";
 
@@ -17,6 +19,13 @@ const NewPrescription = ({ showModal, handleCloseModal, id }) => {
     successPrescriptionCreate,
     loadingPrescriptionCreate,
   } = useSelector((state) => state.prescriptionCreate);
+
+  useEffect(() => {
+    return () => {
+      dispatch({ type: PRESCRIPTION_CREATE_RESET });
+    };
+  }, []);
+
   return (
     <Modal
       show={showModal}

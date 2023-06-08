@@ -92,7 +92,7 @@ const AppointmentForm = ({
       <div className="container-bg-content">
         <Formik
           initialValues={initialValues}
-          // validationSchema={validate}
+          validationSchema={user?.type === "Pacjent" ? null : validate}
           onSubmit={(values) => {
             dispatch(createAppointment(values));
           }}

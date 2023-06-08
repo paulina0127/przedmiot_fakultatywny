@@ -1,24 +1,24 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import { AiOutlineClose } from "react-icons/ai";
+import { BsFileEarmarkExcelFill, BsHeartPulseFill } from "react-icons/bs";
+import { GiMedicinePills } from "react-icons/gi";
 import { MdOutlineAdd, MdSick } from "react-icons/md";
+import { SiZeromq } from "react-icons/si";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 import { Form, Formik } from "formik";
 
+import { AppointmentModalInfo, NewPrescription } from ".";
 import { updateAppointment } from "../../actions/appointmentActions";
 import { updatePrescription } from "../../actions/prescriptionActions";
 import { DoctorReadMin } from "../doctor/DoctorCRUD";
-import { AppointmentModalInfo, NewPrescription } from ".";
 import { TextArea } from "../formHelpers/TextArea";
-import { Loader, Message, Prescription, MyModal } from "../general";
-import { AiOutlineClose } from "react-icons/ai";
-import { SiZeromq } from "react-icons/si";
-import { GiMedicinePills } from "react-icons/gi"
-import { BsFileEarmarkExcelFill, BsHeartPulseFill } from "react-icons/bs"
+import { Loader, Message, MyModal, Prescription } from "../general";
 import panel from "../UserPanel.module.css";
 import styles from "./AppointmentForm.module.css";
 import "./Calendar.css";
@@ -28,7 +28,7 @@ const AppointmentUpdateForm = ({
   user,
   prescriptions,
   cancellable,
-  status
+  status,
 }) => {
   const [key, setKey] = useState("details");
   const appointment_id = useParams().id;
@@ -43,7 +43,7 @@ const AppointmentUpdateForm = ({
       setNewPrescription(true);
     } else if (type === "update-prescription") {
       setDelPrescription(true);
-      setPrescriptionId(id)
+      setPrescriptionId(id);
     } else {
       setAppointStatus(true);
       setStatusType(type);
@@ -53,12 +53,12 @@ const AppointmentUpdateForm = ({
     setAppointStatus(false);
     setNewPrescription(false);
     setDelPrescription(false);
-  }
+  };
 
   const dispatch = useDispatch();
   const changeStatusAppointmentHandler = (type) => {
     const value = { status: "" };
-    value.status = type === "accept" ? "Potwierdzona" : "Anulowana"
+    value.status = type === "accept" ? "Potwierdzona" : "Anulowana";
     dispatch(updateAppointment(appointment_id, value));
     setAppointStatus(false);
   };
@@ -73,6 +73,7 @@ const AppointmentUpdateForm = ({
   const {
     errorAppointmentUpdate,
     successAppointmentUpdate,
+    successAppointmentUpdateMessage,
     loadingAppointmentUpdate,
   } = useSelector((state) => state.appointmentUpdate);
 
@@ -86,10 +87,16 @@ const AppointmentUpdateForm = ({
             tabClassName="tab firstTab"
           >
             {loadingAppointmentUpdate && <Loader />}
-            <div
-              className="threeColumnGrid"
-              style={{ columnGap: "32px" }}
-            >
+            {successAppointmentUpdate && (
+              <Message variant="success">
+                {successAppointmentUpdateMessage}
+              </Message>
+            )}
+
+            {errorAppointmentUpdate && (
+              <Message variant="danger">{errorAppointmentUpdate}</Message>
+            )}
+            <div className="threeColumnGrid" style={{ columnGap: "32px" }}>
               <h3 className={styles.h3} style={{ gridColumn: "span 2" }}>
                 Objawy i stosowane leki
               </h3>
@@ -98,14 +105,20 @@ const AppointmentUpdateForm = ({
                 <div className="d-flex align-items-baseline gap-2 mb-2">
                   <h4 className={styles.h4}>Objawy</h4>
                 </div>
-                {initialValues?.symptoms && initialValues?.symptoms.length > 0 ? (
+                {initialValues?.symptoms &&
+                initialValues?.symptoms.length > 0 ? (
                   initialValues?.symptoms.map((symptom, index) => (
-                    <div key={index} className="d-flex align-items-baseline gap-2">
+                    <div
+                      key={index}
+                      className="d-flex align-items-baseline gap-2"
+                    >
                       <span
                         name={`symptoms[${index}]`}
                         disabled={true}
                         className={`px-4 mr-3 my-2 fs-4 ${styles["detail-item"]}`}
-                      ><MdSick />{' ' + symptom}
+                      >
+                        <MdSick />
+                        {" " + symptom}
                       </span>
                     </div>
                   ))
@@ -119,7 +132,8 @@ const AppointmentUpdateForm = ({
                 <div className="d-flex align-items-baseline gap-2 mb-2">
                   <h3 className={styles.h4}>Stosowane leki</h3>
                 </div>
-                {initialValues?.medicine && initialValues?.medicine.length > 0 ? (
+                {initialValues?.medicine &&
+                initialValues?.medicine.length > 0 ? (
                   initialValues?.medicine?.map((med, index) => (
                     <div
                       key={index}
@@ -128,7 +142,9 @@ const AppointmentUpdateForm = ({
                       <span
                         name={`medicine[${index}]`}
                         className={`px-4 mr-3 my-2 fs-4 ${styles["detail-item"]}`}
-                      ><GiMedicinePills /> {' ' + med}</span>
+                      >
+                        <GiMedicinePills /> {" " + med}
+                      </span>
                     </div>
                   ))
                 ) : (
@@ -138,8 +154,7 @@ const AppointmentUpdateForm = ({
                 )}
               </div>
               <div className={styles.summaryContainer}>
-                {user?.type === "Recepcjonista" ||
-                  user?.type === "Admin" ? (
+                {user?.type === "Recepcjonista" || user?.type === "Admin" ? (
                   <div className="d-flex flex-column gap-4 justify-content-center">
                     <div>
                       <h4 className={panel.h4}>Lekarz</h4>
@@ -173,7 +188,9 @@ const AppointmentUpdateForm = ({
                   <div>
                     <h4 className={panel.h4}>Termin</h4>
                     <p className={styles.p}>{`${format(
-                      new Date(`${initialValues?.date} ${initialValues.time}:00`),
+                      new Date(
+                        `${initialValues?.date} ${initialValues.time}:00`
+                      ),
                       "d LLLL y",
                       {
                         locale: pl,
@@ -192,10 +209,15 @@ const AppointmentUpdateForm = ({
             eventKey="prescriptions"
             title="Zalecenia i recepty"
             tabClassName="tab"
-            disabled={new Date() < new Date(`${initialValues?.date}T${initialValues?.time}:00`)}
+            disabled={
+              new Date() <
+              new Date(`${initialValues?.date}T${initialValues?.time}:00`)
+            }
           >
             {successAppointmentUpdate && (
-              <Message variant="success">Zmiany zostały zapisane</Message>
+              <Message variant="success">
+                {successAppointmentUpdateMessage}
+              </Message>
             )}
             {errorAppointmentUpdate && (
               <Message variant="danger">{errorAppointmentUpdate}</Message>
@@ -204,7 +226,9 @@ const AppointmentUpdateForm = ({
               initialValues={initialValues}
               onSubmit={(values) => {
                 if (user?.type === "Lekarz") {
-                  dispatch(updateAppointment(appointment_id, values.recommendations));
+                  dispatch(
+                    updateAppointment(appointment_id, values.recommendations)
+                  );
                 } else {
                   dispatch(updateAppointment(appointment_id, values));
                 }
@@ -215,21 +239,39 @@ const AppointmentUpdateForm = ({
                   <div className="twoColumnGrid gap-5">
                     <div className="d-flex flex-column">
                       <h3 className={styles.h3}>Zalecenia lekarskie</h3>
-                      {loadingAppointmentUpdate ? <Loader /> : (
+                      {loadingAppointmentUpdate ? (
+                        <Loader />
+                      ) : (
                         <>
-                          {(values.recommendations !== "" && values.recommendations !== null) || user?.type === "Lekarz" ?
+                          {(values.recommendations !== "" &&
+                            values.recommendations !== null) ||
+                          user?.type === "Lekarz" ? (
                             <>
-                              <TextArea name="recommendations" />
+                              <TextArea
+                                name="recommendations"
+                                disabled={user?.type !== "Lekarz"}
+                              />
                               {user?.type === "Lekarz" && (
-                                <button
-                                  type="submit"
-                                  className="btnRound bg-dark-blue clr-white align-self-center mt-3"
-                                >
-                                  Zapisz
-                                </button>
+                                <>
+                                  <button
+                                    type="submit"
+                                    className="btnRound bg-dark-blue clr-white align-self-center mt-3"
+                                  >
+                                    Zapisz
+                                  </button>
+                                  <p className="mt-4 clr-red">
+                                    Po dodaniu zaleceń wizyta kontrolna ustawi
+                                    się za 14 dni od dnia tej wizyty lub w
+                                    pierwszym możliwym terminie.
+                                  </p>
+                                </>
                               )}
                             </>
-                            : <h2 style={{ color: "#AEADAD" }}>Brak zaleceń <BsHeartPulseFill size="3rem" /></h2>}
+                          ) : (
+                            <h2 style={{ color: "#AEADAD" }}>
+                              Brak zaleceń <BsHeartPulseFill size="3rem" />
+                            </h2>
+                          )}
                         </>
                       )}
                     </div>
@@ -255,23 +297,34 @@ const AppointmentUpdateForm = ({
                           )}
                         </div>
 
-                        {prescriptions && prescriptions.length > 0 ? prescriptions?.map((prescription) => (
-                          <Prescription
-                            key={prescription.id}
-                            prescription={prescription}
-                          >
-                            {user?.type === "Lekarz" &&
-                              prescription.status === "Zatwierdzona" && (
-                                <button
-                                  type="button"
-                                  className="btnRound bg-dark-blue clr-white align-self-center"
-                                  onClick={() => handleShowModal("update-prescription", prescription.id)}
-                                >
-                                  Anuluj receptę
-                                </button>
-                              )}
-                          </Prescription>
-                        )) : <h2 style={{ color: "#AEADAD" }}>Brak recept <BsFileEarmarkExcelFill size="2.5rem" /></h2>}
+                        {prescriptions && prescriptions.length > 0 ? (
+                          prescriptions?.map((prescription) => (
+                            <Prescription
+                              key={prescription.id}
+                              prescription={prescription}
+                            >
+                              {user?.type === "Lekarz" &&
+                                prescription.status === "Zatwierdzona" && (
+                                  <button
+                                    type="button"
+                                    className="btnRound bg-dark-blue clr-white align-self-center"
+                                    onClick={() =>
+                                      handleShowModal(
+                                        "update-prescription",
+                                        prescription.id
+                                      )
+                                    }
+                                  >
+                                    Anuluj receptę
+                                  </button>
+                                )}
+                            </Prescription>
+                          ))
+                        ) : (
+                          <h2 style={{ color: "#AEADAD" }}>
+                            Brak recept <BsFileEarmarkExcelFill size="2.5rem" />
+                          </h2>
+                        )}
                       </div>
                     )}
                     {newPrescription && (
@@ -313,10 +366,12 @@ const AppointmentUpdateForm = ({
             </Formik>
           </Tab>
         </Tabs>
-
       </div>
-      {key === "details" && user?.type === "Pacjent"
-        && cancellable && status !== "Odbyta" && status !== "Anulowana" && (
+      {key === "details" &&
+        user?.type === "Pacjent" &&
+        cancellable &&
+        status !== "Odbyta" &&
+        status !== "Anulowana" && (
           <button
             type="button"
             className="btnSquare bg-dark-blue clr-white mx-4 mt-3"
@@ -362,9 +417,11 @@ const AppointmentUpdateForm = ({
         <MyModal
           showModal={true}
           title={
-            statusType === "accept" && user?.type === "Recepcjonista" ? "Akceptowanie wizyty"
-              : statusType === "reject" && user?.type === "Recepcjonista" ? "Odrzucanie wizyty"
-                : "Odwoływanie wizyty"
+            statusType === "accept" && user?.type === "Recepcjonista"
+              ? "Akceptowanie wizyty"
+              : statusType === "reject" && user?.type === "Recepcjonista"
+              ? "Odrzucanie wizyty"
+              : "Odwoływanie wizyty"
           }
           danger={statusType === "reject" ? true : "accept"}
         >

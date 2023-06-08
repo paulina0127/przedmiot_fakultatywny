@@ -121,13 +121,15 @@ export const createAppointment = (values) => async (dispatch) => {
 export const updateAppointment = (id, values) => async (dispatch) => {
   const config = { headers: getAuthHeaders() };
 
-  const body = typeof values === "object" ?
-    JSON.stringify({
-    status: values.status,
-    }) : JSON.stringify({
-      recommendations: values,
-    }) 
-    
+  const body =
+    typeof values === "object"
+      ? JSON.stringify({
+          status: values.status,
+        })
+      : JSON.stringify({
+          recommendations: values,
+        });
+
   try {
     dispatch({
       type: APPOINTMENT_UPDATE_REQUEST,
@@ -137,7 +139,7 @@ export const updateAppointment = (id, values) => async (dispatch) => {
 
     dispatch({
       type: APPOINTMENT_UPDATE_SUCCESS,
-      payload: data,
+      payload: data?.message,
     });
   } catch (error) {
     const errorKey = Object.keys(error?.response?.data || {})[0];

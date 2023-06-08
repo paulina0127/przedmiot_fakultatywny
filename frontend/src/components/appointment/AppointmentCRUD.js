@@ -92,6 +92,11 @@ export const AppointmentCreate = ({ user }) => {
 
 export const AppointmentUpdate = ({ user, appointmentId }) => {
   const dispatch = useDispatch();
+
+  const { successPrescriptionCreate } = useSelector(
+    (state) => state.prescriptionCreate
+  );
+
   useEffect(() => {
     dispatch(getAppointment(appointmentId));
     return () => {
@@ -105,7 +110,7 @@ export const AppointmentUpdate = ({ user, appointmentId }) => {
     return () => {
       dispatch({ type: PRESCRIPTION_LIST_RESET });
     };
-  }, []);
+  }, [successPrescriptionCreate]);
 
   const { errorAppointment, loadingAppointment, appointment } = useSelector(
     (state) => state.appointmentDetails
