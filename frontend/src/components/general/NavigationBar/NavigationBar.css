@@ -1,0 +1,143 @@
+/* Reset */
+h4,
+p {
+  margin: 0;
+}
+
+.nav-link {
+  padding: 0 !important;
+}
+
+/* Navbar */
+.navBar {
+  background: var(--clr-blue);
+}
+
+.navWrapper {
+  width: -webkit-fill-available;
+  display: grid;
+  grid-template-columns: auto;
+}
+
+@media screen and (min-width: 992px) {
+  .navWrapper {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* Guest links */
+.guestNavLinksContainer {
+  display: flex;
+  justify-self: end;
+  gap: 16px;
+}
+
+/* NavLinks dropdown */
+.navLinksContainer {
+  display: flex;
+  align-items: center;
+}
+
+.navLinksDropdown {
+  display: flex;
+  position: relative;
+}
+
+.navLinksToggle {
+  background: none;
+  border: 0;
+  font-family: var(--ff-primary);
+  font-weight: bold;
+  font-size: 18px;
+  transition: var(--transition);
+}
+
+.navLinksToggle:after {
+  padding: 4px;
+  content: "▾";
+}
+
+.navLinksToggle:hover,
+.navLinksToggle:active,
+.navLinksToggle.show {
+  background: none !important;
+  border: 0 !important;
+  color: var(--clr-dark-blue) !important;
+}
+
+.navLinksMenu.show {
+  top: 100% !important;
+  border-radius: var(--radius-secondary) !important;
+}
+
+.navLinksItem {
+  padding: 8px 16px;
+  font-size: 17px;
+}
+
+.btnNav {
+  color: var(--clr-white) !important;
+  font-size: 18px !important;
+}
+
+.btnNav:hover {
+  color: var(--clr-dark-blue) !important;
+}
+
+/* User dropdown */
+.userNavToggle {
+  border: 0 !important;
+  font-family: var(--ff-primary);
+  font-size: 20px;
+}
+
+.userNavToggle svg {
+  margin-left: 5px;
+  transition: var(--transition);
+}
+
+.userNavToggle.show svg {
+  transform: rotate(-180deg);
+}
+
+.userNavToggle:hover,
+.userNavToggle.show {
+  background: var(--clr-white) !important;
+}
+
+.userTitle {
+  padding: 8px;
+  font-family: var(--ff-primary);
+  font-weight: bold;
+  color: var(--clr-dark-blue) !important;
+  transition: var(--transition);
+  background: var(--clr-white);
+  border-radius: var(--radius-secondary);
+}
+
+.userTitle:hover {
+  color: var(--clr-dark-blue-hover) !important;
+}
+
+.userNavDropdown {
+  position: relative;
+  justify-self: end;
+}
+
+.userNavMenu {
+  margin-top: 0 !important;
+  width: -webkit-fill-available !important;
+  position: absolute;
+  top: 75% !important;
+  right: 0 !important;
+  left: auto !important;
+  border: 0 !important;
+  border-top-right-radius: 0 !important;
+  text-align: right;
+  z-index: -1;
+}
+
+.userNavItem {
+  padding: 8px 16px;
+  font-size: 17px;
+}

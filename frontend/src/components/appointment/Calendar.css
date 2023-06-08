@@ -1,0 +1,189 @@
+abbr {
+  text-decoration: none !important;
+}
+
+.react-calendar {
+  width: 350px;
+  max-width: 100%;
+  color: var(--clr-white);
+  background: var(--clr-dark-blue);
+  border-radius: var(--radius-secondary);
+  line-height: 1.125em;
+}
+
+.react-calendar--doubleView {
+  width: 700px;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer {
+  display: flex;
+  margin: -0.5em;
+}
+
+.react-calendar--doubleView .react-calendar__viewContainer > * {
+  width: 50%;
+  margin: 0.5em;
+}
+
+.react-calendar,
+.react-calendar *,
+.react-calendar *:before,
+.react-calendar *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.react-calendar button {
+  margin: 0;
+  border: 0;
+  outline: none;
+}
+
+.react-calendar button:enabled:hover {
+  cursor: pointer;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  height: 44px;
+  margin-bottom: 1em;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: none;
+  transition: var(--transition);
+}
+
+/* Month and arrows */
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: var(--clr-dark-blue-hover);
+}
+
+.react-calendar__navigation__label,
+.react-calendar__navigation__arrow {
+  color: var(--clr-white);
+}
+
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.75em;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  padding: 0.5em;
+}
+
+.react-calendar__month-view__weekNumbers .react-calendar__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  font-weight: bold;
+}
+
+/* Enabled day colors */
+.react-calendar__month-view__days__day {
+  color: var(--clr-white);
+}
+
+/* Weekend colors */
+.react-calendar__month-view__days__day--weekend {
+  color: #d58686;
+}
+
+/* Past month colors */
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #aab5c6;
+}
+
+.react-calendar__year-view .react-calendar__tile,
+.react-calendar__decade-view .react-calendar__tile,
+.react-calendar__century-view .react-calendar__tile {
+  padding: 1em 0.5em;
+  color: var(--clr-white);
+}
+
+/* Calendar tile */
+.react-calendar__tile {
+  max-width: 100%;
+  padding: 10px 6.6667px;
+  background: none;
+  text-align: center;
+  line-height: 16px;
+  transition: var(--transition);
+}
+
+.react-calendar__tile:last-of-type {
+  border-bottom-right-radius: var(--radius-secondary);
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: var(--clr-dark-blue-hover);
+}
+
+.react-calendar__tile:disabled,
+.react-calendar__navigation button:disabled {
+  background-color: var(--clr-light-blue);
+  color: #aab5c6;
+}
+
+/* Today */
+.react-calendar__tile--now {
+  background: var(--clr-dark-blue);
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background: var(--clr-dark-blue-hover);
+}
+
+/* Active months*/
+.react-calendar__tile--hasActive {
+  background: var(--clr-blue);
+}
+
+.react-calendar__tile--hasActive:enabled:hover,
+.react-calendar__tile--hasActive:enabled:focus {
+  background: var(--clr-blue-hover);
+}
+
+/* Active days */
+.react-calendar__tile--active {
+  background: var(--clr-blue);
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background: var(--clr-blue);
+}
+
+/* Arrow buttons */
+.react-calendar__navigation__prev2-button {
+  border-top-left-radius: var(--radius-secondary);
+  border-bottom-color: transparent;
+}
+
+.react-calendar__navigation__next2-button:hover {
+  border-top-right-radius: var(--radius-secondary);
+}
+
+/* Select Range */
+.react-calendar--selectRange .react-calendar__tile--hover {
+  background-color: var(--clr-blue-hover);
+}
+
+.react-calendar__tile--rangeStart,
+.react-calendar__tile--hoverStart {
+  background: var(--clr-blue);
+}
+
+.react-calendar__tile--rangeEnd,
+.react-calendar__tile--hoverEnd {
+  background: var(--clr-blue-hover);
+}

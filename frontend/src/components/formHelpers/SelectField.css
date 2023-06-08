@@ -1,0 +1,15 @@
+/* ----------- SELECT ----------- */
+.selectField__control {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.selectField__control--is-focused,
+.selectField__control--menu-is-open {
+  box-shadow: none !important;
+}
+
+.selectField__value-container,
+.selectField__value-container--has-value {
+  min-width: 155px !important;
+}
